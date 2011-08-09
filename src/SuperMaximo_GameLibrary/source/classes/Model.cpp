@@ -413,7 +413,7 @@ void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage, v
 	glBindVertexArray(0);
 	for (char i = 0; i < 16; i++) glDisableVertexAttribArray(i);
 
-	vertexCount = triangles_.size()*3;
+	vertexCount_ = triangles_.size()*3;
 }
 
 void Model::loadSmm(string path, string fileName, bufferUsageEnum bufferUsage) {
@@ -436,8 +436,8 @@ void Model::loadSmm(string path, string fileName, bufferUsageEnum bufferUsage) {
 	}
 	if (text.back() == "") text.pop_back();
 
-	vertexCount = atoi(text.front().c_str())*3;
-	unsigned arraySize = vertexCount*24;
+	vertexCount_ = atoi(text.front().c_str());
+	unsigned arraySize = vertexCount_*24;
 	GLfloat data[arraySize];
 	for (unsigned i = 0; i < arraySize; i++) data[i] = strtof(text[i+1].c_str(), NULL);
 
@@ -1231,7 +1231,7 @@ void Model::draw(float x, float y, float z, float xRotation, float yRotation, fl
 			}
 
 			glBindVertexArray(vao);
-			glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+			glDrawArrays(GL_TRIANGLES, 0, vertexCount_);
 			glBindVertexArray(0);
 			/*glBindVertexArray(vao);
 			if (loadedFromObj) drawObj(shaderToUse); else {
@@ -1312,7 +1312,7 @@ void Model::draw(Object * object, bool skipAnimation, bool skipHitboxes) {
 			}
 
 			glBindVertexArray(vao);
-			glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+			glDrawArrays(GL_TRIANGLES, 0, vertexCount_);
 			glBindVertexArray(0);
 		popMatrix();
 	}
@@ -1366,6 +1366,10 @@ vector<Model::material> * Model::materials() {
 
 GLuint * Model::vboPointer() {
 	return &vbo;
+}
+
+unsigned Model::vertexCount() {
+	return vertexCount_;
 }
 
 int bone::animation::frameIndex(unsigned step) {
