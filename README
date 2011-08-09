@@ -2,4 +2,6 @@ SuperMaximo GameLibrary
 =======================
 By Max Foster
 
+License: http://creativecommons.org/licenses/by/3.0/
+
 A library of functions that simplify the process of game programming. It is a layer on top of OpenGL and SDL.
