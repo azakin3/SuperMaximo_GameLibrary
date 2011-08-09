@@ -370,6 +370,43 @@ void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage, v
 		}
 	}
 
+	//Needs to be done a lot more efficiently (although this should only be done at load time anyway)
+	for (unsigned i = 0; i < vertices.size(); i++) {
+		vector<vec3> normals;
+		for (unsigned j = 0; j < triangles_.size(); j++) {
+			for (short k = 0; k < 3; k++) {
+				if ((vertices[i].x == triangles_[j].coords[k].x) && (vertices[i].y == triangles_[j].coords[k].y) && (vertices[i].z == triangles_[j].coords[k].z)) {
+					normals.push_back(triangles_[j].surfaceNormal());
+					break;
+				}
+			}
+		}
+
+		vec3 normalTotal;
+		normalTotal.x = normalTotal.y = normalTotal.z = 0;
+		for (unsigned j = 0; j < normals.size(); j++) {
+			normalTotal.x += normals[j].x;
+			normalTotal.y += normals[j].y;
+			normalTotal.z += normals[j].z;
+		}
+
+		float len = sqrt((normalTotal.x*normalTotal.x)+(normalTotal.y*normalTotal.y)+(normalTotal.z*normalTotal.z));
+		if (len == 0) len = 1;
+		normalTotal.x /= len;
+		normalTotal.y /= len;
+		normalTotal.z /= len;
+
+		vertices[i].normal_ = normalTotal;
+
+		for (unsigned j = 0; j < triangles_.size(); j++) {
+			for (int k = 0; k < 3; k++) {
+				if ((vertices[i].x == triangles_[j].coords[k].x) && (vertices[i].y == triangles_[j].coords[k].y) && (vertices[i].z == triangles_[j].coords[k].z)) {
+					triangles_[j].coords[k].normal_ = vertices[i].normal_;
+				}
+			}
+		}
+	}
+
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 	if (customBufferFunction == NULL) initBufferObj(bufferUsage); else (*customBufferFunction)(&vbo, this, customData);
