@@ -1,0 +1,5 @@
+SuperMaximo GameLibrary
+=======================
+By Max Foster
+
+A library of functions that simplify the process of game programming. It is a layer on top of OpenGL and SDL.
