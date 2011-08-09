@@ -497,6 +497,7 @@ void Model::loadSmm(string path, string fileName, bufferUsageEnum bufferUsage) {
 			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, image->w, image->h, 1, textureFormat, GL_UNSIGNED_BYTE, image->pixels);
 			SDL_FreeSurface(image);
 		}
+		materials_.push_back((material){"", text[arraySize+2+i]});
 	}
 
 	/*vector<string> text;
