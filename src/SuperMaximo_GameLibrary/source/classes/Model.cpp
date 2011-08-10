@@ -23,6 +23,13 @@ using namespace std;
 #include "../../headers/Utils.h"
 using namespace SuperMaximo;
 
+struct vertexNormalAssoication {
+	vec3 vertex;
+	vec3 normal;
+	vector<void*> verticesToUpdate;
+	vector<vec3> surfaceNormals;
+};
+
 vector<Model*> allModels[27];
 
 namespace SuperMaximo {
@@ -370,24 +377,33 @@ void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage, v
 		}
 	}
 
-	//Needs to be done a lot more efficiently (although this should only be done at load time anyway)
+	vector<vertexNormalAssoication> vertexNormalAssociations;
+
+	vertexNormalAssociations.reserve(vertices.size());
 	for (unsigned i = 0; i < vertices.size(); i++) {
-		vector<vec3> normals;
-		for (unsigned j = 0; j < triangles_.size(); j++) {
-			for (short k = 0; k < 3; k++) {
-				if ((vertices[i].x == triangles_[j].coords[k].x) && (vertices[i].y == triangles_[j].coords[k].y) && (vertices[i].z == triangles_[j].coords[k].z)) {
-					normals.push_back(triangles_[j].surfaceNormal());
+		vertexNormalAssociations.push_back((vertexNormalAssoication){(vec3){{vertices[i].x}, {vertices[i].y}, {vertices[i].z}}});
+	}
+
+	for (unsigned i = 0; i < triangles_.size(); i++) {
+		for (short j = 0; j < 3; j++) {
+			for (unsigned k = 0; k < vertexNormalAssociations.size(); k++) {
+				if ((vertexNormalAssociations[k].vertex.x == triangles_[i].coords[j].x) && (vertexNormalAssociations[k].vertex.y == triangles_[i].coords[j].y) &&
+						(vertexNormalAssociations[k].vertex.z == triangles_[i].coords[j].z)) {
+					vertexNormalAssociations[k].verticesToUpdate.push_back(&triangles_[i].coords[j]);
+					vertexNormalAssociations[k].surfaceNormals.push_back(triangles_[i].surfaceNormal());
 					break;
 				}
 			}
 		}
+	}
 
+	for (unsigned i = 0; i < vertexNormalAssociations.size(); i++) {
 		vec3 normalTotal;
 		normalTotal.x = normalTotal.y = normalTotal.z = 0;
-		for (unsigned j = 0; j < normals.size(); j++) {
-			normalTotal.x += normals[j].x;
-			normalTotal.y += normals[j].y;
-			normalTotal.z += normals[j].z;
+		for (unsigned j = 0; j < vertexNormalAssociations[i].surfaceNormals.size(); j++) {
+			normalTotal.x += vertexNormalAssociations[i].surfaceNormals[j].x;
+			normalTotal.y += vertexNormalAssociations[i].surfaceNormals[j].y;
+			normalTotal.z += vertexNormalAssociations[i].surfaceNormals[j].z;
 		}
 
 		float len = sqrt((normalTotal.x*normalTotal.x)+(normalTotal.y*normalTotal.y)+(normalTotal.z*normalTotal.z));
@@ -396,15 +412,10 @@ void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage, v
 		normalTotal.y /= len;
 		normalTotal.z /= len;
 
-		vertices[i].normal_ = normalTotal;
+		vertexNormalAssociations[i].normal = normalTotal;
 
-		for (unsigned j = 0; j < triangles_.size(); j++) {
-			for (int k = 0; k < 3; k++) {
-				if ((vertices[i].x == triangles_[j].coords[k].x) && (vertices[i].y == triangles_[j].coords[k].y) && (vertices[i].z == triangles_[j].coords[k].z)) {
-					triangles_[j].coords[k].normal_ = vertices[i].normal_;
-				}
-			}
-		}
+		for (unsigned j = 0; j < vertexNormalAssociations[i].verticesToUpdate.size(); j++)
+			((vertex*)(vertexNormalAssociations[i].verticesToUpdate[j]))->normal_ = normalTotal;
 	}
 
 	glGenVertexArrays(1, &vao);
