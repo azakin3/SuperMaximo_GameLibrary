@@ -859,11 +859,11 @@ void Model::initBufferObj(bufferUsageEnum bufferUsage) {
 			count++;
 			vertexArray[count] = 1.0f;
 			count++;
-			vertexArray[count] = triangles_[i].surfaceNormal().x;//coords[j].normal_.x;
+			vertexArray[count] = triangles_[i].coords[j].normal_.x;
 			count++;
-			vertexArray[count] = triangles_[i].surfaceNormal().y;//triangles_[i].coords[j].normal_.y;
+			vertexArray[count] = triangles_[i].coords[j].normal_.y;
 			count++;
-			vertexArray[count] = triangles_[i].surfaceNormal().z;//triangles_[i].coords[j].normal_.z;
+			vertexArray[count] = triangles_[i].coords[j].normal_.z;
 			count++;
 			vertexArray[count] = materials_[triangles_[i].mtlNum].ambientColor.r;
 			count++;
