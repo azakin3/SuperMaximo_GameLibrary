@@ -65,7 +65,7 @@ class Model {
 	std::string name_;
 	std::vector<triangle> triangles_;
 	std::vector<material> materials_;
-	vector<bone *> bones_;
+	std::vector<bone *> bones_;
 	GLuint vao, vbo, texture;
 	Shader * boundShader_;
 	unsigned framerate_, vertexCount_;
@@ -98,16 +98,16 @@ public:
 	void bindShader(Shader * shader);
 	Shader * boundShader();
 
-	int boneId(string boneName);
+	int boneId(std::string boneName);
 	std::string boneName(unsigned boneId);
 
 	int animationId(std::string searchName);
 	void setFramerate(unsigned newFramerate);
 	unsigned framerate();
 
-	vector<bone *> * bones();
-	vector<triangle> * triangles();
-	vector<material> * materials();
+	std::vector<bone *> * bones();
+	std::vector<triangle> * triangles();
+	std::vector<material> * materials();
 
 	GLuint * vboPointer();
 
@@ -121,7 +121,7 @@ struct bone {
 	float x, y, z, endX, endY, endZ, xRot, yRot, zRot;
 	bone * parent;
 	vec3 rotationUpperLimit, rotationLowerLimit;
-	vector<bone *> child;
+	std::vector<bone *> child;
 	//vector<Model::triangle *> triangles;
 	//vector<Model::vertex *> vertices;
 	struct box {
@@ -141,10 +141,10 @@ struct bone {
 	struct animation {
 		std::string name;
 		unsigned length;
-		vector<keyFrame> frames;
+		std::vector<keyFrame> frames;
 		int frameIndex(unsigned step);
 	};
-	vector<animation> animations;
+	std::vector<animation> animations;
 };
 
 
