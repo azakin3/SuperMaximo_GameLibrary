@@ -6,6 +6,8 @@
 // Description : The SuperMaximo GameLibrary
 //============================================================================
 
+#ifdef COMPILE_TEST
+
 #include <iostream>
 using namespace std;
 
@@ -119,3 +121,5 @@ int main() {
 	cout << "Quit successfully" << endl;
 	return 0;
 }
+
+#endif

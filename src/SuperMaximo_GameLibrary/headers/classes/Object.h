@@ -11,6 +11,7 @@
 #define OBJECT_H_
 
 #include <iostream>
+#include "../Display.h"
 
 namespace SuperMaximo {
 
@@ -53,6 +54,8 @@ public:
 	customDrawFunctionType boundCustomDrawFunction();
 
 	void setPosition(float xAmount, float yAmount, float zAmount, bool relative = false);
+	void setPosition(vec2 amount, bool relative = false);
+	void setPosition(vec3 amount, bool relative = false);
 	float setX(float amount, bool relative = false);
 	float setY(float amount, bool relative = false);
 	float setZ(float amount, bool relative = false);

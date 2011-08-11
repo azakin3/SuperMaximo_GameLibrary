@@ -105,6 +105,14 @@ void Object::setPosition(float xAmount, float yAmount, float zAmount, bool relat
 	if (relative) x_ += xAmount*compensation(), y_ += yAmount*compensation(), z_ += zAmount*compensation(); else x_ = xAmount, y_ = yAmount, z_ = zAmount;
 }
 
+void Object::setPosition(vec2 amount, bool relative) {
+	if (relative) x_ += amount.x*compensation(), y_ += amount.y*compensation(); else x_ = amount.x, y_ = amount.y;
+}
+
+void Object::setPosition(vec3 amount, bool relative) {
+	if (relative) x_ += amount.x*compensation(), y_ += amount.y*compensation(), z_ += amount.z*compensation(); else x_ = amount.x, y_ = amount.y, z_ = amount.z;
+}
+
 float Object::setX(float amount, bool relative) {
 	if (relative) x_ += amount*compensation(); else x_ = amount;
 	return x_;
