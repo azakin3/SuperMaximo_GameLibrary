@@ -75,10 +75,10 @@ vec3 Model::triangle::surfaceNormal() {
 
 	return normal_;
 }
-
+/*
 void bone::box::init() {
 	x = y = z = l = w = h = xRot = yRot = zRot = 0.0f;
-}
+}*/
 
 Model::Model(string newName, string path, string fileName, unsigned framerate, bufferUsageEnum bufferUsage, void (*customBufferFunction)(GLuint*, Model*, void*),
 		void * customData) {
@@ -1040,7 +1040,7 @@ void Model::drawObj(Shader * shaderToUse) {
 
 	glDrawArrays(GL_TRIANGLES, 0, triangles_.size()*3);
 }*/
-
+/*
 vec3 Model::calculatePoints(float nx, float ny, float nz, matrix4d matrix) {
 	vec3 returnNormal;
 	returnNormal.x = (nx*matrix[0])+(ny*matrix[4])+(nz*matrix[8])+matrix[12];
@@ -1104,7 +1104,7 @@ void Model::calculateHitbox(bone * pBone, matrix4d matrix) {
 	pBone->hitbox.rw = wUpperBound-wLowerBound;
 	pBone->hitbox.rh = hUpperBound-hLowerBound;
 }
-
+*/
 /*void Model::drawBone(bone * pBone, Shader * shaderToUse, bool skipHitboxes) {
 	pushMatrix();
 		matrix4d modelMatrix, modelNormMatrix;
@@ -1215,7 +1215,7 @@ string Model::name() {
 }
 
 void Model::draw(float x, float y, float z, float xRotation, float yRotation, float zRotation, float xScale, float yScale, float zScale, float frame,
-		int currentAnimationId, bool skipAnimation, bool skipHitboxes) {
+		int currentAnimationId, bool skipAnimation) {//, bool skipHitboxes) {
 	Shader * shaderToUse;
 	if (boundShader_ != NULL) shaderToUse = boundShader_; else shaderToUse = ::boundShader();
 
@@ -1296,7 +1296,7 @@ void Model::draw(float x, float y, float z, float xRotation, float yRotation, fl
 	if (::boundShader() != NULL) glUseProgram(::boundShader()->program_); else glUseProgram(0);
 }
 
-void Model::draw(Object * object, bool skipAnimation, bool skipHitboxes) {
+void Model::draw(Object * object, bool skipAnimation) {//, bool skipHitboxes) {
 	Shader * shaderToUse;
 	if (object->boundShader_ != NULL) shaderToUse = object->boundShader_; else if (boundShader_ != NULL) shaderToUse = boundShader_; else shaderToUse = ::boundShader();
 

@@ -352,9 +352,9 @@ void Object::setInterpolation() {
 	interpolating = false;
 }
 */
-void Object::draw(bool skipAnimation, bool skipHitboxes) {
+void Object::draw(bool skipAnimation) {//, bool skipHitboxes) {
 	if (hasModel_) {
-		if (model_ != NULL) model_->draw(this, skipAnimation, skipHitboxes);
+		if (model_ != NULL) model_->draw(this, skipAnimation);//, skipHitboxes);
 	} else {
 		if (sprite_ != NULL) sprite_->draw(this);
 	}
@@ -521,7 +521,7 @@ bool Object::roughBoxCollision(Object * other) {
 bool Object::circleCollision(Object * other, float extraX1, float extraY1, float extraZ1, float extraX2, float extraY2, float extraZ2) {
 	return false;
 }
-
+/*
 bool Object::roughHitboxCollision(bone * bone1, bone * bone2) {
 	if ((bone1 != NULL) && (bone2 != NULL)) {
 		if (bone1->hitbox.x+bone1->hitbox.rl < bone2->hitbox.x) return false;
@@ -573,7 +573,7 @@ bool Object::modelCollision(Object * other, int hitboxId, int hitboxOtherId) {
 	}
 	return false;
 }
-
+*/
 Object * object(string searchName) {
 	int letter = numCharInAlphabet(searchName[0]);
 	Object * returnObject = NULL;

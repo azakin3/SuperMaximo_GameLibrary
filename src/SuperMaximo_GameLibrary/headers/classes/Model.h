@@ -78,8 +78,8 @@ class Model {
 	void initBufferObj(bufferUsageEnum bufferUsage);
 	//void initBufferSmo();
 	//void drawObj(Shader * shaderToUse);
-	vec3 calculatePoints(float nx, float ny, float nz, matrix4d matrix);
-	void calculateHitbox(bone * pBone, matrix4d matrix);
+	//vec3 calculatePoints(float nx, float ny, float nz, matrix4d matrix);
+	//void calculateHitbox(bone * pBone, matrix4d matrix);
 	//void drawBone(bone * pBone, Shader * shaderToUse, bool skipHitboxes);
 	void getBoneModelviewMatrices(matrix4d * matrixArray, bone * pBone);
 	void setBoneRotationsFromAnimation(unsigned animationId, float frame, bone * pBone);
@@ -91,9 +91,9 @@ public:
 			void (*customBufferFunction)(GLuint*, Model*, void*) = NULL, void * customData = NULL);
 	~Model();
 	std::string name();
-	void draw(Object * object, bool skipAnimation = false, bool skipHitboxes = false);
+	void draw(Object * object, bool skipAnimation = false);//, bool skipHitboxes = false);
 	void draw(float x, float y, float z, float xRotation = 0.0f, float yRotation = 0.0f, float zRotation = 0.0f, float xScale = 1.0f, float yScale = 1.0f,
-			float zScale = 1.0f, float frame = 1.0f, int currentAnimationId = 0, bool skipAnimation = false, bool skipHitboxes = false);
+			float zScale = 1.0f, float frame = 1.0f, int currentAnimationId = 0, bool skipAnimation = false);//, bool skipHitboxes = false);
 
 	void bindShader(Shader * shader);
 	Shader * boundShader();
@@ -124,10 +124,10 @@ struct bone {
 	std::vector<bone *> child;
 	//vector<Model::triangle *> triangles;
 	//vector<Model::vertex *> vertices;
-	struct box {
+	/*struct box {
 		float x, y, z, l, w, h, xRot, yRot, zRot, rl, rw, rh;
 		void init();
-	} hitbox;
+	} hitbox;*/
 	struct keyFrame {
 		/*struct keyFrameData {
 			int boneId;

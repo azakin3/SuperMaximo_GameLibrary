@@ -91,7 +91,7 @@ public:
 	//void setInterpolation(int startFrame, unsigned animation1Id, int endFrame, unsigned animation2Id, unsigned numFramesToTake);
 	//void setInterpolation();
 
-	void draw(bool skipAnimation = false, bool skipHitboxes = false);
+	void draw(bool skipAnimation = false);//, bool skipHitboxes = false);
 
 	bool roughMouseOverBox();
 	bool mouseOverBox();
@@ -100,10 +100,10 @@ public:
 	bool roughBoxCollision(Object * other);
 	bool circleCollision(Object * other, float extraX1 = 0, float extraY1 = 0, float extraZ1 = 0, float extraX2 = 0, float extraY2 = 0, float extraZ2 = 0);
 
-	bool roughHitboxCollision(bone * bone1, bone * bone2);
+	/*bool roughHitboxCollision(bone * bone1, bone * bone2);
 	bool hitBoxCollision(bone * bone1, bone * bone2);
 	bool roughModelCollision(Object * other, int hitboxId = -1, int hitboxOtherId = -1);
-	bool modelCollision(Object * other, int hitboxId = -1, int hitboxOtherId = -1);
+	bool modelCollision(Object * other, int hitboxId = -1, int hitboxOtherId = -1);*/
 };
 
 Object * object(std::string searchName);
