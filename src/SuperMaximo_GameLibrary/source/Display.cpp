@@ -171,27 +171,27 @@ bool vec2::polygonCollision(unsigned vertexCount, ...) {
 	va_end(vertexArgs);
 
 	for (unsigned i = 1; i < vertexCount; i++) {
-		if (((*this)-vertices[i-1]).dotProduct((vertices[i]-vertices[i-1]).perpendicular()) < 0.0f) return false;
+		if ((vertices[i-1]-(*this)).dotProduct((vertices[i]-vertices[i-1]).perpendicular()) < 0.0f) return false;
 	}
-	if (((*this)-vertices[vertexCount-1]).dotProduct((vertices[0]-vertices[vertexCount-1]).perpendicular()) < 0.0f) return false;
+	if ((vertices[vertexCount-1]-(*this)).dotProduct((vertices[0]-vertices[vertexCount-1]).perpendicular()) < 0.0f) return false;
 
 	return true;
 }
 
 bool vec2::polygonCollision(unsigned vertexCount, vec2 * vertices) {
 	for (unsigned i = 1; i < vertexCount; i++) {
-		if (((*this)-vertices[i-1]).dotProduct((vertices[i]-vertices[i-1]).perpendicular()) < 0.0f) return false;
+		if ((vertices[i-1]-(*this)).dotProduct((vertices[i]-vertices[i-1]).perpendicular()) < 0.0f) return false;
 	}
-	if (((*this)-vertices[vertexCount-1]).dotProduct((vertices[0]-vertices[vertexCount-1]).perpendicular()) < 0.0f) return false;
+	if ((vertices[vertexCount-1]-(*this)).dotProduct((vertices[0]-vertices[vertexCount-1]).perpendicular()) < 0.0f) return false;
 
 	return true;
 }
 
 bool vec2::polygonCollision(unsigned vertexCount, std::vector<vec2> vertices) {
 	for (unsigned i = 1; i < vertexCount; i++) {
-		if (((*this)-vertices[i-1]).dotProduct((vertices[i]-vertices[i-1]).perpendicular()) < 0.0f) return false;
+		if ((vertices[i-1]-(*this)).dotProduct((vertices[i]-vertices[i-1]).perpendicular()) < 0.0f) return false;
 	}
-	if (((*this)-vertices[vertexCount-1]).dotProduct((vertices[0]-vertices[vertexCount-1]).perpendicular()) < 0.0f) return false;
+	if ((vertices[vertexCount-1]-(*this)).dotProduct((vertices[0]-vertices[vertexCount-1]).perpendicular()) < 0.0f) return false;
 
 	return true;
 }
