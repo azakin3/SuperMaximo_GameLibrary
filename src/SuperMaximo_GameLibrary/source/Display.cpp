@@ -154,6 +154,16 @@ void vec2::operator-=(const vec2 & otherVector) {
 	y -= otherVector.y;
 }
 
+vec2 vec2::operator*(const matrix2d & matrix) {
+	return (vec2){
+		{(x*matrix.component[0])+(y*matrix.component[2])},
+		{(x*matrix.component[1])+(y*matrix.component[3])}};
+}
+
+void vec2::operator*=(const matrix2d & matrix) {
+	*this = (*this)*matrix;
+}
+
 vec2 vec2::perpendicular() {
 	return (vec2){{-y}, {x}};
 }
@@ -405,6 +415,19 @@ matrix4d getOrthographicMatrix(float left, float right, float bottom, float top,
 	returnMatrix[13] = -((top+bottom)/(top-bottom));
 	returnMatrix[14] = -((far+near)/(far-near));
 	returnMatrix[15] = 1.0f;
+	return returnMatrix;
+}
+
+matrix2d get2dRotationMatrix(float angle) {
+	angle = (angle*M_PI)/180.0f;
+
+	matrix2d returnMatrix;
+
+	returnMatrix.component[0] = cos(angle);
+	returnMatrix.component[1] = sin(angle);
+	returnMatrix.component[2] = -sin(angle);
+	returnMatrix.component[3] = cos(angle);
+
 	return returnMatrix;
 }
 

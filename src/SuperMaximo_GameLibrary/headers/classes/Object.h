@@ -99,11 +99,10 @@ public:
 
 	bool roughMouseOverBox();
 	bool mouseOverBox();
-	bool mouseOverCircle(float extraX = 0, float extraY = 0, float extraZ = 0);
+	bool mouseOverCircle();
 	bool boxCollision(Object * other, bool allStages = true);
 	bool roughBoxCollision(Object * other);
-	bool circleCollision(Object * other, float extraX1 = 0, float extraY1 = 0, float extraZ1 = 0,
-			float extraX2 = 0, float extraY2 = 0, float extraZ2 = 0);
+	bool circleCollision(Object * other);
 
 	/*bool roughHitboxCollision(bone * bone1, bone * bone2);
 	bool hitBoxCollision(bone * bone1, bone * bone2);

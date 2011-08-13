@@ -113,6 +113,8 @@ struct vec2 {
 	vec2 operator-(const vec2 & otherVector);
 	void operator+=(const vec2 & otherVector);
 	void operator-=(const vec2 & otherVector);
+	vec2 operator*(const matrix2d & matrix);
+	void operator*=(const matrix2d & matrix);
 	vec2 perpendicular();
 	float dotProduct(const vec2 & otherVector);
 	bool polygonCollision(unsigned vertexCount, ...);
@@ -190,6 +192,8 @@ vec4 getClearColor();
 matrix4d getPerspectiveMatrix(float left, float right, float bottom, float top, float near, float far);
 matrix4d getPerspectiveMatrix(float angle, float aspectRatio, float front, float back);
 matrix4d getOrthographicMatrix(float left, float right, float bottom, float top, float near, float far);
+
+matrix2d get2dRotationMatrix(float angle);
 
 void bindShader(Shader * shader);
 Shader * boundShader();

@@ -386,7 +386,15 @@ void Object::draw(bool skipAnimation) {//, bool skipHitboxes) {
 
 bool Object::mouseOverBox() {
 	if (!hasModel_) {
-		float mouseX_, mouseY_;
+		vec2 vertex[4] = {(vec2){{x_-originX}, {y_-originY}}, (vec2){{x_-originX}, {y_-originY+height_}},
+				(vec2){{x_-originX+width_}, {y_-originY+height_}}, (vec2){{x_-originX+width_}, {y_-originY}}};
+
+		if ((zRotation_ != 0.0f) && (zRotation_ != 180.0f))
+			for (short i = 0; i < 4; i++) vertex[i] *= get2dRotationMatrix(zRotation_);
+
+		return (vec2){{mouseX()}, {mouseY()}}.polygonCollision(4, vertex);
+
+		/*float mouseX_, mouseY_;
 		if (zRotation_ != 0.0f) {
 			float mouseXDist = (float)mouseX()-x_, mouseYDist = (float)mouseY()-y_;
 			float mouseDistSquared = (mouseXDist*mouseXDist)+(mouseYDist*mouseYDist);
@@ -400,7 +408,7 @@ bool Object::mouseOverBox() {
 		if ((mouseX_ >= (x_-originX)*(x_-originX)) && (mouseX_ <= (x_-originX+width_)*(x_-originX+width_))) {
 			if ((mouseY_ >= (y_-originY)*(y_-originY)) && (mouseY_ <= (y_-originY+height_)*(y_-originY+height_)))
 				return true;
-		}
+		}*/
 	}
 	return false;
 }
@@ -415,18 +423,40 @@ bool Object::roughMouseOverBox() {
 	return true;
 }
 
-bool Object::mouseOverCircle(float extraX, float extraY, float extraZ) {
+bool Object::mouseOverCircle() {
 	if (!hasModel_) {
-		float mouseXDist = (float)mouseX()-(x_+extraX), mouseYDist = (float)mouseY()-(y_+extraY);
-		float mouseDist = (mouseXDist*mouseXDist)+(mouseYDist*mouseYDist);
-		if (mouseDist <= (width_/2)*(width_/2)) return true;
+		float radius = (width_ > height_) ? width_ : height_,
+			mouseXDist = float(mouseX())-x_, mouseYDist = float(mouseY())-y_,
+			mouseDist = (mouseXDist*mouseXDist)+(mouseYDist*mouseYDist);
+
+		if (mouseDist <= (radius/2)*(radius/2)) return true;
 	}
 	return false;
 }
 
 bool Object::boxCollision(Object * other, bool allStages) {
 	if (!hasModel_ && !other->hasModel_) {
-		for (int i = 0; i < 4; i++) {
+		vec2 box[4] = {(vec2){{x_-originX}, {y_-originY}}, (vec2){{x_-originX}, {y_-originY+height_}},
+				(vec2){{x_-originX+width_}, {y_-originY+height_}}, (vec2){{x_-originX+width_}, {y_-originY}}};
+
+		vec2 otherBox[4] = {(vec2){{other->x_-other->originX}, {other->y_-other->originY}},
+				(vec2){{other->x_-other->originX}, {other->y_-other->originY+other->height_}},
+				(vec2){{other->x_-other->originX+other->width_}, {other->y_-other->originY+other->height_}},
+				(vec2){{other->x_-other->originX+other->width_}, {other->y_-other->originY}}};
+
+		if ((zRotation_ != 0.0f) && (zRotation_ != 180.0f))
+			for (short i = 0; i < 4; i++) box[i] *= get2dRotationMatrix(zRotation_);
+		if ((other->zRotation_ != 0.0f) && (other->zRotation_ != 180.0f))
+			for (short i = 0; i < 4; i++) box[i] *= get2dRotationMatrix(other->zRotation_);
+
+		for (short i = 0; i < 4; i++) if (box[i].polygonCollision(4, otherBox)) return true;
+
+		if (allStages) {
+			for (short i = 0; i < 4; i++) if (otherBox[i].polygonCollision(4, box)) return true;
+		}
+	}
+	return false;
+		/*for (int i = 0; i < 4; i++) {
 			float pointX, pointY, tempPointX, tempPointY;
 			switch (i) {
 			case 0:
@@ -532,7 +562,7 @@ bool Object::boxCollision(Object * other, bool allStages) {
 			}
 		}
 	}
-	return false;
+	return false;*/
 }
 
 bool Object::roughBoxCollision(Object * other) {
@@ -545,8 +575,14 @@ bool Object::roughBoxCollision(Object * other) {
 	return true;
 }
 
-bool Object::circleCollision(Object * other, float extraX1, float extraY1, float extraZ1, float extraX2,
-		float extraY2, float extraZ2) {
+bool Object::circleCollision(Object * other) {
+	if (!hasModel_) {
+		float radius = (width_ > height_) ? width_ : height_,
+			otherRadius  = (other->width_ > other->height_) ? other->width_ : other->height_,
+			xDist = x_-other->x_, yDist = y_-other->y_, dist = (xDist*xDist)+(yDist*yDist);
+
+		if (dist <= (radius+otherRadius)*(radius+otherRadius)) return true;
+	}
 	return false;
 }
 /*
