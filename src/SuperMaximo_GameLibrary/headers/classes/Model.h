@@ -153,8 +153,9 @@ struct bone {
 
 
 Model * model(std::string searchName);
-Model * addModel(std::string newName, std::string path, std::string fileName, bufferUsageEnum bufferUsage = STATIC_DRAW,
-		unsigned framerate = 60, void (*customBufferFunction)(GLuint*, Model*, void*) = NULL, void * customData = NULL);
+Model * addModel(std::string newName, std::string path, std::string fileName,
+		bufferUsageEnum bufferUsage = STATIC_DRAW, unsigned framerate = 60,
+		void (*customBufferFunction)(GLuint*, Model*, void*) = NULL, void * customData = NULL);
 void destroyModel(std::string searchName);
 void destroyAllModels();
 

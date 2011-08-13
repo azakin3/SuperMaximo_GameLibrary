@@ -68,12 +68,14 @@ public:
 	float height();
 	void calcZRotatedDimensions();
 
-	void scale(float xAmount, float yAmount, float zAmount, bool relative = false, bool recalculateDimensions = true);
+	void scale(float xAmount, float yAmount, float zAmount, bool relative = false,
+			bool recalculateDimensions = true);
 	float xScale();
 	float yScale();
 	float zScale();
 
-	void rotate(float xAmount, float yAmount, float zAmount, bool relative = false, bool recalculateDimensions = true);
+	void rotate(float xAmount, float yAmount, float zAmount, bool relative = false,
+			bool recalculateDimensions = true);
 	float rotate(float amount, bool relative = false, bool recalculateDimensions = true);
 	float xRotation();
 	float yRotation();
@@ -100,8 +102,8 @@ public:
 	bool mouseOverCircle(float extraX = 0, float extraY = 0, float extraZ = 0);
 	bool boxCollision(Object * other, bool allStages = true);
 	bool roughBoxCollision(Object * other);
-	bool circleCollision(Object * other, float extraX1 = 0, float extraY1 = 0, float extraZ1 = 0, float extraX2 = 0,
-			float extraY2 = 0, float extraZ2 = 0);
+	bool circleCollision(Object * other, float extraX1 = 0, float extraY1 = 0, float extraZ1 = 0,
+			float extraX2 = 0, float extraY2 = 0, float extraZ2 = 0);
 
 	/*bool roughHitboxCollision(bone * bone1, bone * bone2);
 	bool hitBoxCollision(bone * bone1, bone * bone2);

@@ -85,13 +85,21 @@ void refreshEvents() {
 		case SDL_JOYBUTTONUP: joysticks[event.jbutton.which].buttons[event.jbutton.button] = false; break;
 		case SDL_JOYHATMOTION:
 			switch (event.jhat.value) {
-			case SDL_HAT_UP: joysticks[event.jhat.which].dpad[0] = true; joysticks[event.jhat.which].dpad[1] = false;
+			case SDL_HAT_UP:
+				joysticks[event.jhat.which].dpad[0] = true;
+				joysticks[event.jhat.which].dpad[1] = false;
 				break;
-			case SDL_HAT_DOWN: joysticks[event.jhat.which].dpad[1] = true; joysticks[event.jhat.which].dpad[0] = false;
+			case SDL_HAT_DOWN:
+				joysticks[event.jhat.which].dpad[1] = true;
+				joysticks[event.jhat.which].dpad[0] = false;
 				break;
-			case SDL_HAT_LEFT: joysticks[event.jhat.which].dpad[2] = true; joysticks[event.jhat.which].dpad[3] = false;
+			case SDL_HAT_LEFT:
+				joysticks[event.jhat.which].dpad[2] = true;
+				joysticks[event.jhat.which].dpad[3] = false;
 				break;
-			case SDL_HAT_RIGHT: joysticks[event.jhat.which].dpad[3] = true; joysticks[event.jhat.which].dpad[2] = false;
+			case SDL_HAT_RIGHT:
+				joysticks[event.jhat.which].dpad[3] = true;
+				joysticks[event.jhat.which].dpad[2] = false;
 				break;
 			case SDL_HAT_CENTERED:
 				joysticks[event.jhat.which].dpad[0] = false;

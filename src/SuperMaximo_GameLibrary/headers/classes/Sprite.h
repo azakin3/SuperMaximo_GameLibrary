@@ -63,8 +63,8 @@ public:
 	void draw(Object * object);
 	void defaultDraw(Shader * shaderToUse, spriteDrawParams * params);
 
-	SDL_Surface * drawToSurface(float rotation = 0.0f, float xScale = 1.0f, float yScale = 1.0f, float alpha = 1.0f,
-			unsigned frame = 1);
+	SDL_Surface * drawToSurface(float rotation = 0.0f, float xScale = 1.0f, float yScale = 1.0f,
+			float alpha = 1.0f, unsigned frame = 1);
 
 	int width();
 	int height();
@@ -83,12 +83,12 @@ public:
 
 Sprite * sprite(std::string searchName);
 
-Sprite * addSprite(std::string newName, std::string fileName, int imageX, int imageY, int imageWidth, int imageHeight,
-		int aniFrames = 1, unsigned framerate = 1, int newOriginX = 1, int newOriginY = 1,
+Sprite * addSprite(std::string newName, std::string fileName, int imageX, int imageY, int imageWidth,
+		int imageHeight, int aniFrames = 1, unsigned framerate = 1, int newOriginX = 1, int newOriginY = 1,
 		void (*customBufferFunction)(GLuint*, Sprite*, void*) = NULL, void * customData = NULL);
 
-Sprite * addSprite(std::string newName, SDL_Surface * surface, int imageX, int imageY, int imageWidth, int imageHeight,
-		int aniFrames = 1, unsigned framerate = 1, int newOriginX = 1, int newOriginY = 1,
+Sprite * addSprite(std::string newName, SDL_Surface * surface, int imageX, int imageY, int imageWidth,
+		int imageHeight, int aniFrames = 1, unsigned framerate = 1, int newOriginX = 1, int newOriginY = 1,
 		void (*customBufferFunction)(GLuint*, Sprite*, void*) = NULL, void * customData = NULL);
 
 void destroySprite(std::string searchName);

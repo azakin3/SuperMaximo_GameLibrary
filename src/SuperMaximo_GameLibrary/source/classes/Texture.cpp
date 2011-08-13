@@ -130,8 +130,8 @@ void Texture::reload(textureTypeEnum textureType, unsigned numLayers, ...) {
 							textureFormat, GL_UNSIGNED_BYTE, NULL);
 					initialised = true;
 				}
-				glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, image->w, image->h, 1, textureFormat, GL_UNSIGNED_BYTE,
-						image->pixels);
+				glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, image->w, image->h, 1, textureFormat,
+						GL_UNSIGNED_BYTE, image->pixels);
 				SDL_FreeSurface(image);
 			}
 		}
@@ -158,12 +158,12 @@ void Texture::reload(textureTypeEnum textureType, vector<string> fileNames) {
 					if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGB; else textureFormat = GL_BGR;
 				}
 				if (!initialised) {
-					glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h, fileNames.size(),
-							0, textureFormat, GL_UNSIGNED_BYTE, NULL);
+					glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h,
+							fileNames.size(), 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
 					initialised = true;
 				}
-				glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, image->w, image->h, 1, textureFormat, GL_UNSIGNED_BYTE,
-						image->pixels);
+				glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, image->w, image->h, 1, textureFormat,
+						GL_UNSIGNED_BYTE, image->pixels);
 				SDL_FreeSurface(image);
 			}
 		}

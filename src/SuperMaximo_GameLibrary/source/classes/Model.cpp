@@ -287,12 +287,14 @@ void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage,
 			if (lowerCase(leftStr(objText[i], 2)) == "vt") {
 				vertex coord;
 				string vertStr = rightStr(objText[i], objText[i].size()-3);
-				while ((leftStr(vertStr, 1) == " ") || (leftStr(vertStr, 1)) == "\t") rightStr(&vertStr, vertStr.size()-1);
+				while ((leftStr(vertStr, 1) == " ") || (leftStr(vertStr, 1)) == "\t")
+					rightStr(&vertStr, vertStr.size()-1);
 
 				int j = vertStr.find(" ");
 				coord.x  = strtof(leftStr(vertStr, j).c_str(), NULL);
 				rightStr(&vertStr, vertStr.size()-(j+1));
-				while ((leftStr(vertStr, 1) == " ") || (leftStr(vertStr, 1)) == "\t") rightStr(&vertStr, vertStr.size()-1);
+				while ((leftStr(vertStr, 1) == " ") || (leftStr(vertStr, 1)) == "\t")
+					rightStr(&vertStr, vertStr.size()-1);
 
 				j = vertStr.find(" ");
 				if (j == -1) coord.y = strtof(vertStr.c_str(), NULL);
@@ -301,17 +303,20 @@ void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage,
 			} else if (lowerCase(leftStr(objText[i], 2)) == "v ") {
 				vertex coord;
 				string vertStr = rightStr(objText[i], objText[i].size()-2);
-				while ((leftStr(vertStr, 1) == " ") || (leftStr(vertStr, 1)) == "\t") rightStr(&vertStr, vertStr.size()-1);
+				while ((leftStr(vertStr, 1) == " ") || (leftStr(vertStr, 1)) == "\t")
+					rightStr(&vertStr, vertStr.size()-1);
 
 				int j = vertStr.find(" ");
 				coord.x = strtof(leftStr(vertStr, j).c_str(), NULL);
 				rightStr(&vertStr, vertStr.size()-(j+1));
-				while ((leftStr(vertStr, 1) == " ") || (leftStr(vertStr, 1)) == "\t") rightStr(&vertStr, vertStr.size()-1);
+				while ((leftStr(vertStr, 1) == " ") || (leftStr(vertStr, 1)) == "\t")
+					rightStr(&vertStr, vertStr.size()-1);
 
 				j = vertStr.find(" ");
 				coord.y = strtof(leftStr(vertStr, j).c_str(), NULL);
 				rightStr(&vertStr, vertStr.size()-(j+1));
-				while ((leftStr(vertStr, 1) == " ") || (leftStr(vertStr, 1)) == "\t") rightStr(&vertStr, vertStr.size()-1);
+				while ((leftStr(vertStr, 1) == " ") || (leftStr(vertStr, 1)) == "\t")
+					rightStr(&vertStr, vertStr.size()-1);
 
 				coord.z = strtof(vertStr.c_str(), NULL);
 				vertices.push_back(coord);
@@ -612,8 +617,8 @@ void Model::loadSmm(string path, string fileName, bufferUsageEnum bufferUsage) {
 					glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 					glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 					glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_GENERATE_MIPMAP, GL_TRUE);
-					glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h, totalMaterials,
-					0, textureFormat, GL_UNSIGNED_BYTE, NULL);
+					glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h,
+					totalMaterials, 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
 				}
 				//glGenTextures(1, &newMaterial.texture);
 				//glBindTexture(GL_TEXTURE_2D, newMaterial.texture);
@@ -624,8 +629,8 @@ void Model::loadSmm(string path, string fileName, bufferUsageEnum bufferUsage) {
 				 * GL_GENERATE_MIPMAP if >= OpenGL 3
 				//glTexImage2D(GL_TEXTURE_2D, 0, image->format->BytesPerPixel, image->w, image->h, 0, textureFormat,
 				 * GL_UNSIGNED_BYTE, image->pixels);
-				glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, image->w, image->h, 1, textureFormat, GL_UNSIGNED_BYTE,
-					image->pixels);
+				glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, image->w, image->h, 1, textureFormat,
+				GL_UNSIGNED_BYTE, image->pixels);
 				SDL_FreeSurface(image);
 				newMaterial.textureId = i;
 			}
@@ -764,7 +769,8 @@ void Model::loadSms(string fileName) {
 	}
 
 	for (unsigned i = 0; i < triangles_.size(); i++) {
-		if (triangles_[i].boneId > -1) triangles_[i].pBone = bones_[triangles_[i].boneId]; else triangles_[i].pBone = NULL;
+		if (triangles_[i].boneId > -1) triangles_[i].pBone = bones_[triangles_[i].boneId];
+		else triangles_[i].pBone = NULL;
 	}*/
 }
 
@@ -1145,9 +1151,12 @@ void Model::calculateHitbox(bone * pBone, matrix4d matrix) {
 	float lLowerBound = point[0].x, lUpperBound = point[0].x, wLowerBound = point[0].z,
 		wUpperBound = point[0].z, hLowerBound = point[0].y, hUpperBound = point[0].y;
 	for (short i = 0; i < 8; i++) {
-		if (point[i].x < lLowerBound) lLowerBound = point[i].x; else if (point[i].x > lUpperBound) lUpperBound = point[i].x;
-		if (point[i].z < wLowerBound) wLowerBound = point[i].z; else if (point[i].z > wUpperBound)	wUpperBound = point[i].z;
-		if (point[i].y < hLowerBound) hLowerBound = point[i].y; else if (point[i].y > hUpperBound) hUpperBound = point[i].y;
+		if (point[i].x < lLowerBound) lLowerBound = point[i].x;
+		else if (point[i].x > lUpperBound) lUpperBound = point[i].x;
+		if (point[i].z < wLowerBound) wLowerBound = point[i].z;
+		else if (point[i].z > wUpperBound)	wUpperBound = point[i].z;
+		if (point[i].y < hLowerBound) hLowerBound = point[i].y;
+		else if (point[i].y > hUpperBound) hUpperBound = point[i].y;
 	}
 	pBone->hitbox.rl = lUpperBound-lLowerBound;
 	pBone->hitbox.rw = wUpperBound-wLowerBound;
@@ -1262,7 +1271,8 @@ void Model::setBoneRotationsFromAnimation(unsigned animationId, float frame, bon
 		pBone->zRot = pBone->animations[animationId].frames[index].zRot;
 	}
 
-	for (unsigned i = 0; i < pBone->child.size(); i++) setBoneRotationsFromAnimation(animationId, frame, pBone->child[i]);
+	for (unsigned i = 0; i < pBone->child.size(); i++)
+		setBoneRotationsFromAnimation(animationId, frame, pBone->child[i]);
 }
 
 string Model::name() {

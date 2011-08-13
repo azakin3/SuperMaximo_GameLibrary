@@ -43,7 +43,8 @@ Object::Object(string newName, float destX, float destY, float destZ, Sprite * n
 
 Object::Object(string newName, float destX, float destY, float destZ, Model * newModel) {
 	name_ = newName, x_ = destX, y_ = destY, z_ = destZ, model_ = newModel, currentAnimationId = nextAnimationId = 0;
-	xRotation_ = 0.0f, yRotation_ = 0.0f, zRotation_ = 0.0f, xScale_ = 1.0f, yScale_ = 1.0f, zScale_= 1.0f, alpha_ = 1.0f;
+	xRotation_ = 0.0f, yRotation_ = 0.0f, zRotation_ = 0.0f, xScale_ = 1.0f, yScale_ = 1.0f, zScale_= 1.0f;
+	alpha_ = 1.0f;
 	hasModel_ = true;
 	frame_ = 1.0f;
 	boundShader_ = NULL;
@@ -197,7 +198,9 @@ void Object::calcZRotatedDimensions() {
 }
 
 void Object::scale(float xAmount, float yAmount, float zAmount, bool relative, bool recalculateDimensions) {
-	if (relative) xScale_ += xAmount*compensation(), yScale_ += yAmount*compensation(), zScale_ += zAmount*compensation();
+	if (relative) xScale_ += xAmount*compensation(),
+			yScale_ += yAmount*compensation(),
+			zScale_ += zAmount*compensation();
 		else xScale_ = xAmount, yScale_ = yAmount, zScale_ = zAmount;
 	width_ *= xScale_, height_*= yScale_, originX *= xScale_, originY *= yScale_;
 	if (recalculateDimensions) calcZRotatedDimensions();
@@ -301,7 +304,8 @@ float Object::frame() {
 				else if (frame_ > sprite_->frames) frame_ = start+((frame_-1.0f)-sprite_->frames);
 		} else if (start > finish) {
 			frame_ -= compensation();
-			if (frame_ < 0.0f) frame_ = finish+(frame_+1.0f); else if (frame_ < start) frame_ = finish+((frame_-start)+1.0f);
+			if (frame_ < 0.0f) frame_ = finish+(frame_+1.0f);
+			else if (frame_ < start) frame_ = finish+((frame_-start)+1.0f);
 		}
 	}
 }*/
@@ -349,17 +353,20 @@ void Object::setInterpolation(int startFrame, unsigned animation1Id, int endFram
 				float diff, diff1 = nextKeyFrame->boneData[i].xRot-thisKeyFrame->boneData[i].xRot,
 					diff2 = 360.0f-nextKeyFrame->boneData[i].xRot;
 				if (abs(diff1) < abs(diff2)) diff = diff1; else diff = diff2;
-				fakeKeyFrame->boneData[i].xRot = thisKeyFrame->boneData[i].xRot+((diff/(float)stepDiff)*(float)tempFrame);
+				fakeKeyFrame->boneData[i].xRot
+				= thisKeyFrame->boneData[i].xRot+((diff/(float)stepDiff)*(float)tempFrame);
 
 				diff1 = nextKeyFrame->boneData[i].yRot-thisKeyFrame->boneData[i].yRot,
 					diff2 = 360.0f-nextKeyFrame->boneData[i].yRot;
 				if (abs(diff1) < abs(diff2)) diff = diff1; else diff = diff2;
-				fakeKeyFrame->boneData[i].yRot = thisKeyFrame->boneData[i].yRot+((diff/(float)stepDiff)*(float)tempFrame);
+				fakeKeyFrame->boneData[i].yRot
+				= thisKeyFrame->boneData[i].yRot+((diff/(float)stepDiff)*(float)tempFrame);
 
 				diff1 = nextKeyFrame->boneData[i].zRot-thisKeyFrame->boneData[i].zRot,
 					diff2 = 360.0f-nextKeyFrame->boneData[i].zRot;
 				if (abs(diff1) < abs(diff2)) diff = diff1; else diff = diff2;
-				fakeKeyFrame->boneData[i].zRot = thisKeyFrame->boneData[i].zRot+((diff/(float)stepDiff)*(float)tempFrame);
+				fakeKeyFrame->boneData[i].zRot
+				= thisKeyFrame->boneData[i].zRot+((diff/(float)stepDiff)*(float)tempFrame);
 			}
 		}
 	}
@@ -520,7 +527,7 @@ bool Object::boxCollision(Object * other, bool allStages) {
 			if ((pointX >= (other->x_-other->originX)*(other->x_-other->originX)) &&
 					(pointX <= ((other->x_-other->originX)+other->width_)*(other->x_-other->originX)+other->width_)) {
 				if ((pointY >= (other->y_-other->originY)*(other->y_-other->originY)) &&
-						(pointY <= ((other->y_-other->originY)+other->height_)*((other->y_-other->originY)+other->height_)))
+					(pointY <= ((other->y_-other->originY)+other->height_)*((other->y_-other->originY)+other->height_)))
 					return true;
 			}
 		}

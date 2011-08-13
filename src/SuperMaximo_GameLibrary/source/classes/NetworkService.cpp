@@ -160,8 +160,8 @@ int NetworkService::checkForNewClient(bool useUDP) {
 					serverTCPSockets[i] = SDLNet_TCP_Accept(serverTCPSocket);
 					if (serverTCPSockets[i] != NULL) {
 						if (SDLNet_TCP_AddSocket(serverTCPSocketSet, serverTCPSockets[i]) == -1) {
-							cout << "Client TCP socket could not be added to TCP socketset (the socket may be NULL or the"
-									"socketset may be full" << endl;
+							cout << "Client TCP socket could not be added to TCP socketset (the socket may be NULL or"
+									"the socketset may be full" << endl;
 							SDLNet_TCP_Close(serverTCPSockets[i]);
 							serverTCPSockets[i] = NULL;
 						} else newClientID = i;

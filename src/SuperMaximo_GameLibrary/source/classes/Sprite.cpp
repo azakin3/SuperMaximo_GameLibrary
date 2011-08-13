@@ -26,9 +26,9 @@ vector<Sprite*> allSprites[27];
 
 namespace SuperMaximo {
 
-Sprite::Sprite(string newName, string fileName, int imageX, int imageY, int imageWidth, int imageHeight, int aniFrames,
-		unsigned framerate, int newOriginX, int newOriginY, void (*customBufferFunction)(GLuint*, Sprite*, void*),
-		void * customData) {
+Sprite::Sprite(string newName, string fileName, int imageX, int imageY, int imageWidth, int imageHeight,
+		int aniFrames, unsigned framerate, int newOriginX, int newOriginY,
+		void (*customBufferFunction)(GLuint*, Sprite*, void*), void * customData) {
 	name_ = newName;
 	frames = aniFrames;
 	framerate_ = framerate;
@@ -48,8 +48,10 @@ Sprite::Sprite(string newName, string fileName, int imageX, int imageY, int imag
 		} else {
 			if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGB; else textureFormat = GL_BGR;
 		}
-		SDL_Surface * tempSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, rect.w, rect.h, int(image->format->BitsPerPixel),
-				image->format->Rmask, image->format->Gmask, image->format->Bmask, image->format->Amask);
+		SDL_Surface * tempSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, rect.w, rect.h,
+				int(image->format->BitsPerPixel), image->format->Rmask, image->format->Gmask, image->format->Bmask,
+				image->format->Amask);
+
 		SDL_Rect tempRect = rect;
 		for (unsigned i = 0; i < frames; i++) {
 			texture_.push_back(0);
@@ -178,8 +180,8 @@ unsigned Sprite::framerate() {
 	return framerate_;
 }
 
-void Sprite::draw(int x, int y, float depth, float rotation, float xScale, float yScale, float alpha, unsigned frame,
-		Shader * shaderOverride, customDrawFunctionType customDrawFunctionOverride) {
+void Sprite::draw(int x, int y, float depth, float rotation, float xScale, float yScale, float alpha,
+		unsigned frame, Shader * shaderOverride, customDrawFunctionType customDrawFunctionOverride) {
 	Shader * shaderToUse;
 	if (shaderOverride != NULL) shaderToUse = shaderOverride;
 		else if (boundShader_ != NULL) shaderToUse = boundShader_;
@@ -200,7 +202,8 @@ void Sprite::draw(int x, int y, float depth, float rotation, float xScale, float
 	params.alpha = alpha;
 	params.frame = frame;
 
-	if (drawFunctionToUse != NULL) drawFunctionToUse(this, shaderToUse, &params); else defaultDraw(shaderToUse, &params);
+	if (drawFunctionToUse != NULL) drawFunctionToUse(this, shaderToUse, &params);
+		else defaultDraw(shaderToUse, &params);
 
 	if (::boundShader() != NULL) glUseProgram(::boundShader()->program_); else glUseProgram(0);
 }
