@@ -24,7 +24,8 @@ public:
 	Font(std::string newName, std::string fileName, unsigned newSize);
 	~Font();
 	std::string name();
-	void write(std::string text, int x, int y, float depth, bool useCache = true, float rotation = 0.0f, float xScale = 1.0f, float yScale = 1.0f);
+	void write(std::string text, int x, int y, float depth, bool useCache = true, float rotation = 0.0f,
+			float xScale = 1.0f, float yScale = 1.0f);
 	SDL_Surface * writeToSurface(std::string text, float r = 1.0f, float g = 1.0f, float b = 1.0f, bool hq = true);
 	int width(std::string text);
 	int height(std::string text);

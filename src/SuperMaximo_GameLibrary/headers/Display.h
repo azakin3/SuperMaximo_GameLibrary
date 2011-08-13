@@ -174,7 +174,8 @@ struct vec4 {
 };
 
 
-bool initDisplay(unsigned width, unsigned height, unsigned depth, unsigned maxFramerate = 0, bool fullScreen = false, std::string windowTitle = "My Game");
+bool initDisplay(unsigned width, unsigned height, unsigned depth, unsigned maxFramerate = 0, bool fullScreen = false,
+		std::string windowTitle = "My Game");
 void quitDisplay();
 
 unsigned screenWidth();
@@ -218,7 +219,8 @@ void setIdealFramerate(unsigned newIdealFramerate);
 unsigned getIdealFramerate();
 float compensation();
 
-void enableBlending(blendFuncEnum srcBlendFunc = ONE, blendFuncEnum dstBlendFunc = ZERO, blendFuncEquEnum blendFuncEquation = FUNC_ADD);
+void enableBlending(blendFuncEnum srcBlendFunc = ONE, blendFuncEnum dstBlendFunc = ZERO,
+		blendFuncEquEnum blendFuncEquation = FUNC_ADD);
 void disableBlending();
 bool blendingEnabled();
 

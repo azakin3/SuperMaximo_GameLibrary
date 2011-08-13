@@ -59,7 +59,8 @@ public:
 	friend class Model;
 	friend class Font;
 	Shader(std::string newName, std::string vertexShaderFile, std::string fragmentShaderFile, ...);
-	Shader(std::string newName, std::string vertexShaderFile, std::string fragmentShaderFile, std::vector<int> enums, std::vector<char *>attributeNames);
+	Shader(std::string newName, std::string vertexShaderFile, std::string fragmentShaderFile, std::vector<int> enums,
+			std::vector<char *>attributeNames);
 	~Shader();
 	std::string name();
 	void bind();

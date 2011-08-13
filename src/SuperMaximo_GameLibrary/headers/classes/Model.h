@@ -69,12 +69,13 @@ class Model {
 	GLuint vao, vbo, texture;
 	Shader * boundShader_;
 	unsigned framerate_, vertexCount_;
-	void loadObj(std::string path, std::string fileName, bufferUsageEnum bufferUsage = STATIC_DRAW, void (*customBufferFunction)(GLuint*, Model*, void*) = NULL,
-			void * customData = NULL);
+	void loadObj(std::string path, std::string fileName, bufferUsageEnum bufferUsage = STATIC_DRAW,
+			void (*customBufferFunction)(GLuint*, Model*, void*) = NULL, void * customData = NULL);
 	void loadSmm(std::string path, std::string fileName, bufferUsageEnum bufferUsage = STATIC_DRAW);
 	void loadSms(std::string fileName);
 	void loadSma(std::string fileName);
-	void loadSmo(std::string path, std::string fileName, bufferUsageEnum bufferUsage = STATIC_DRAW);//, void (*customBufferFunction)(GLuint*, Model*, void*) = NULL, void * customData = NULL);
+	void loadSmo(std::string path, std::string fileName, bufferUsageEnum bufferUsage = STATIC_DRAW);
+	//, void (*customBufferFunction)(GLuint*, Model*, void*) = NULL, void * customData = NULL);
 	void initBufferObj(bufferUsageEnum bufferUsage);
 	//void initBufferSmo();
 	//void drawObj(Shader * shaderToUse);
@@ -87,13 +88,16 @@ public:
 	friend class Object;
 	friend struct keyFrame;
 	friend struct bone;
-	Model(std::string newName, std::string path, std::string fileName, unsigned framerate = 60, bufferUsageEnum bufferUsage = STATIC_DRAW,
-			void (*customBufferFunction)(GLuint*, Model*, void*) = NULL, void * customData = NULL);
+	Model(std::string newName, std::string path, std::string fileName, unsigned framerate = 60,
+			bufferUsageEnum bufferUsage = STATIC_DRAW, void (*customBufferFunction)(GLuint*, Model*, void*) = NULL,
+			void * customData = NULL);
 	~Model();
 	std::string name();
 	void draw(Object * object, bool skipAnimation = false);//, bool skipHitboxes = false);
-	void draw(float x, float y, float z, float xRotation = 0.0f, float yRotation = 0.0f, float zRotation = 0.0f, float xScale = 1.0f, float yScale = 1.0f,
-			float zScale = 1.0f, float frame = 1.0f, int currentAnimationId = 0, bool skipAnimation = false);//, bool skipHitboxes = false);
+	void draw(float x, float y, float z, float xRotation = 0.0f, float yRotation = 0.0f, float zRotation = 0.0f,
+			float xScale = 1.0f, float yScale = 1.0f, float zScale = 1.0f, float frame = 1.0f,
+			int currentAnimationId = 0, bool skipAnimation = false);
+		//, bool skipHitboxes = false);
 
 	void bindShader(Shader * shader);
 	Shader * boundShader();
@@ -149,8 +153,8 @@ struct bone {
 
 
 Model * model(std::string searchName);
-Model * addModel(std::string newName, std::string path, std::string fileName, bufferUsageEnum bufferUsage = STATIC_DRAW, unsigned framerate = 60,
-		void (*customBufferFunction)(GLuint*, Model*, void*) = NULL, void * customData = NULL);
+Model * addModel(std::string newName, std::string path, std::string fileName, bufferUsageEnum bufferUsage = STATIC_DRAW,
+		unsigned framerate = 60, void (*customBufferFunction)(GLuint*, Model*, void*) = NULL, void * customData = NULL);
 void destroyModel(std::string searchName);
 void destroyAllModels();
 

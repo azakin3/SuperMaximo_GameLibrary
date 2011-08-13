@@ -27,8 +27,9 @@ class Object {
 	Model * model_;
 	bool hasModel_;//, interpolating;
 	unsigned currentAnimationId, nextAnimationId;
-	float x_, y_, z_, xRotation_, yRotation_, zRotation_, xScale_, yScale_, zScale_, width_, height_, alpha_, xRotatedWidth_, yRotatedWidth_, zRotatedWidth_,
-		xRotatedHeight_, yRotatedHeight_, zRotatedHeight_, originX, originY, frame_;
+	float x_, y_, z_, xRotation_, yRotation_, zRotation_, xScale_, yScale_, zScale_, width_, height_, alpha_,
+		xRotatedWidth_, yRotatedWidth_, zRotatedWidth_, xRotatedHeight_, yRotatedHeight_, zRotatedHeight_, originX,
+		originY, frame_;
 	std::string name_;
 	Shader * boundShader_;
 	customDrawFunctionType customDrawFunction;
@@ -88,7 +89,8 @@ public:
 	float frame();
 
 	//void animate(unsigned start, unsigned finish, unsigned animationId = 0);
-	//void setInterpolation(int startFrame, unsigned animation1Id, int endFrame, unsigned animation2Id, unsigned numFramesToTake);
+	//void setInterpolation(int startFrame, unsigned animation1Id, int endFrame, unsigned animation2Id,
+	//	unsigned numFramesToTake);
 	//void setInterpolation();
 
 	void draw(bool skipAnimation = false);//, bool skipHitboxes = false);
@@ -98,7 +100,8 @@ public:
 	bool mouseOverCircle(float extraX = 0, float extraY = 0, float extraZ = 0);
 	bool boxCollision(Object * other, bool allStages = true);
 	bool roughBoxCollision(Object * other);
-	bool circleCollision(Object * other, float extraX1 = 0, float extraY1 = 0, float extraZ1 = 0, float extraX2 = 0, float extraY2 = 0, float extraZ2 = 0);
+	bool circleCollision(Object * other, float extraX1 = 0, float extraY1 = 0, float extraZ1 = 0, float extraX2 = 0,
+			float extraY2 = 0, float extraZ2 = 0);
 
 	/*bool roughHitboxCollision(bone * bone1, bone * bone2);
 	bool hitBoxCollision(bone * bone1, bone * bone2);
