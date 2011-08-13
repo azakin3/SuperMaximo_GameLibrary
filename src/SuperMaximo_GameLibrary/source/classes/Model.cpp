@@ -80,8 +80,8 @@ void bone::box::init() {
 	x = y = z = l = w = h = xRot = yRot = zRot = 0.0f;
 }*/
 
-Model::Model(string newName, string path, string fileName, unsigned framerate, bufferUsageEnum bufferUsage, void (*customBufferFunction)(GLuint*, Model*, void*),
-		void * customData) {
+Model::Model(string newName, string path, string fileName, unsigned framerate, bufferUsageEnum bufferUsage,
+		void (*customBufferFunction)(GLuint*, Model*, void*), void * customData) {
 	name_ = newName;
 	boundShader_ = NULL;
 	framerate_ = framerate;
@@ -90,7 +90,8 @@ Model::Model(string newName, string path, string fileName, unsigned framerate, b
 		case 'o': loadSmo(path, fileName, bufferUsage); break;
 		case 'm': loadSmm(path, fileName, bufferUsage); break;
 		}
-	} else if (lowerCase(rightStr(fileName, 3)) == "obj") loadObj(path, fileName, bufferUsage, customBufferFunction, customData);
+	} else if (lowerCase(rightStr(fileName, 3)) == "obj")
+		loadObj(path, fileName, bufferUsage, customBufferFunction, customData);
 }
 
 Model::~Model() {
@@ -100,7 +101,8 @@ Model::~Model() {
 	glDeleteVertexArrays(1, &vao);
 }
 
-void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage, void (*customBufferFunction)(GLuint*, Model*, void*), void * customData) {
+void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage,
+		void (*customBufferFunction)(GLuint*, Model*, void*), void * customData) {
 	vector<string> objText, mtlText;
 	vector<vertex> vertices, texCoord;
 	ifstream file;
@@ -118,8 +120,10 @@ void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage, v
 	}
 
 	for (unsigned i = 0; i < objText.size(); i++) {
-		while ((leftStr(objText[i], 1) == " ") || (leftStr(objText[i], 1) == "\t")) rightStr(&objText[i], objText[i].size()-1);
-		while ((rightStr(objText[i], 1) == " ") || (rightStr(objText[i], 1) == "\t") || (*(rightStr(objText[i], 1).c_str()) == 13)) leftStr(&objText[i], objText[i].size()-1);
+		while ((leftStr(objText[i], 1) == " ") || (leftStr(objText[i], 1) == "\t"))
+			rightStr(&objText[i], objText[i].size()-1);
+		while ((rightStr(objText[i], 1) == " ") || (rightStr(objText[i], 1) == "\t")
+				|| (*(rightStr(objText[i], 1).c_str()) == 13)) leftStr(&objText[i], objText[i].size()-1);
 	}
 	string mtlFileName;
 	for (unsigned i = 0; i < objText.size(); i++) {
@@ -140,8 +144,10 @@ void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage, v
 	}
 
 	for (unsigned i = 0; i < mtlText.size(); i++) {
-		while ((leftStr(mtlText[i], 1) == " ") || (leftStr(mtlText[i], 1) == "\t")) rightStr(&mtlText[i], mtlText[i].size()-1);
-		while ((rightStr(mtlText[i], 1) == " ") || (rightStr(mtlText[i], 1) == "\t") || (*(rightStr(mtlText[i], 1).c_str()) == 13)) leftStr(&mtlText[i], mtlText[i].size()-1);
+		while ((leftStr(mtlText[i], 1) == " ") || (leftStr(mtlText[i], 1) == "\t"))
+			rightStr(&mtlText[i], mtlText[i].size()-1);
+		while ((rightStr(mtlText[i], 1) == " ") || (rightStr(mtlText[i], 1) == "\t")
+				|| (*(rightStr(mtlText[i], 1).c_str()) == 13)) leftStr(&mtlText[i], mtlText[i].size()-1);
 	}
 	bool initialised = false;
 	unsigned totalMaterials = 0;
@@ -259,10 +265,14 @@ void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage, v
 						glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
 						glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 						glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-						if (openGlVersion() >= 3.0f) glGenerateMipmap(GL_TEXTURE_2D_ARRAY); else glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_GENERATE_MIPMAP, GL_TRUE);
-						glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h, totalMaterials, 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
+						if (openGlVersion() >= 3.0f) glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+							else glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_GENERATE_MIPMAP, GL_TRUE);
+
+						glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h,
+								totalMaterials, 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
 					}
-					glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, materials_.size(), image->w, image->h, 1, textureFormat, GL_UNSIGNED_BYTE, image->pixels);
+					glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, materials_.size(), image->w, image->h, 1,
+							textureFormat, GL_UNSIGNED_BYTE, image->pixels);
 					SDL_FreeSurface(image);
 					newMaterial.hasTexture = true;
 				}
@@ -381,14 +391,16 @@ void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage, v
 
 	vertexNormalAssociations.reserve(vertices.size());
 	for (unsigned i = 0; i < vertices.size(); i++) {
-		vertexNormalAssociations.push_back((vertexNormalAssoication){(vec3){{vertices[i].x}, {vertices[i].y}, {vertices[i].z}}});
+		vertexNormalAssociations.push_back((vertexNormalAssoication){
+			(vec3){{vertices[i].x}, {vertices[i].y}, {vertices[i].z}}});
 	}
 
 	for (unsigned i = 0; i < triangles_.size(); i++) {
 		for (short j = 0; j < 3; j++) {
 			for (unsigned k = 0; k < vertexNormalAssociations.size(); k++) {
-				if ((vertexNormalAssociations[k].vertex.x == triangles_[i].coords[j].x) && (vertexNormalAssociations[k].vertex.y == triangles_[i].coords[j].y) &&
-						(vertexNormalAssociations[k].vertex.z == triangles_[i].coords[j].z)) {
+				if ((vertexNormalAssociations[k].vertex.x == triangles_[i].coords[j].x)
+						&& (vertexNormalAssociations[k].vertex.y == triangles_[i].coords[j].y)
+							&& (vertexNormalAssociations[k].vertex.z == triangles_[i].coords[j].z)) {
 					vertexNormalAssociations[k].verticesToUpdate.push_back(&triangles_[i].coords[j]);
 					vertexNormalAssociations[k].surfaceNormals.push_back(triangles_[i].surfaceNormal());
 					break;
@@ -460,16 +472,26 @@ void Model::loadSmm(string path, string fileName, bufferUsageEnum bufferUsage) {
 	glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, bufferUsage);
 
 	glVertexAttribPointer(VERTEX_ATTRIBUTE, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, 0);
-	glVertexAttribPointer(NORMAL_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*4));
-	glVertexAttribPointer(COLOR0_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*7));
-	glVertexAttribPointer(COLOR1_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*10));
-	glVertexAttribPointer(COLOR2_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*13));
-	glVertexAttribPointer(TEXTURE0_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*16));
-	glVertexAttribPointer(EXTRA0_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*19));
-	glVertexAttribPointer(EXTRA1_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*20));
-	glVertexAttribPointer(EXTRA2_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*21));
-	glVertexAttribPointer(EXTRA3_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*22));
-	glVertexAttribPointer(EXTRA4_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*23));
+	glVertexAttribPointer(NORMAL_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*4));
+	glVertexAttribPointer(COLOR0_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*7));
+	glVertexAttribPointer(COLOR1_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*10));
+	glVertexAttribPointer(COLOR2_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*13));
+	glVertexAttribPointer(TEXTURE0_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*16));
+	glVertexAttribPointer(EXTRA0_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*19));
+	glVertexAttribPointer(EXTRA1_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*20));
+	glVertexAttribPointer(EXTRA2_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*21));
+	glVertexAttribPointer(EXTRA3_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*22));
+	glVertexAttribPointer(EXTRA4_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*23));
 
 	glEnableVertexAttribArray(VERTEX_ATTRIBUTE);
 	glEnableVertexAttribArray(NORMAL_ATTRIBUTE);
@@ -502,10 +524,13 @@ void Model::loadSmm(string path, string fileName, bufferUsageEnum bufferUsage) {
 				glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				if (openGlVersion() >= 3.0f) glGenerateMipmap(GL_TEXTURE_2D_ARRAY); else glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_GENERATE_MIPMAP, GL_TRUE);
-				glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h, textureCount, 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
+				if (openGlVersion() >= 3.0f) glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+					else glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_GENERATE_MIPMAP, GL_TRUE);
+				glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h, textureCount, 0,
+						textureFormat, GL_UNSIGNED_BYTE, NULL);
 			}
-			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, image->w, image->h, 1, textureFormat, GL_UNSIGNED_BYTE, image->pixels);
+			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, image->w, image->h, 1, textureFormat, GL_UNSIGNED_BYTE,
+					image->pixels);
 			SDL_FreeSurface(image);
 		}
 		materials_.push_back((material){"", text[arraySize+2+i]});
@@ -543,7 +568,8 @@ void Model::loadSmm(string path, string fileName, bufferUsageEnum bufferUsage) {
 		}
 		newTriangle.mtlNum = atoi(text[(i*32)+28].c_str());
 		//for (short j = 0; j < 3; j++) newTriangle.sharedCoord[j] = atoi(text[(i*32)+j+29].c_str());
-		//if (atoi(text[(i*32)+32].c_str()) < 0) newTriangle.pBone = NULL; else newTriangle.pBone = bones_[atoi(text[(i*32)+32].c_str())];
+		//if (atoi(text[(i*32)+32].c_str()) < 0) newTriangle.pBone = NULL;
+			 else newTriangle.pBone = bones_[atoi(text[(i*32)+32].c_str())];
 		triangles_.push_back(newTriangle);
 	}
 	for (unsigned i = 0; i < materials_.size(); i++) {
@@ -586,16 +612,20 @@ void Model::loadSmm(string path, string fileName, bufferUsageEnum bufferUsage) {
 					glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 					glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 					glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_GENERATE_MIPMAP, GL_TRUE);
-					glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h, totalMaterials, 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
+					glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h, totalMaterials,
+					0, textureFormat, GL_UNSIGNED_BYTE, NULL);
 				}
 				//glGenTextures(1, &newMaterial.texture);
 				//glBindTexture(GL_TEXTURE_2D, newMaterial.texture);
 				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 				//glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
-				//TODO check for opengl version and use glGenerateMipmap(GL_TEXTURE_2D) after glTexImage2D instead of GL_GENERATE_MIPMAP if >= OpenGL 3
-				//glTexImage2D(GL_TEXTURE_2D, 0, image->format->BytesPerPixel, image->w, image->h, 0, textureFormat, GL_UNSIGNED_BYTE, image->pixels);
-				glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, image->w, image->h, 1, textureFormat, GL_UNSIGNED_BYTE, image->pixels);
+				//TODO check for opengl version and use glGenerateMipmap(GL_TEXTURE_2D) after glTexImage2D instead of
+				 * GL_GENERATE_MIPMAP if >= OpenGL 3
+				//glTexImage2D(GL_TEXTURE_2D, 0, image->format->BytesPerPixel, image->w, image->h, 0, textureFormat,
+				 * GL_UNSIGNED_BYTE, image->pixels);
+				glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, image->w, image->h, 1, textureFormat, GL_UNSIGNED_BYTE,
+					image->pixels);
 				SDL_FreeSurface(image);
 				newMaterial.textureId = i;
 			}
@@ -827,7 +857,7 @@ void Model::loadSma(string fileName) {
 	animations.push_back(newAnimation);*/
 }
 
-void Model::loadSmo(string path, string fileName, bufferUsageEnum bufferUsage) {//, void (*customBufferFunction)(GLuint*, Model*, void*), void * customData) {
+void Model::loadSmo(string path, string fileName, bufferUsageEnum bufferUsage) {
 	vector<string> text;
 	ifstream file;
 	file.open((path+fileName).c_str());
@@ -917,16 +947,26 @@ void Model::initBufferObj(bufferUsageEnum bufferUsage) {
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexArray), vertexArray, bufferUsage);
 	glVertexAttribPointer(VERTEX_ATTRIBUTE, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, 0);
-	glVertexAttribPointer(NORMAL_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*4));
-	glVertexAttribPointer(COLOR0_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*7));
-	glVertexAttribPointer(COLOR1_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*10));
-	glVertexAttribPointer(COLOR2_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*13));
-	glVertexAttribPointer(TEXTURE0_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*16));
-	glVertexAttribPointer(EXTRA0_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*19));
-	glVertexAttribPointer(EXTRA1_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*20));
-	glVertexAttribPointer(EXTRA2_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*21));
-	glVertexAttribPointer(EXTRA3_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*22));
-	glVertexAttribPointer(EXTRA4_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, (const GLvoid*)(sizeof(GLfloat)*23));
+	glVertexAttribPointer(NORMAL_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*4));
+	glVertexAttribPointer(COLOR0_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*7));
+	glVertexAttribPointer(COLOR1_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*10));
+	glVertexAttribPointer(COLOR2_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*13));
+	glVertexAttribPointer(TEXTURE0_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*16));
+	glVertexAttribPointer(EXTRA0_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*19));
+	glVertexAttribPointer(EXTRA1_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*20));
+	glVertexAttribPointer(EXTRA2_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*21));
+	glVertexAttribPointer(EXTRA3_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*22));
+	glVertexAttribPointer(EXTRA4_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*23));
 
 	glEnableVertexAttribArray(VERTEX_ATTRIBUTE);
 	glEnableVertexAttribArray(NORMAL_ATTRIBUTE);
@@ -1011,15 +1051,24 @@ void Model::initBufferObj(bufferUsageEnum bufferUsage) {
 	}
 
 	glVertexAttribPointer(VERTEX_ATTRIBUTE, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23, 0);
-	glVertexAttribPointer(NORMAL_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23, (const GLvoid*)(sizeof(GLfloat)*4));
-	glVertexAttribPointer(COLOR0_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23, (const GLvoid*)(sizeof(GLfloat)*7));
-	glVertexAttribPointer(COLOR1_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23, (const GLvoid*)(sizeof(GLfloat)*10));
-	glVertexAttribPointer(COLOR2_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23, (const GLvoid*)(sizeof(GLfloat)*13));
-	glVertexAttribPointer(TEXTURE0_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23, (const GLvoid*)(sizeof(GLfloat)*16));
-	glVertexAttribPointer(EXTRA0_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23, (const GLvoid*)(sizeof(GLfloat)*19));
-	glVertexAttribPointer(EXTRA1_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23, (const GLvoid*)(sizeof(GLfloat)*20));
-	glVertexAttribPointer(EXTRA2_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23, (const GLvoid*)(sizeof(GLfloat)*21));
-	glVertexAttribPointer(EXTRA3_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23, (const GLvoid*)(sizeof(GLfloat)*22));
+	glVertexAttribPointer(NORMAL_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23,
+	(const GLvoid*)(sizeof(GLfloat)*4));
+	glVertexAttribPointer(COLOR0_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23,
+	(const GLvoid*)(sizeof(GLfloat)*7));
+	glVertexAttribPointer(COLOR1_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23,
+	(const GLvoid*)(sizeof(GLfloat)*10));
+	glVertexAttribPointer(COLOR2_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23,
+	(const GLvoid*)(sizeof(GLfloat)*13));
+	glVertexAttribPointer(TEXTURE0_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23,
+	(const GLvoid*)(sizeof(GLfloat)*16));
+	glVertexAttribPointer(EXTRA0_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23,
+	(const GLvoid*)(sizeof(GLfloat)*19));
+	glVertexAttribPointer(EXTRA1_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23,
+	(const GLvoid*)(sizeof(GLfloat)*20));
+	glVertexAttribPointer(EXTRA2_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23,
+	(const GLvoid*)(sizeof(GLfloat)*21));
+	glVertexAttribPointer(EXTRA3_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23,
+	(const GLvoid*)(sizeof(GLfloat)*22));
 
 	glEnableVertexAttribArray(VERTEX_ATTRIBUTE);
 	glEnableVertexAttribArray(NORMAL_ATTRIBUTE);
@@ -1093,8 +1142,8 @@ void Model::calculateHitbox(bone * pBone, matrix4d matrix) {
 	nz = -pBone->hitbox.w/2.0f;
 	point[7] = calculatePoints(nx, ny, nz, matrix);
 
-	float lLowerBound = point[0].x, lUpperBound = point[0].x, wLowerBound = point[0].z, wUpperBound = point[0].z, hLowerBound = point[0].y,
-			hUpperBound = point[0].y;
+	float lLowerBound = point[0].x, lUpperBound = point[0].x, wLowerBound = point[0].z,
+		wUpperBound = point[0].z, hLowerBound = point[0].y, hUpperBound = point[0].y;
 	for (short i = 0; i < 8; i++) {
 		if (point[i].x < lLowerBound) lLowerBound = point[i].x; else if (point[i].x > lUpperBound) lUpperBound = point[i].x;
 		if (point[i].z < wLowerBound) wLowerBound = point[i].z; else if (point[i].z > wUpperBound)	wUpperBound = point[i].z;
@@ -1187,10 +1236,16 @@ void Model::setBoneRotationsFromAnimation(unsigned animationId, float frame, bon
 			previousFrame = &pBone->animations[animationId].frames[i-1];
 			nextFrame = &pBone->animations[animationId].frames[i];
 
-			float xDiff, yDiff, zDiff, xDiff1 = nextFrame->xRot-previousFrame->xRot, yDiff1 = nextFrame->yRot-previousFrame->yRot,
-					zDiff1 = nextFrame->zRot-previousFrame->zRot, xDiff2 = (360.0f-abs(previousFrame->xRot))-abs(nextFrame->xRot),
-					yDiff2 = (360.0f-abs(previousFrame->yRot))-abs(nextFrame->yRot), zDiff2 = (360.0f-abs(previousFrame->zRot))-abs(nextFrame->zRot),
-					stepDiff = nextFrame->step-previousFrame->step;
+			float xDiff, yDiff, zDiff,
+				xDiff1 = nextFrame->xRot-previousFrame->xRot,
+				yDiff1 = nextFrame->yRot-previousFrame->yRot,
+				zDiff1 = nextFrame->zRot-previousFrame->zRot,
+
+				xDiff2 = (360.0f-abs(previousFrame->xRot))-abs(nextFrame->xRot),
+				yDiff2 = (360.0f-abs(previousFrame->yRot))-abs(nextFrame->yRot),
+				zDiff2 = (360.0f-abs(previousFrame->zRot))-abs(nextFrame->zRot),
+
+				stepDiff = nextFrame->step-previousFrame->step;
 
 			xDiff = (abs(xDiff1) < xDiff2) ? xDiff1 : ((previousFrame->xRot < 0.0f) ? -xDiff2 : xDiff2);
 			yDiff = (abs(yDiff1) < yDiff2) ? yDiff1 : ((previousFrame->yRot < 0.0f) ? -yDiff2 : yDiff2);
@@ -1214,8 +1269,8 @@ string Model::name() {
 	return name_;
 }
 
-void Model::draw(float x, float y, float z, float xRotation, float yRotation, float zRotation, float xScale, float yScale, float zScale, float frame,
-		int currentAnimationId, bool skipAnimation) {//, bool skipHitboxes) {
+void Model::draw(float x, float y, float z, float xRotation, float yRotation, float zRotation, float xScale,
+		float yScale, float zScale, float frame, int currentAnimationId, bool skipAnimation) {
 	Shader * shaderToUse;
 	if (boundShader_ != NULL) shaderToUse = boundShader_; else shaderToUse = ::boundShader();
 
@@ -1273,17 +1328,23 @@ void Model::draw(float x, float y, float z, float xRotation, float yRotation, fl
 							int stepDiff = nextKeyFrame->step-thisKeyFrame->step;
 
 							for (unsigned i = 0; i < bones_.size(); i++) {
-								float diff, diff1 = nextKeyFrame->boneData[i].xRot-thisKeyFrame->boneData[i].xRot, diff2 = 360-nextKeyFrame->boneData[i].xRot;
+								float diff, diff1 = nextKeyFrame->boneData[i].xRot-thisKeyFrame->boneData[i].xRot,
+								diff2 = 360-nextKeyFrame->boneData[i].xRot;
 								if (abs(diff1) < abs(diff2)) diff = diff1; else diff = diff2;
-								bones_[thisKeyFrame->boneData[i].boneId]->xRot = thisKeyFrame->boneData[i].xRot+((diff/(float)stepDiff)*(float)tempFrame);
+								bones_[thisKeyFrame->boneData[i].boneId]->xRot
+									= thisKeyFrame->boneData[i].xRot+((diff/(float)stepDiff)*(float)tempFrame);
 
-								diff1 = nextKeyFrame->boneData[i].yRot-thisKeyFrame->boneData[i].yRot, diff2 = 360-nextKeyFrame->boneData[i].yRot;
+								diff1 = nextKeyFrame->boneData[i].yRot-thisKeyFrame->boneData[i].yRot,
+								diff2 = 360-nextKeyFrame->boneData[i].yRot;
 								if (abs(diff1) < abs(diff2)) diff = diff1; else diff = diff2;
-								bones_[thisKeyFrame->boneData[i].boneId]->yRot = thisKeyFrame->boneData[i].yRot+((diff/(float)stepDiff)*(float)tempFrame);
+								bones_[thisKeyFrame->boneData[i].boneId]->yRot
+									= thisKeyFrame->boneData[i].yRot+((diff/(float)stepDiff)*(float)tempFrame);
 
-								diff1 = nextKeyFrame->boneData[i].zRot-thisKeyFrame->boneData[i].zRot, diff2 = 360-nextKeyFrame->boneData[i].zRot;
+								diff1 = nextKeyFrame->boneData[i].zRot-thisKeyFrame->boneData[i].zRot,
+								diff2 = 360-nextKeyFrame->boneData[i].zRot;
 								if (abs(diff1) < abs(diff2)) diff = diff1; else diff = diff2;
-								bones_[thisKeyFrame->boneData[i].boneId]->zRot = thisKeyFrame->boneData[i].zRot+((diff/(float)stepDiff)*(float)tempFrame);
+								bones_[thisKeyFrame->boneData[i].boneId]->zRot
+									= thisKeyFrame->boneData[i].zRot+((diff/(float)stepDiff)*(float)tempFrame);
 							}
 						}
 					}
@@ -1298,7 +1359,8 @@ void Model::draw(float x, float y, float z, float xRotation, float yRotation, fl
 
 void Model::draw(Object * object, bool skipAnimation) {//, bool skipHitboxes) {
 	Shader * shaderToUse;
-	if (object->boundShader_ != NULL) shaderToUse = object->boundShader_; else if (boundShader_ != NULL) shaderToUse = boundShader_; else shaderToUse = ::boundShader();
+	if (object->boundShader_ != NULL) shaderToUse = object->boundShader_;
+		else if (boundShader_ != NULL) shaderToUse = boundShader_; else shaderToUse = ::boundShader();
 
 	if (shaderToUse != NULL) {
 		glUseProgram(shaderToUse->program_);
@@ -1351,7 +1413,8 @@ string Model::boneName(unsigned boneId) {
 
 int Model::animationId(string searchName) {
 	if (bones_.size() > 0) {
-		for (unsigned i = 0; i < bones_.front()->animations.size(); i++) if (bones_.front()->animations[i].name == searchName) return i;
+		for (unsigned i = 0; i < bones_.front()->animations.size(); i++)
+			if (bones_.front()->animations[i].name == searchName) return i;
 	}
 	return -1;
 }
@@ -1404,8 +1467,8 @@ Model * model(string searchName) {
 	return returnModel;
 }
 
-Model * addModel(string newName, string path, string fileName, unsigned framerate, bufferUsageEnum bufferUsage, void (*customBufferFunction)(GLuint*, Model*, void*),
-		void * customData) {
+Model * addModel(string newName, string path, string fileName, unsigned framerate, bufferUsageEnum bufferUsage,
+		void (*customBufferFunction)(GLuint*, Model*, void*), void * customData) {
 	int letter = numCharInAlphabet(newName[0]);
 	Model * newModel = new Model(newName, path, fileName, framerate, bufferUsage, customBufferFunction, customData);
 	allModels[letter].push_back(newModel);

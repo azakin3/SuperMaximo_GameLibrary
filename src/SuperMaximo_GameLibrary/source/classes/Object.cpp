@@ -26,8 +26,11 @@ vector<Object*> allObjects[27];
 namespace SuperMaximo {
 
 Object::Object(string newName, float destX, float destY, float destZ, Sprite * newSprite) {
-	name_ = newName, x_ = destX, y_ = destY, z_ = destZ, sprite_ = newSprite, frame_ = 1.0f, currentAnimationId = nextAnimationId = 0;
-	xRotation_ = 0.0f, yRotation_ = 0.0f, zRotation_ = 0.0f, xScale_ = 1.0f, yScale_ = 1.0f, zScale_ = 1.0f, alpha_ = 1.0f, hasModel_ = false;
+	name_ = newName, x_ = destX, y_ = destY, z_ = destZ, sprite_ = newSprite, frame_ = 1.0f;
+	currentAnimationId = nextAnimationId = 0;
+	xRotation_ = 0.0f, yRotation_ = 0.0f, zRotation_ = 0.0f, xScale_ = 1.0f, yScale_ = 1.0f, zScale_ = 1.0f;
+	alpha_ = 1.0f, hasModel_ = false;
+
 	if (sprite_ != NULL) {
 		width_ = sprite_->rect.w, height_ = sprite_->rect.h, originX = sprite_->originX, originY = sprite_->originY;
 	}
@@ -40,7 +43,8 @@ Object::Object(string newName, float destX, float destY, float destZ, Sprite * n
 
 Object::Object(string newName, float destX, float destY, float destZ, Model * newModel) {
 	name_ = newName, x_ = destX, y_ = destY, z_ = destZ, model_ = newModel, currentAnimationId = nextAnimationId = 0;
-	xRotation_ = 0.0f, yRotation_ = 0.0f, zRotation_ = 0.0f, xScale_ = 1.0f, yScale_ = 1.0f, zScale_= 1.0f, alpha_ = 1.0f, hasModel_ = true;
+	xRotation_ = 0.0f, yRotation_ = 0.0f, zRotation_ = 0.0f, xScale_ = 1.0f, yScale_ = 1.0f, zScale_= 1.0f, alpha_ = 1.0f;
+	hasModel_ = true;
 	frame_ = 1.0f;
 	boundShader_ = NULL;
 	customDrawFunction = NULL;
@@ -60,7 +64,8 @@ string Object::name() {
 
 void Object::setSprite(Sprite * newSprite) {
 	sprite_ = newSprite;
-	if (sprite_ != NULL) width_ = sprite_->rect.w, height_ = sprite_->rect.h, originX = sprite_->originX, originY = sprite_->originY;
+	if (sprite_ != NULL)
+		width_ = sprite_->rect.w, height_ = sprite_->rect.h, originX = sprite_->originX, originY = sprite_->originY;
 	hasModel_ = false;
 	//if (fakeKeyFrame1 != NULL) delete fakeKeyFrame1;
 	//if (fakeKeyFrame2 != NULL) delete fakeKeyFrame2;
@@ -102,7 +107,8 @@ customDrawFunctionType Object::boundCustomDrawFunction() {
 }
 
 void Object::setPosition(float xAmount, float yAmount, float zAmount, bool relative) {
-	if (relative) x_ += xAmount*compensation(), y_ += yAmount*compensation(), z_ += zAmount*compensation(); else x_ = xAmount, y_ = yAmount, z_ = zAmount;
+	if (relative) x_ += xAmount*compensation(), y_ += yAmount*compensation(), z_ += zAmount*compensation();
+		else x_ = xAmount, y_ = yAmount, z_ = zAmount;
 }
 
 void Object::setPosition(vec2 amount, bool relative) {
@@ -110,7 +116,8 @@ void Object::setPosition(vec2 amount, bool relative) {
 }
 
 void Object::setPosition(vec3 amount, bool relative) {
-	if (relative) x_ += amount.x*compensation(), y_ += amount.y*compensation(), z_ += amount.z*compensation(); else x_ = amount.x, y_ = amount.y, z_ = amount.z;
+	if (relative) x_ += amount.x*compensation(), y_ += amount.y*compensation(), z_ += amount.z*compensation();
+		else x_ = amount.x, y_ = amount.y, z_ = amount.z;
 }
 
 float Object::setX(float amount, bool relative) {
@@ -190,8 +197,8 @@ void Object::calcZRotatedDimensions() {
 }
 
 void Object::scale(float xAmount, float yAmount, float zAmount, bool relative, bool recalculateDimensions) {
-	if (relative) xScale_ += xAmount*compensation(), yScale_ += yAmount*compensation(), zScale_ += zAmount*compensation(); else
-		xScale_ = xAmount, yScale_ = yAmount, zScale_ = zAmount;
+	if (relative) xScale_ += xAmount*compensation(), yScale_ += yAmount*compensation(), zScale_ += zAmount*compensation();
+		else xScale_ = xAmount, yScale_ = yAmount, zScale_ = zAmount;
 	width_ *= xScale_, height_*= yScale_, originX *= xScale_, originY *= yScale_;
 	if (recalculateDimensions) calcZRotatedDimensions();
 }
@@ -209,8 +216,9 @@ float Object::zScale() {
 }
 
 void Object::rotate(float xAmount, float yAmount, float zAmount, bool relative, bool recalculateDimensions) {
-	if (relative) xRotation_ += xAmount*compensation(), yRotation_ += yAmount*compensation(), zRotation_ += zAmount*compensation(); else
-		xRotation_ = xAmount, yRotation_ = yAmount, zRotation_ = zAmount;
+	if (relative) xRotation_ += xAmount*compensation(), yRotation_ += yAmount*compensation(),
+			zRotation_ += zAmount*compensation();
+		else xRotation_ = xAmount, yRotation_ = yAmount, zRotation_ = zAmount;
 	if (xRotation_ >= 360.0f) xRotation_ -= 360.0f; else if (xRotation_ < 0.0f) xRotation_ += 360.0f;
 	if (yRotation_ >= 360.0f) yRotation_ -= 360.0f; else if (yRotation_ < 0.0f) yRotation_ += 360.0f;
 	if (zRotation_ >= 360.0f) zRotation_ -= 360.0f; else if (zRotation_ < 0.0f) zRotation_ += 360.0f;
@@ -257,7 +265,8 @@ void Object::setFrame(float newFrame, bool relative) {
 	if (relative) frame_ += newFrame*compensation(); else frame_ = newFrame;
 	if (hasModel_) {
 		if (model_->bones_.size() > 0) {
-			while (frame_ > model_->bones_.front()->animations[currentAnimationId].length) frame_ -= model_->bones_.front()->animations[currentAnimationId].length;
+			while (frame_ > model_->bones_.front()->animations[currentAnimationId].length)
+				frame_ -= model_->bones_.front()->animations[currentAnimationId].length;
 			while (frame_ < 1.0f) frame_ += (model_->bones_.front()->animations[currentAnimationId].length-1);
 		}
 	} else {
@@ -274,19 +283,22 @@ float Object::frame() {
 	if (hasModel_) {
 		if (model_->bones_.size() > 0) {
 			currentAnimationId = animationId;
-			while (currentAnimationId >= model_->bones_.front()->animations.size()) currentAnimationId -= model_->bones_.front()->animations.size();
+			while (currentAnimationId >= model_->bones_.front()->animations.size())
+				currentAnimationId -= model_->bones_.front()->animations.size();
 			if (start < finish) {
 				frame_ += compensation();
 				if (frame_ > finish) frame_ = start+((frame_-1.0f)-finish);
 			} else if (start > finish) {
 				frame_ -= compensation();
-				if (frame_ < 0.0f) frame_ = finish+(frame_+1.0f); else if (frame_ < start) frame_ = finish+((frame_-start)+1.0f);
+				if (frame_ < 0.0f) frame_ = finish+(frame_+1.0f);
+					else if (frame_ < start) frame_ = finish+((frame_-start)+1.0f);
 			}
 		}
 	} else {
 		if (start < finish) {
 			frame_ += compensation();
-			if (frame_ > finish) frame_ = start+((frame_-1.0f)-finish); else if (frame_ > sprite_->frames) frame_ = start+((frame_-1.0f)-sprite_->frames);
+			if (frame_ > finish) frame_ = start+((frame_-1.0f)-finish);
+				else if (frame_ > sprite_->frames) frame_ = start+((frame_-1.0f)-sprite_->frames);
 		} else if (start > finish) {
 			frame_ -= compensation();
 			if (frame_ < 0.0f) frame_ = finish+(frame_+1.0f); else if (frame_ < start) frame_ = finish+((frame_-start)+1.0f);
@@ -294,7 +306,8 @@ float Object::frame() {
 	}
 }*/
 /*
-void Object::setInterpolation(int startFrame, unsigned animation1Id, int endFrame, unsigned animation2Id, unsigned numFramesToTake) {
+void Object::setInterpolation(int startFrame, unsigned animation1Id, int endFrame, unsigned animation2Id,
+	unsigned numFramesToTake) {
 	if (hasModel_) {
 		interpolating = true;
 		fakeKeyFrame1->step = 0;
@@ -325,22 +338,26 @@ void Object::setInterpolation(int startFrame, unsigned animation1Id, int endFram
 			}
 
 			keyFrame * nextKeyFrame, * thisKeyFrame = &model_->animations[animationId].frames[currentKeyFrame];
-			if (currentKeyFrame+1 < model_->animations[animationId].frames.size()) nextKeyFrame = &model_->animations[animationId].frames[currentKeyFrame+1];
+			if (currentKeyFrame+1 < model_->animations[animationId].frames.size())
+			nextKeyFrame = &model_->animations[animationId].frames[currentKeyFrame+1];
 				else nextKeyFrame = &model_->animations[animationId].frames.front();
 
 			int tempFrame = *frameToUse-thisKeyFrame->step;
 			int stepDiff = nextKeyFrame->step-thisKeyFrame->step;
 
 			for (unsigned i = 0; i < model_->bones_.size(); i++) {
-				float diff, diff1 = nextKeyFrame->boneData[i].xRot-thisKeyFrame->boneData[i].xRot, diff2 = 360.0f-nextKeyFrame->boneData[i].xRot;
+				float diff, diff1 = nextKeyFrame->boneData[i].xRot-thisKeyFrame->boneData[i].xRot,
+					diff2 = 360.0f-nextKeyFrame->boneData[i].xRot;
 				if (abs(diff1) < abs(diff2)) diff = diff1; else diff = diff2;
 				fakeKeyFrame->boneData[i].xRot = thisKeyFrame->boneData[i].xRot+((diff/(float)stepDiff)*(float)tempFrame);
 
-				diff1 = nextKeyFrame->boneData[i].yRot-thisKeyFrame->boneData[i].yRot, diff2 = 360.0f-nextKeyFrame->boneData[i].yRot;
+				diff1 = nextKeyFrame->boneData[i].yRot-thisKeyFrame->boneData[i].yRot,
+					diff2 = 360.0f-nextKeyFrame->boneData[i].yRot;
 				if (abs(diff1) < abs(diff2)) diff = diff1; else diff = diff2;
 				fakeKeyFrame->boneData[i].yRot = thisKeyFrame->boneData[i].yRot+((diff/(float)stepDiff)*(float)tempFrame);
 
-				diff1 = nextKeyFrame->boneData[i].zRot-thisKeyFrame->boneData[i].zRot, diff2 = 360.0f-nextKeyFrame->boneData[i].zRot;
+				diff1 = nextKeyFrame->boneData[i].zRot-thisKeyFrame->boneData[i].zRot,
+					diff2 = 360.0f-nextKeyFrame->boneData[i].zRot;
 				if (abs(diff1) < abs(diff2)) diff = diff1; else diff = diff2;
 				fakeKeyFrame->boneData[i].zRot = thisKeyFrame->boneData[i].zRot+((diff/(float)stepDiff)*(float)tempFrame);
 			}
@@ -374,7 +391,8 @@ bool Object::mouseOverBox() {
 			mouseY_ = mouseY()*mouseX();
 		}
 		if ((mouseX_ >= (x_-originX)*(x_-originX)) && (mouseX_ <= (x_-originX+width_)*(x_-originX+width_))) {
-			if ((mouseY_ >= (y_-originY)*(y_-originY)) && (mouseY_ <= (y_-originY+height_)*(y_-originY+height_))) return true;
+			if ((mouseY_ >= (y_-originY)*(y_-originY)) && (mouseY_ <= (y_-originY+height_)*(y_-originY+height_)))
+				return true;
 		}
 	}
 	return false;
@@ -443,7 +461,8 @@ bool Object::boxCollision(Object * other, bool allStages) {
 				pointY = (pointDistSquared*sin(calc))+y_;
 			}
 			if ((pointX >= (x_-originX)*(x_-originX)) && (pointX <= ((x_-originX)+width_)*((x_-originX)+width_))) {
-				if ((pointY >= (y_-originY)*(y_-originY)) && (pointY <= ((y_-originY)+height_)*((y_-originY)+height_))) return true;
+				if ((pointY >= (y_-originY)*(y_-originY)) && (pointY <= ((y_-originY)+height_)*((y_-originY)+height_)))
+					return true;
 			}
 		}
 		if (!allStages) {
@@ -501,7 +520,8 @@ bool Object::boxCollision(Object * other, bool allStages) {
 			if ((pointX >= (other->x_-other->originX)*(other->x_-other->originX)) &&
 					(pointX <= ((other->x_-other->originX)+other->width_)*(other->x_-other->originX)+other->width_)) {
 				if ((pointY >= (other->y_-other->originY)*(other->y_-other->originY)) &&
-						(pointY <= ((other->y_-other->originY)+other->height_)*((other->y_-other->originY)+other->height_))) return true;
+						(pointY <= ((other->y_-other->originY)+other->height_)*((other->y_-other->originY)+other->height_)))
+					return true;
 			}
 		}
 	}
@@ -518,7 +538,8 @@ bool Object::roughBoxCollision(Object * other) {
 	return true;
 }
 
-bool Object::circleCollision(Object * other, float extraX1, float extraY1, float extraZ1, float extraX2, float extraY2, float extraZ2) {
+bool Object::circleCollision(Object * other, float extraX1, float extraY1, float extraZ1, float extraX2,
+		float extraY2, float extraZ2) {
 	return false;
 }
 /*

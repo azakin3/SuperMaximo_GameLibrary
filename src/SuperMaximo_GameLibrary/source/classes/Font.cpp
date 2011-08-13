@@ -104,7 +104,8 @@ void Font::write(string text, int x, int y, float depth, bool useCache, float ro
 		glBindTexture(GL_TEXTURE_RECTANGLE, tempTexture);
 		glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_RECTANGLE, 0, textSurface->format->BytesPerPixel, w, h, 0, textureFormat, GL_UNSIGNED_BYTE, textSurface->pixels);
+		glTexImage2D(GL_TEXTURE_RECTANGLE, 0, textSurface->format->BytesPerPixel, w, h, 0, textureFormat, GL_UNSIGNED_BYTE,
+				textSurface->pixels);
 
 		GLfloat vertexArray[] = {
 			0.0f, h, 0.0f, 1.0f,
@@ -192,7 +193,8 @@ void Font::cache(string text) {
 	glBindTexture(GL_TEXTURE_RECTANGLE, newRecord.texture);
 	glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_RECTANGLE, 0, textSurface->format->BytesPerPixel, textSurface->w, textSurface->h, 0, textureFormat, GL_UNSIGNED_BYTE, textSurface->pixels);
+	glTexImage2D(GL_TEXTURE_RECTANGLE, 0, textSurface->format->BytesPerPixel, textSurface->w, textSurface->h, 0,
+			textureFormat, GL_UNSIGNED_BYTE, textSurface->pixels);
 
 	GLfloat vertexArray[] = {
 		0.0f, textSurface->h, 0.0f, 1.0f,

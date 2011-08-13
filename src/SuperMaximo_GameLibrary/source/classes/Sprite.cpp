@@ -26,8 +26,9 @@ vector<Sprite*> allSprites[27];
 
 namespace SuperMaximo {
 
-Sprite::Sprite(string newName, string fileName, int imageX, int imageY, int imageWidth, int imageHeight, int aniFrames, unsigned framerate, int newOriginX,
-		int newOriginY, void (*customBufferFunction)(GLuint*, Sprite*, void*), void * customData) {
+Sprite::Sprite(string newName, string fileName, int imageX, int imageY, int imageWidth, int imageHeight, int aniFrames,
+		unsigned framerate, int newOriginX, int newOriginY, void (*customBufferFunction)(GLuint*, Sprite*, void*),
+		void * customData) {
 	name_ = newName;
 	frames = aniFrames;
 	framerate_ = framerate;
@@ -47,8 +48,8 @@ Sprite::Sprite(string newName, string fileName, int imageX, int imageY, int imag
 		} else {
 			if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGB; else textureFormat = GL_BGR;
 		}
-		SDL_Surface * tempSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, rect.w, rect.h, int(image->format->BitsPerPixel), image->format->Rmask, image->format->Gmask,
-				image->format->Bmask, image->format->Amask);
+		SDL_Surface * tempSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, rect.w, rect.h, int(image->format->BitsPerPixel),
+				image->format->Rmask, image->format->Gmask, image->format->Bmask, image->format->Amask);
 		SDL_Rect tempRect = rect;
 		for (unsigned i = 0; i < frames; i++) {
 			texture_.push_back(0);
@@ -67,7 +68,8 @@ Sprite::Sprite(string newName, string fileName, int imageX, int imageY, int imag
 			glBindTexture(GL_TEXTURE_RECTANGLE, texture_[i]);
 			glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexImage2D(GL_TEXTURE_RECTANGLE, 0, tempSurface->format->BytesPerPixel, rect.w, rect.h, 0, textureFormat, GL_UNSIGNED_BYTE, tempSurface->pixels);
+			glTexImage2D(GL_TEXTURE_RECTANGLE, 0, tempSurface->format->BytesPerPixel, rect.w, rect.h, 0, textureFormat,
+					GL_UNSIGNED_BYTE, tempSurface->pixels);
 		}
 		SDL_FreeSurface(tempSurface);
 	}
@@ -81,8 +83,9 @@ Sprite::Sprite(string newName, string fileName, int imageX, int imageY, int imag
 	glBindTexture(GL_TEXTURE_RECTANGLE, 0);
 }
 
-Sprite::Sprite(string newName, SDL_Surface * surface, int imageX, int imageY, int imageWidth, int imageHeight, int aniFrames, unsigned framerate, int newOriginX,
-		int newOriginY, void (*customBufferFunction)(GLuint*, Sprite*, void*), void * customData) {
+Sprite::Sprite(string newName, SDL_Surface * surface, int imageX, int imageY, int imageWidth, int imageHeight,
+		int aniFrames, unsigned framerate, int newOriginX, int newOriginY,
+		void (*customBufferFunction)(GLuint*, Sprite*, void*), void * customData) {
 	name_ = newName;
 	frames = aniFrames;
 	framerate_ = framerate;
@@ -117,7 +120,8 @@ Sprite::Sprite(string newName, SDL_Surface * surface, int imageX, int imageY, in
 		glBindTexture(GL_TEXTURE_RECTANGLE, texture_[i]);
 		glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_RECTANGLE, 0, image->format->BytesPerPixel, rect.w, rect.h, 0, textureFormat, GL_UNSIGNED_BYTE, tempSurface->pixels);
+		glTexImage2D(GL_TEXTURE_RECTANGLE, 0, image->format->BytesPerPixel, rect.w, rect.h, 0, textureFormat,
+				GL_UNSIGNED_BYTE, tempSurface->pixels);
 	}
 	SDL_FreeSurface(tempSurface);
 	boundShader_ = NULL;
@@ -174,14 +178,17 @@ unsigned Sprite::framerate() {
 	return framerate_;
 }
 
-void Sprite::draw(int x, int y, float depth, float rotation, float xScale, float yScale, float alpha, unsigned frame, Shader * shaderOverride,
-		customDrawFunctionType customDrawFunctionOverride) {
+void Sprite::draw(int x, int y, float depth, float rotation, float xScale, float yScale, float alpha, unsigned frame,
+		Shader * shaderOverride, customDrawFunctionType customDrawFunctionOverride) {
 	Shader * shaderToUse;
-	if (shaderOverride != NULL) shaderToUse = shaderOverride; else if (boundShader_ != NULL) shaderToUse = boundShader_; else shaderToUse = ::boundShader();
+	if (shaderOverride != NULL) shaderToUse = shaderOverride;
+		else if (boundShader_ != NULL) shaderToUse = boundShader_;
+			else shaderToUse = ::boundShader();
 
 	customDrawFunctionType drawFunctionToUse;
-	if (customDrawFunctionOverride != NULL) drawFunctionToUse = customDrawFunctionOverride; else if (customDrawFunction != NULL) drawFunctionToUse = customDrawFunction; else
-		drawFunctionToUse = ::boundCustomDrawFunction();
+	if (customDrawFunctionOverride != NULL) drawFunctionToUse = customDrawFunctionOverride;
+		else if (customDrawFunction != NULL) drawFunctionToUse = customDrawFunction;
+			else drawFunctionToUse = ::boundCustomDrawFunction();
 
 	spriteDrawParams params;
 	params.x = x;
@@ -199,8 +206,8 @@ void Sprite::draw(int x, int y, float depth, float rotation, float xScale, float
 }
 
 void Sprite::draw(Object * object) {
-	draw(object->x_, object->y_, object->z_, object->zRotation_, object->xScale_, object->yScale_, object->alpha_, object->frame_, object->boundShader_,
-			object->customDrawFunction);
+	draw(object->x_, object->y_, object->z_, object->zRotation_, object->xScale_, object->yScale_, object->alpha_,
+			object->frame_, object->boundShader_, object->customDrawFunction);
 }
 
 void Sprite::defaultDraw(Shader * shaderToUse, spriteDrawParams * params) {
@@ -306,20 +313,24 @@ Sprite * sprite(string searchName) {
 	return returnSprite;
 }
 
-Sprite * addSprite(string newName, string fileName, int imageX, int imageY, int imageWidth, int imageHeight, int aniFrames, unsigned framerate,
-		int newOriginX, int newOriginY, void (*customBufferFunction)(GLuint*, Sprite*, void*), void * customData) {
+Sprite * addSprite(string newName, string fileName, int imageX, int imageY, int imageWidth, int imageHeight,
+		int aniFrames, unsigned framerate, int newOriginX, int newOriginY,
+		void (*customBufferFunction)(GLuint*, Sprite*, void*), void * customData) {
+
 	int letter = numCharInAlphabet(newName[0]);
-	Sprite * newSprite = new Sprite(newName, fileName, imageX, imageY, imageWidth, imageHeight, aniFrames, framerate, newOriginX, newOriginY, customBufferFunction,
-			customData);
+	Sprite * newSprite = new Sprite(newName, fileName, imageX, imageY, imageWidth, imageHeight, aniFrames, framerate,
+			newOriginX, newOriginY, customBufferFunction, customData);
 	allSprites[letter].push_back(newSprite);
 	return newSprite;
 }
 
-Sprite * addSprite(string newName, SDL_Surface * surface, int imageX, int imageY, int imageWidth, int imageHeight, int aniFrames, unsigned framerate, int newOriginX,
-		int newOriginY, void (*customBufferFunction)(GLuint*, Sprite*, void*), void * customData) {
+Sprite * addSprite(string newName, SDL_Surface * surface, int imageX, int imageY, int imageWidth, int imageHeight,
+		int aniFrames, unsigned framerate, int newOriginX, int newOriginY,
+		void (*customBufferFunction)(GLuint*, Sprite*, void*), void * customData) {
+
 	int letter = numCharInAlphabet(newName[0]);
-	Sprite * newSprite = new Sprite(newName, surface, imageX, imageY, imageWidth, imageHeight, aniFrames, framerate, newOriginX, newOriginY, customBufferFunction,
-			customData);
+	Sprite * newSprite = new Sprite(newName, surface, imageX, imageY, imageWidth, imageHeight, aniFrames, framerate,
+			newOriginX, newOriginY, customBufferFunction, customData);
 	allSprites[letter].push_back(newSprite);
 	return newSprite;
 }

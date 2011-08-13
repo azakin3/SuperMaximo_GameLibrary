@@ -31,8 +31,8 @@ struct joystick {
 };
 
 SDL_Event event;
-bool keys[320], mouseLeft_ = false, mouseRight_ = false, mouseMiddle_ = false, mouseOther_ = false, mouseWheelUp_ = false, mouseWheelDown_ = false,
-		closeClicked_ = false, eventsRefreshed = false;
+bool keys[320], mouseLeft_ = false, mouseRight_ = false, mouseMiddle_ = false, mouseOther_ = false,
+		mouseWheelUp_ = false, mouseWheelDown_ = false, closeClicked_ = false, eventsRefreshed = false;
 int mouseX_, mouseY_, joystickCount_;
 vector <joystick> joysticks;
 
@@ -85,10 +85,14 @@ void refreshEvents() {
 		case SDL_JOYBUTTONUP: joysticks[event.jbutton.which].buttons[event.jbutton.button] = false; break;
 		case SDL_JOYHATMOTION:
 			switch (event.jhat.value) {
-			case SDL_HAT_UP: joysticks[event.jhat.which].dpad[0] = true; joysticks[event.jhat.which].dpad[1] = false; break;
-			case SDL_HAT_DOWN: joysticks[event.jhat.which].dpad[1] = true; joysticks[event.jhat.which].dpad[0] = false; break;
-			case SDL_HAT_LEFT: joysticks[event.jhat.which].dpad[2] = true; joysticks[event.jhat.which].dpad[3] = false; break;
-			case SDL_HAT_RIGHT: joysticks[event.jhat.which].dpad[3] = true; joysticks[event.jhat.which].dpad[2] = false; break;
+			case SDL_HAT_UP: joysticks[event.jhat.which].dpad[0] = true; joysticks[event.jhat.which].dpad[1] = false;
+				break;
+			case SDL_HAT_DOWN: joysticks[event.jhat.which].dpad[1] = true; joysticks[event.jhat.which].dpad[0] = false;
+				break;
+			case SDL_HAT_LEFT: joysticks[event.jhat.which].dpad[2] = true; joysticks[event.jhat.which].dpad[3] = false;
+				break;
+			case SDL_HAT_RIGHT: joysticks[event.jhat.which].dpad[3] = true; joysticks[event.jhat.which].dpad[2] = false;
+				break;
 			case SDL_HAT_CENTERED:
 				joysticks[event.jhat.which].dpad[0] = false;
 				joysticks[event.jhat.which].dpad[1] = false;

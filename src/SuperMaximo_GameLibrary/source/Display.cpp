@@ -27,7 +27,8 @@ SDL_Surface * screen;
 unsigned screenW, screenH, screenD, framerate = 0, maximumFramerate, tickDifference = 1, idealFramerate = 60;
 matrixEnum currentMatrixId;
 matrix4d matrix[IDENTITY_MATRIX+1];
-vector<matrix4d> matrixStack[IDENTITY_MATRIX]; //We don't want a stack for the identity matrix. Make sure IDENTITY_MATRIX enum is last
+vector<matrix4d> matrixStack[IDENTITY_MATRIX]; //We don't want a stack for the identity matrix.
+												//Make sure IDENTITY_MATRIX enum is last
 bool blendingEnabled_ = false, depthTestingEnabled_ = true;;
 Shader * boundShader_ = NULL;
 customDrawFunctionType customDrawFunction = NULL;
@@ -173,7 +174,8 @@ bool vec2::polygonCollision(unsigned vertexCount, ...) {
 	for (unsigned i = 1; i < vertexCount; i++) {
 		if ((vertices[i-1]-(*this)).dotProduct((vertices[i]-vertices[i-1]).perpendicular()) < 0.0f) return false;
 	}
-	if ((vertices[vertexCount-1]-(*this)).dotProduct((vertices[0]-vertices[vertexCount-1]).perpendicular()) < 0.0f) return false;
+	if ((vertices[vertexCount-1]-(*this)).dotProduct((vertices[0]-vertices[vertexCount-1]).perpendicular()) < 0.0f)
+		return false;
 
 	return true;
 }
@@ -182,7 +184,8 @@ bool vec2::polygonCollision(unsigned vertexCount, vec2 * vertices) {
 	for (unsigned i = 1; i < vertexCount; i++) {
 		if ((vertices[i-1]-(*this)).dotProduct((vertices[i]-vertices[i-1]).perpendicular()) < 0.0f) return false;
 	}
-	if ((vertices[vertexCount-1]-(*this)).dotProduct((vertices[0]-vertices[vertexCount-1]).perpendicular()) < 0.0f) return false;
+	if ((vertices[vertexCount-1]-(*this)).dotProduct((vertices[0]-vertices[vertexCount-1]).perpendicular()) < 0.0f)
+		return false;
 
 	return true;
 }
@@ -191,7 +194,8 @@ bool vec2::polygonCollision(unsigned vertexCount, std::vector<vec2> vertices) {
 	for (unsigned i = 1; i < vertexCount; i++) {
 		if ((vertices[i-1]-(*this)).dotProduct((vertices[i]-vertices[i-1]).perpendicular()) < 0.0f) return false;
 	}
-	if ((vertices[vertexCount-1]-(*this)).dotProduct((vertices[0]-vertices[vertexCount-1]).perpendicular()) < 0.0f) return false;
+	if ((vertices[vertexCount-1]-(*this)).dotProduct((vertices[0]-vertices[vertexCount-1]).perpendicular()) < 0.0f)
+		return false;
 
 	return true;
 }
@@ -261,10 +265,12 @@ vec4::operator SuperMaximo::vec3() {
 	return (vec3){{x}, {y}, {z}};
 }
 
-bool initDisplay(unsigned width, unsigned height, unsigned depth, unsigned maxFramerate, bool fullScreen, string windowTitle) {
+bool initDisplay(unsigned width, unsigned height, unsigned depth, unsigned maxFramerate, bool fullScreen,
+		string windowTitle) {
 	if ((width > 0) && (height > 0)) {
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		if (fullScreen) screen = SDL_SetVideoMode(width, height, 32, SDL_OPENGL | SDL_FULLSCREEN); else screen = SDL_SetVideoMode(width, height, 32, SDL_OPENGL);
+		if (fullScreen) screen = SDL_SetVideoMode(width, height, 32, SDL_OPENGL | SDL_FULLSCREEN);
+			else screen = SDL_SetVideoMode(width, height, 32, SDL_OPENGL);
 		if (screen == NULL) {
 			return false;
 		}
@@ -317,7 +323,8 @@ unsigned screenDepth() {
 bool resizeScreen(unsigned width, unsigned height, bool fullScreen) {
 	if ((width > 0) && (height > 0) && (matrixStack[ORTHOGRAPHIC_MATRIX].size() == 1)) {
 		SDL_FreeSurface(screen);
-		if (fullScreen) screen = SDL_SetVideoMode(width, height, 32, SDL_OPENGL | SDL_FULLSCREEN); else screen = SDL_SetVideoMode(width, height, 32, SDL_OPENGL);
+		if (fullScreen) screen = SDL_SetVideoMode(width, height, 32, SDL_OPENGL | SDL_FULLSCREEN);
+			else screen = SDL_SetVideoMode(width, height, 32, SDL_OPENGL);
 		if (screen == NULL) {
 			return false;
 		}

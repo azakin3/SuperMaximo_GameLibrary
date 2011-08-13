@@ -121,7 +121,8 @@ Shader::Shader(string newName, string vertexShaderFile, string fragmentShaderFil
 	}
 }
 
-Shader::Shader(string newName, string vertexShaderFile, string fragmentShaderFile, vector<int> enums, vector<char *>attributeNames) {
+Shader::Shader(string newName, string vertexShaderFile, string fragmentShaderFile, vector<int> enums,
+		vector<char *>attributeNames) {
 	name_ = newName;
 	program_ = (GLuint)NULL;
 	for (short i = 0; i <= EXTRA9_LOCATION; i++) uniformLocation_[i] = -1;
