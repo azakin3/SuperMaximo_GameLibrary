@@ -434,14 +434,13 @@ void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage,
 		for (unsigned j = 0; j < vertexNormalAssociations[i].verticesToUpdate.size(); j++)
 			((vertex*)(vertexNormalAssociations[i].verticesToUpdate[j]))->normal_ = normalTotal;
 	}
+	vertexCount_ = triangles_.size()*3;
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 	if (customBufferFunction == NULL) initBufferObj(bufferUsage); else (*customBufferFunction)(&vbo, this, customData);
 	glBindVertexArray(0);
 	for (char i = 0; i < 16; i++) glDisableVertexAttribArray(i);
-
-	vertexCount_ = triangles_.size()*3;
 }
 
 void Model::loadSmm(string path, string fileName, bufferUsageEnum bufferUsage) {
@@ -478,7 +477,7 @@ void Model::loadSmm(string path, string fileName, bufferUsageEnum bufferUsage) {
 
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, bufferUsage);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*vertexCount_*24, data, bufferUsage);
 
 	glVertexAttribPointer(VERTEX_ATTRIBUTE, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, 0);
 	glVertexAttribPointer(NORMAL_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
@@ -899,7 +898,7 @@ void Model::loadSmo(string path, string fileName, bufferUsageEnum bufferUsage) {
 }
 
 void Model::initBufferObj(bufferUsageEnum bufferUsage) {
-	GLfloat * vertexArray = new (nothrow) GLfloat[triangles_.size()*3*24];
+	GLfloat * vertexArray = new (nothrow) GLfloat[vertexCount_*24];
 	if (vertexArray == NULL) {
 		cout << "Could not allocate memory for buffering the model" << endl;
 		return;
@@ -961,7 +960,7 @@ void Model::initBufferObj(bufferUsageEnum bufferUsage) {
 
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexArray), vertexArray, bufferUsage);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*vertexCount_*24, vertexArray, bufferUsage);
 	glVertexAttribPointer(VERTEX_ATTRIBUTE, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, 0);
 	glVertexAttribPointer(NORMAL_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
 			(const GLvoid*)(sizeof(GLfloat)*4));
