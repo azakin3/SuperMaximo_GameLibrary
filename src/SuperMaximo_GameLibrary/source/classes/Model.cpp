@@ -466,7 +466,11 @@ void Model::loadSmm(string path, string fileName, bufferUsageEnum bufferUsage) {
 
 	vertexCount_ = atoi(text.front().c_str());
 	unsigned arraySize = vertexCount_*24;
-	GLfloat data[arraySize];
+	GLfloat * data = new (nothrow) GLfloat[arraySize];
+	if (data == NULL) {
+		cout << "Could not allocate memory for buffering the model" << endl;
+		return;
+	}
 	for (unsigned i = 0; i < arraySize; i++) data[i] = strtof(text[i+1].c_str(), NULL);
 
 	glGenVertexArrays(1, &vao);
@@ -511,6 +515,7 @@ void Model::loadSmm(string path, string fileName, bufferUsageEnum bufferUsage) {
 	glEnableVertexAttribArray(EXTRA4_ATTRIBUTE);
 
 	glBindVertexArray(0);
+	delete[] data;
 
 	unsigned textureCount = atoi(text[arraySize+1].c_str());
 	bool initialised = false;
@@ -894,7 +899,12 @@ void Model::loadSmo(string path, string fileName, bufferUsageEnum bufferUsage) {
 }
 
 void Model::initBufferObj(bufferUsageEnum bufferUsage) {
-	GLfloat vertexArray[triangles_.size()*3*24];
+	GLfloat * vertexArray = new (nothrow) GLfloat[triangles_.size()*3*24];
+	if (vertexArray == NULL) {
+		cout << "Could not allocate memory for buffering the model" << endl;
+		return;
+	}
+
 	unsigned count = 0;
 	for (unsigned i = 0; i < triangles_.size(); i++) {
 		for (short j = 0; j < 3; j++) {
@@ -986,6 +996,8 @@ void Model::initBufferObj(bufferUsageEnum bufferUsage) {
 	glEnableVertexAttribArray(EXTRA3_ATTRIBUTE);
 	glEnableVertexAttribArray(EXTRA4_ATTRIBUTE);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	delete[] vertexArray;
 }
 
 /*void Model::initBufferSmo() {
