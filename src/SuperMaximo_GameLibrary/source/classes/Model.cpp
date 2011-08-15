@@ -1279,9 +1279,6 @@ void Model::setBoneRotationsFromAnimation(unsigned animationId, float frame, bon
 		pBone->yRot = pBone->animations[animationId].frames[index].yRot;
 		pBone->zRot = pBone->animations[animationId].frames[index].zRot;
 	}
-
-	for (unsigned i = 0; i < pBone->child.size(); i++)
-		setBoneRotationsFromAnimation(animationId, frame, pBone->child[i]);
 }
 
 string Model::name() {
@@ -1310,7 +1307,8 @@ void Model::draw(float x, float y, float z, float xRotation, float yRotation, fl
 			shaderToUse->setUniform16(PROJECTION_LOCATION, getMatrix(PROJECTION_MATRIX));
 
 			if (!skipAnimation && (bones_.size() > 0)) {
-				setBoneRotationsFromAnimation(currentAnimationId, frame, bones_.front());
+				for (unsigned i = 0; i < bones_.size(); i++)
+					setBoneRotationsFromAnimation(currentAnimationId, frame, bones_[i]);
 				matrix4d matrixArray[bones_.size()];
 				getBoneModelviewMatrices(matrixArray, bones_.front());
 				shaderToUse->setUniform16(EXTRA0_LOCATION, (float*)matrixArray, bones_.size());
@@ -1398,7 +1396,8 @@ void Model::draw(Object * object, bool skipAnimation) {//, bool skipHitboxes) {
 			shaderToUse->setUniform16(PROJECTION_LOCATION, getMatrix(PROJECTION_MATRIX));
 
 			if (!skipAnimation && (bones_.size() > 0)) {
-				setBoneRotationsFromAnimation(object->currentAnimationId, object->frame_, bones_.front());
+				for (unsigned i = 0; i < bones_.size(); i++)
+					setBoneRotationsFromAnimation(object->currentAnimationId[i], object->frame_[i], bones_[i]);
 				matrix4d matrixArray[bones_.size()];
 				getBoneModelviewMatrices(matrixArray, bones_.front());
 				shaderToUse->setUniform16(EXTRA0_LOCATION, (float*)matrixArray, bones_.size());

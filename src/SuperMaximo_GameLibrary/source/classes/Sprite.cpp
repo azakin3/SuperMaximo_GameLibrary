@@ -210,7 +210,7 @@ void Sprite::draw(int x, int y, float depth, float rotation, float xScale, float
 
 void Sprite::draw(Object * object) {
 	draw(object->x_, object->y_, object->z_, object->zRotation_, object->xScale_, object->yScale_, object->alpha_,
-			object->frame_, object->boundShader_, object->customDrawFunction);
+			object->frame_.front(), object->boundShader_, object->customDrawFunction);
 }
 
 void Sprite::defaultDraw(Shader * shaderToUse, spriteDrawParams * params) {

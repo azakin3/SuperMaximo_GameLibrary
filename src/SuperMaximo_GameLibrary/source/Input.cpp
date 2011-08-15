@@ -231,6 +231,6 @@ Axis
 0	L Analogue - LEFT : RIGHT
 1	L Analogue - TOP : BOTTOM
 2	L Trigger - positive, R Trigger - minus
-3	R Analogue - TOP : BOTTOM
-4	R Analogue - LEFT : RIGHT
+3	R Analogue - LEFT : RIGHT
+4	R Analogue - TOP : BOTTOM
 */

@@ -26,10 +26,11 @@ class Object {
 	Sprite * sprite_;
 	Model * model_;
 	bool hasModel_;//, interpolating;
-	unsigned currentAnimationId, nextAnimationId;
 	float x_, y_, z_, xRotation_, yRotation_, zRotation_, xScale_, yScale_, zScale_, width_, height_, alpha_,
 		xRotatedWidth_, yRotatedWidth_, zRotatedWidth_, xRotatedHeight_, yRotatedHeight_, zRotatedHeight_, originX,
-		originY, frame_;
+		originY;
+	std::vector<unsigned> currentAnimationId;
+	std::vector<float> frame_;
 	std::string name_;
 	Shader * boundShader_;
 	customDrawFunctionType customDrawFunction;
@@ -84,11 +85,11 @@ public:
 	float setAlpha(float amount, bool relative = false);
 	float alpha();
 
-	void setCurrentAnimation(unsigned animationId);
-	unsigned currentAnimation();
+	void setCurrentAnimation(unsigned animationId, int boneId = -1, bool withChildren = true);
+	unsigned currentAnimation(int boneId = -1);
 
-	void setFrame(float newFrame, bool relative = false);
-	float frame();
+	void setFrame(float newFrame, bool relative = false, int boneId = -1, bool withChildren = true);
+	float frame(int boneId = -1);
 
 	//void animate(unsigned start, unsigned finish, unsigned animationId = 0);
 	//void setInterpolation(int startFrame, unsigned animation1Id, int endFrame, unsigned animation2Id,

@@ -26,8 +26,8 @@ vector<Object*> allObjects[27];
 namespace SuperMaximo {
 
 Object::Object(string newName, float destX, float destY, float destZ, Sprite * newSprite) {
-	name_ = newName, x_ = destX, y_ = destY, z_ = destZ, sprite_ = newSprite, frame_ = 1.0f;
-	currentAnimationId = nextAnimationId = 0;
+	name_ = newName, x_ = destX, y_ = destY, z_ = destZ, sprite_ = newSprite;
+	frame_.push_back(0);
 	xRotation_ = 0.0f, yRotation_ = 0.0f, zRotation_ = 0.0f, xScale_ = 1.0f, yScale_ = 1.0f, zScale_ = 1.0f;
 	alpha_ = 1.0f, hasModel_ = false;
 
@@ -42,11 +42,17 @@ Object::Object(string newName, float destX, float destY, float destZ, Sprite * n
 }
 
 Object::Object(string newName, float destX, float destY, float destZ, Model * newModel) {
-	name_ = newName, x_ = destX, y_ = destY, z_ = destZ, model_ = newModel, currentAnimationId = nextAnimationId = 0;
+	name_ = newName, x_ = destX, y_ = destY, z_ = destZ, model_ = newModel;
+
+	if (model_ != NULL) {
+		for (unsigned i = 0; i < model_->bones_.size(); i++) {
+			frame_.push_back(0);
+			currentAnimationId.push_back(0);
+		}
+	}
 	xRotation_ = 0.0f, yRotation_ = 0.0f, zRotation_ = 0.0f, xScale_ = 1.0f, yScale_ = 1.0f, zScale_= 1.0f;
 	alpha_ = 1.0f;
 	hasModel_ = true;
-	frame_ = 1.0f;
 	boundShader_ = NULL;
 	customDrawFunction = NULL;
 	//fakeKeyFrame1 = new keyFrame;
@@ -68,6 +74,10 @@ void Object::setSprite(Sprite * newSprite) {
 	if (sprite_ != NULL)
 		width_ = sprite_->rect.w, height_ = sprite_->rect.h, originX = sprite_->originX, originY = sprite_->originY;
 	hasModel_ = false;
+
+	frame_.clear();
+	currentAnimationId.clear();
+	frame_.push_back(0);
 	//if (fakeKeyFrame1 != NULL) delete fakeKeyFrame1;
 	//if (fakeKeyFrame2 != NULL) delete fakeKeyFrame2;
 }
@@ -79,6 +89,15 @@ Sprite * Object::sprite() {
 void Object::setModel(Model * newModel) {
 	model_ = newModel;
 	hasModel_ = true;
+
+	frame_.clear();
+	currentAnimationId.clear();
+	if (model_ != NULL) {
+		for (unsigned i = 0; i < model_->bones_.size(); i++) {
+			frame_.push_back(0);
+			currentAnimationId.push_back(0);
+		}
+	}
 	//if (fakeKeyFrame1 == NULL) fakeKeyFrame1 = new keyFrame;
 	//if (fakeKeyFrame2 == NULL) fakeKeyFrame2 = new keyFrame;
 }
@@ -256,30 +275,49 @@ float Object::alpha() {
 	return alpha_;
 }
 
-void Object::setCurrentAnimation(unsigned animationId) {
-	currentAnimationId = animationId;
-}
+void Object::setCurrentAnimation(unsigned animationId, int boneId, bool withChildren) {
+	if (model_->bones_.size() == 0) return;
 
-unsigned Object::currentAnimation() {
-	return currentAnimationId;
-}
+	if (boneId < 0) boneId = 0;
+	currentAnimationId[boneId] = animationId;
 
-void Object::setFrame(float newFrame, bool relative) {
-	if (relative) frame_ += newFrame*compensation(); else frame_ = newFrame;
-	if (hasModel_) {
-		if (model_->bones_.size() > 0) {
-			while (frame_ > model_->bones_.front()->animations[currentAnimationId].length)
-				frame_ -= model_->bones_.front()->animations[currentAnimationId].length;
-			while (frame_ < 1.0f) frame_ += (model_->bones_.front()->animations[currentAnimationId].length-1);
-		}
-	} else {
-		while (frame_ > sprite_->frames) frame_ -= sprite_->frames;
-		while (frame_ < 1.0f) frame_ += sprite_->frames-1;
+	if (withChildren && (model_->bones_[boneId]->child.size() > 0)) {
+		for (unsigned i = 0; i < model_->bones_[boneId]->child.size(); i++)
+			setCurrentAnimation(animationId, model_->bones_[i]->id, true);
 	}
 }
 
-float Object::frame() {
-	return frame_;
+unsigned Object::currentAnimation(int boneId) {
+	if (model_->bones_.size() == 0) return 0;
+	return (boneId < 0) ? currentAnimationId.front() : currentAnimationId[boneId];
+}
+
+void Object::setFrame(float newFrame, bool relative, int boneId, bool withChildren) {
+	if (model_->bones_.size() == 0) return;
+
+	if (boneId < 0) boneId = 0;
+	if (relative) frame_[boneId] += newFrame*compensation(); else frame_[boneId] = newFrame;
+	if (hasModel_) {
+		if (model_->bones_.size() > 0) {
+			while (frame_[boneId] > model_->bones_[boneId]->animations[currentAnimationId[boneId]].length)
+				frame_[boneId] -= model_->bones_[boneId]->animations[currentAnimationId[boneId]].length;
+			while (frame_[boneId] < 1.0f)
+				frame_[boneId] += (model_->bones_[boneId]->animations[currentAnimationId[boneId]].length-1);
+		}
+	} else {
+		while (frame_.front() > sprite_->frames) frame_.front() -= (float)sprite_->frames;
+		while (frame_.front() < 1.0f) frame_.front() += float(sprite_->frames)-1.0f;
+	}
+
+	if (withChildren && (model_->bones_[boneId]->child.size() > 0)) {
+		for (unsigned i = 0; i < model_->bones_[boneId]->child.size(); i++)
+			setFrame(newFrame, relative, model_->bones_[i]->id, true);
+	}
+}
+
+float Object::frame(int boneId) {
+	if (model_->bones_.size() == 0) return 0;
+	return (boneId < 0) ? frame_.front() : frame_[boneId];
 }
 
 /*void Object::animate(unsigned start, unsigned finish, unsigned animationId) {
