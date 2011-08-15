@@ -246,6 +246,22 @@ void vec3::operator-=(const vec3 & otherVector) {
 	z -= otherVector.z;
 }
 
+vec3 vec3::operator*(float num) {
+	return (vec3){{x*num}, {y*num}, {z*num}};
+}
+
+void vec3::operator*=(float num) {
+	x *= num, y *= num, z *= num;
+}
+
+vec3 vec3::operator/(float num) {
+	return (vec3){{x/num}, {y/num}, {z/num}};
+}
+
+void vec3::operator/=(float num) {
+	x /= num, y /= num, z /= num;
+}
+
 float vec3::dotProduct(const vec3 & otherVector) {
 	return (x*otherVector.x)+(y*otherVector.y)+(z*otherVector.z);
 }
@@ -281,6 +297,22 @@ vec4 vec4::operator*(const matrix4d & matrix) {
 	returnVector.w = (x*matrix.component[3])+(y*matrix.component[7])+(z*matrix.component[11])+(w*matrix.component[15]);
 
 	return returnVector;
+}
+
+vec4 vec4::operator*(float num) {
+	return (vec4){{x*num}, {y*num}, {z*num}, {w*num}};
+}
+
+void vec4::operator*=(float num) {
+	x *= num, y *= num, z *= num, w /= num;
+}
+
+vec4 vec4::operator/(float num) {
+	return (vec4){{x/num}, {y/num}, {z/num}, {w/num}};
+}
+
+void vec4::operator/=(float num) {
+	x /= num, y /= num, z /= num, w /= num;
 }
 
 float vec4::dotProduct(const vec4 & otherVector) {

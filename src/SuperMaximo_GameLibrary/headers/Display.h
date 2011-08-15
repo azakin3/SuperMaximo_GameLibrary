@@ -146,6 +146,10 @@ struct vec3 {
 	vec3 operator-(const vec3 & otherVector);
 	void operator+=(const vec3 & otherVector);
 	void operator-=(const vec3 & otherVector);
+	vec3 operator*(float num);
+	void operator*=(float num);
+	vec3 operator/(float num);
+	void operator/=(float num);
 	float dotProduct(const vec3 & otherVector);
 };
 
@@ -175,6 +179,10 @@ struct vec4 {
 	void operator+=(const vec4 & otherVector);
 	void operator-=(const vec4 & otherVector);
 	vec4 operator*(const matrix4d & matrix);
+	vec4 operator*(float num);
+	void operator*=(float num);
+	vec4 operator/(float num);
+	void operator/=(float num);
 	float dotProduct(const vec4 & otherVector);
 	operator vec3();
 };

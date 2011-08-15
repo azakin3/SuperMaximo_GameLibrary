@@ -68,10 +68,8 @@ vec3 Model::triangle::surfaceNormal() {
 	normal_.z = (u.x*v.y)-(u.y*v.x);
 
 	float len = sqrt((normal_.x*normal_.x)+(normal_.y*normal_.y)+(normal_.z*normal_.z));
-	if (len == 0) len = 1;
-	normal_.x /= len;
-	normal_.y /= len;
-	normal_.z /= len;
+	if (len == 0.0f) len = 1.0f;
+	normal_ /= len;
 
 	return normal_;
 }
