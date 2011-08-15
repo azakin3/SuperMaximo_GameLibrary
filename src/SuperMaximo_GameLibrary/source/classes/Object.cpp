@@ -254,6 +254,21 @@ float Object::rotate(float amount, bool relative, bool recalculateDimensions) {
 	return zRotation_;
 }
 
+float Object::setXRotation(float amount, bool relative = false) {
+	if (relative) xRotation_ += amount*compensation(); else xRotation_ = amount;
+	return xRotation_;
+}
+
+float Object::setYRotation(float amount, bool relative = false) {
+	if (relative) yRotation_ += amount*compensation(); else yRotation_ = amount;
+	return yRotation_;
+}
+
+float Object::setZRotation(float amount, bool relative = false) {
+	if (relative) zRotation_ += amount*compensation(); else zRotation_ = amount;
+	return zRotation_;
+}
+
 float Object::xRotation() {
 	return xRotation_;
 }

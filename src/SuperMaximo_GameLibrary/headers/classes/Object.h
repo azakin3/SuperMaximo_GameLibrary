@@ -78,6 +78,9 @@ public:
 	void rotate(float xAmount, float yAmount, float zAmount, bool relative = false,
 			bool recalculateDimensions = true);
 	float rotate(float amount, bool relative = false, bool recalculateDimensions = true);
+	float setXRotation(float amount, bool relative = false);
+	float setYRotation(float amount, bool relative = false);
+	float setZRotation(float amount, bool relative = false);
 	float xRotation();
 	float yRotation();
 	float zRotation();
