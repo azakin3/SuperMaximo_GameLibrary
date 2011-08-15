@@ -164,6 +164,22 @@ void vec2::operator*=(const matrix2d & matrix) {
 	*this = (*this)*matrix;
 }
 
+vec2 vec2::operator*(float num) {
+	return (vec2){{x*num}, {y*num}};
+}
+
+void vec2::operator*=(float num) {
+	x *= num, y *= num;
+}
+
+vec2 vec2::operator/(float num) {
+	return (vec2){{x/num}, {y/num}};
+}
+
+void vec2::operator/=(float num) {
+	x /= num, y /= num;
+}
+
 vec2 vec2::perpendicular() {
 	return (vec2){{-y}, {x}};
 }

@@ -115,6 +115,10 @@ struct vec2 {
 	void operator-=(const vec2 & otherVector);
 	vec2 operator*(const matrix2d & matrix);
 	void operator*=(const matrix2d & matrix);
+	vec2 operator*(float num);
+	void operator*=(float num);
+	vec2 operator/(float num);
+	void operator/=(float num);
 	vec2 perpendicular();
 	float dotProduct(const vec2 & otherVector);
 	bool polygonCollision(unsigned vertexCount, ...);
