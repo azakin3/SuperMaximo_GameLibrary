@@ -225,6 +225,21 @@ void Object::scale(float xAmount, float yAmount, float zAmount, bool relative, b
 	if (recalculateDimensions) calcZRotatedDimensions();
 }
 
+float Object::setXScale(float amount, bool relative) {
+	if (relative) xScale_ += amount*compensation(); else xScale_ = amount;
+	return xScale_;
+}
+
+float Object::setYScale(float amount, bool relative) {
+	if (relative) yScale_ += amount*compensation(); else yScale_ = amount;
+	return yScale_;
+}
+
+float Object::setZScale(float amount, bool relative) {
+	if (relative) zScale_ += amount*compensation(); else zScale_ = amount;
+	return zScale_;
+}
+
 float Object::xScale() {
 	return xScale_;
 }

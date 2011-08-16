@@ -71,6 +71,9 @@ public:
 
 	void scale(float xAmount, float yAmount, float zAmount, bool relative = false,
 			bool recalculateDimensions = true);
+	float setXScale(float amount, bool relative = false);
+	float setYScale(float amount, bool relative = false);
+	float setZScale(float amount, bool relative = false);
 	float xScale();
 	float yScale();
 	float zScale();
