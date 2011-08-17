@@ -1465,9 +1465,9 @@ unsigned Model::vertexCount() {
 	return vertexCount_;
 }
 
-int bone::animation::frameIndex(unsigned step) {
+int bone::animation::frameIndex(float step) {
 	for (unsigned i = 0; i < frames.size(); i++) {
-		if (frames[i].step == step) {
+		if ((float)frames[i].step == step) {
 			return i;
 		}
 	}

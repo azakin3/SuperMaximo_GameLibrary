@@ -146,7 +146,7 @@ struct bone {
 		std::string name;
 		unsigned length;
 		std::vector<keyFrame> frames;
-		int frameIndex(unsigned step);
+		int frameIndex(float step);
 	};
 	std::vector<animation> animations;
 };
