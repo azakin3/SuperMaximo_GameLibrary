@@ -341,7 +341,7 @@ void Object::setFrame(float newFrame, bool relative, int boneId, bool withChildr
 
 	if (withChildren && (model_->bones_[boneId]->child.size() > 0)) {
 		for (unsigned i = 0; i < model_->bones_[boneId]->child.size(); i++)
-			setFrame(newFrame, relative, model_->bones_[i]->id, true);
+			setFrame(newFrame, relative, model_->bones_[boneId]->child[i]->id, true);
 	}
 }
 
