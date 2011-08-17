@@ -117,11 +117,13 @@ void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage,
 		return;
 	}
 
+	bool blocky = false;
 	for (unsigned i = 0; i < objText.size(); i++) {
 		while ((leftStr(objText[i], 1) == " ") || (leftStr(objText[i], 1) == "\t"))
 			rightStr(&objText[i], objText[i].size()-1);
 		while ((rightStr(objText[i], 1) == " ") || (rightStr(objText[i], 1) == "\t")
 				|| (*(rightStr(objText[i], 1).c_str()) == 13)) leftStr(&objText[i], objText[i].size()-1);
+		if (leftStr(objText[i], 7) == "#BLOCKY") blocky = true;
 	}
 	string mtlFileName;
 	for (unsigned i = 0; i < objText.size(); i++) {
@@ -390,47 +392,53 @@ void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage,
 		}
 	}
 
-	vector<vertexNormalAssoication> vertexNormalAssociations;
+	if (blocky) {
+		for (unsigned i = 0; i < triangles_.size(); i++) {
+			for (short j = 0; j < 3; j++) triangles_[i].coords[j].normal_ = triangles_[i].surfaceNormal();
+		}
+	} else {
+		vector<vertexNormalAssoication> vertexNormalAssociations;
 
-	vertexNormalAssociations.reserve(vertices.size());
-	for (unsigned i = 0; i < vertices.size(); i++) {
-		vertexNormalAssociations.push_back((vertexNormalAssoication){
-			(vec3){{vertices[i].x}, {vertices[i].y}, {vertices[i].z}}});
-	}
+		vertexNormalAssociations.reserve(vertices.size());
+		for (unsigned i = 0; i < vertices.size(); i++) {
+			vertexNormalAssociations.push_back((vertexNormalAssoication){
+				(vec3){{vertices[i].x}, {vertices[i].y}, {vertices[i].z}}});
+		}
 
-	for (unsigned i = 0; i < triangles_.size(); i++) {
-		for (short j = 0; j < 3; j++) {
-			for (unsigned k = 0; k < vertexNormalAssociations.size(); k++) {
-				if ((vertexNormalAssociations[k].vertex.x == triangles_[i].coords[j].x)
-						&& (vertexNormalAssociations[k].vertex.y == triangles_[i].coords[j].y)
-							&& (vertexNormalAssociations[k].vertex.z == triangles_[i].coords[j].z)) {
-					vertexNormalAssociations[k].verticesToUpdate.push_back(&triangles_[i].coords[j]);
-					vertexNormalAssociations[k].surfaceNormals.push_back(triangles_[i].surfaceNormal());
-					break;
+		for (unsigned i = 0; i < triangles_.size(); i++) {
+			for (short j = 0; j < 3; j++) {
+				for (unsigned k = 0; k < vertexNormalAssociations.size(); k++) {
+					if ((vertexNormalAssociations[k].vertex.x == triangles_[i].coords[j].x)
+							&& (vertexNormalAssociations[k].vertex.y == triangles_[i].coords[j].y)
+								&& (vertexNormalAssociations[k].vertex.z == triangles_[i].coords[j].z)) {
+						vertexNormalAssociations[k].verticesToUpdate.push_back(&triangles_[i].coords[j]);
+						vertexNormalAssociations[k].surfaceNormals.push_back(triangles_[i].surfaceNormal());
+						break;
+					}
 				}
 			}
 		}
-	}
 
-	for (unsigned i = 0; i < vertexNormalAssociations.size(); i++) {
-		vec3 normalTotal;
-		normalTotal.x = normalTotal.y = normalTotal.z = 0;
-		for (unsigned j = 0; j < vertexNormalAssociations[i].surfaceNormals.size(); j++) {
-			normalTotal.x += vertexNormalAssociations[i].surfaceNormals[j].x;
-			normalTotal.y += vertexNormalAssociations[i].surfaceNormals[j].y;
-			normalTotal.z += vertexNormalAssociations[i].surfaceNormals[j].z;
+		for (unsigned i = 0; i < vertexNormalAssociations.size(); i++) {
+			vec3 normalTotal;
+			normalTotal.x = normalTotal.y = normalTotal.z = 0;
+			for (unsigned j = 0; j < vertexNormalAssociations[i].surfaceNormals.size(); j++) {
+				normalTotal.x += vertexNormalAssociations[i].surfaceNormals[j].x;
+				normalTotal.y += vertexNormalAssociations[i].surfaceNormals[j].y;
+				normalTotal.z += vertexNormalAssociations[i].surfaceNormals[j].z;
+			}
+
+			float len = sqrt((normalTotal.x*normalTotal.x)+(normalTotal.y*normalTotal.y)+(normalTotal.z*normalTotal.z));
+			if (len == 0) len = 1;
+			normalTotal.x /= len;
+			normalTotal.y /= len;
+			normalTotal.z /= len;
+
+			vertexNormalAssociations[i].normal = normalTotal;
+
+			for (unsigned j = 0; j < vertexNormalAssociations[i].verticesToUpdate.size(); j++)
+				((vertex*)(vertexNormalAssociations[i].verticesToUpdate[j]))->normal_ = normalTotal;
 		}
-
-		float len = sqrt((normalTotal.x*normalTotal.x)+(normalTotal.y*normalTotal.y)+(normalTotal.z*normalTotal.z));
-		if (len == 0) len = 1;
-		normalTotal.x /= len;
-		normalTotal.y /= len;
-		normalTotal.z /= len;
-
-		vertexNormalAssociations[i].normal = normalTotal;
-
-		for (unsigned j = 0; j < vertexNormalAssociations[i].verticesToUpdate.size(); j++)
-			((vertex*)(vertexNormalAssociations[i].verticesToUpdate[j]))->normal_ = normalTotal;
 	}
 	vertexCount_ = triangles_.size()*3;
 
