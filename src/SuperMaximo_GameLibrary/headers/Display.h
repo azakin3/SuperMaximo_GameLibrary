@@ -247,6 +247,8 @@ bool depthTestingEnabled();
 float openGlVersion();
 float glSlVersion();
 
+bool vertexArrayObjectSupported();
+
 }
 
 #endif /* DISPLAY_H_ */

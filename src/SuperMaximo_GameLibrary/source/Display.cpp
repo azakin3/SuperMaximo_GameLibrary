@@ -664,13 +664,34 @@ bool depthTestingEnabled() {
 }
 
 float openGlVersion() {
-	string str = reinterpret_cast<char const *>(glGetString(GL_VERSION));
-	return strtof(leftStr(str, 3).c_str(), NULL);
+	static float version = 0.0f;
+	if (version == 0.0f) {
+		string str = reinterpret_cast<char const *>(glGetString(GL_VERSION));
+		version = strtof(leftStr(str, 3).c_str(), NULL);
+	}
+	return version;
 }
 
 float glSlVersion() {
-	string str = reinterpret_cast<char const *>(glGetString(GL_SHADING_LANGUAGE_VERSION));
-	return strtof(leftStr(str, 3).c_str(), NULL);
+	static float version = 0.0f;
+	if (version == 0.0f) {
+		string str = reinterpret_cast<char const *>(glGetString(GL_SHADING_LANGUAGE_VERSION));
+		version = strtof(leftStr(str, 3).c_str(), NULL);
+	}
+	return version;
+}
+
+bool vertexArrayObjectSupported() {
+	static bool supported = (openGlVersion() >= 3.0f);
+	static bool checked = false;
+	if (!checked && !supported) {
+		string str = reinterpret_cast<char const *>(glGetString(GL_EXTENSIONS));
+		supported = ((str.find("GL_ARB_vertex_array_object") != string::npos)
+				|| (str.find("GL_ATI_vertex_array_object") != string::npos)
+				|| (str.find("GL_APPLE_vertex_array_object") != string::npos));
+		checked = true;
+	}
+	return supported;
 }
 
 }
