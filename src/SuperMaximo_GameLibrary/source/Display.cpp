@@ -26,8 +26,8 @@ using namespace SuperMaximo;
 SDL_Surface * screen;
 unsigned screenW, screenH, screenD, framerate = 0, maximumFramerate, tickDifference = 1, idealFramerate = 60;
 matrixEnum currentMatrixId;
-matrix4d matrix[IDENTITY_MATRIX+1];
-vector<matrix4d> matrixStack[IDENTITY_MATRIX]; //We don't want a stack for the identity matrix.
+mat4 matrix[IDENTITY_MATRIX+1];
+vector<mat4> matrixStack[IDENTITY_MATRIX]; //We don't want a stack for the identity matrix.
 												//Make sure IDENTITY_MATRIX enum is last
 bool blendingEnabled_ = false, depthTestingEnabled_ = true;;
 Shader * boundShader_ = NULL;
@@ -39,12 +39,12 @@ vec4 clearColor = {{0.0f}, {0.0f}, {0.0f}, {0.0f}};
 
 namespace SuperMaximo {
 
-float & matrix2d::operator[](short i) {
+float & mat2::operator[](short i) {
 	return component[i];
 }
 
-matrix2d matrix2d::operator*(const matrix2d & otherMat) {
-	matrix2d returnMatrix, other = otherMat;
+mat2 mat2::operator*(const mat2 & otherMat) {
+	mat2 returnMatrix, other = otherMat;
 	returnMatrix[0] = (component[0]*other[0])+(component[2]*other[1]);
 	returnMatrix[1] = (component[1]*other[0])+(component[3]*other[1]);
 
@@ -54,21 +54,21 @@ matrix2d matrix2d::operator*(const matrix2d & otherMat) {
 	return returnMatrix;
 }
 
-matrix2d::operator float*() {
+mat2::operator float*() {
 	return component;
 }
 
-void matrix2d::initIdentity() {
+void mat2::initIdentity() {
 	component[0] = component[3] = 1.0f;
 	component[1] = component[2] = 0.0f;
 }
 
-float & matrix3d::operator[](short i) {
+float & mat3::operator[](short i) {
 	return component[i];
 }
 
-matrix3d matrix3d::operator*(const matrix3d & otherMat) {
-	matrix3d returnMatrix, other = otherMat;
+mat3 mat3::operator*(const mat3 & otherMat) {
+	mat3 returnMatrix, other = otherMat;
 	returnMatrix[0] = (component[0]*other[0])+(component[3]*other[1])+(component[6]*other[2]);
 	returnMatrix[1] = (component[1]*other[0])+(component[4]*other[1])+(component[7]*other[2]);
 	returnMatrix[2] = (component[2]*other[0])+(component[5]*other[1])+(component[8]*other[2]);
@@ -84,23 +84,23 @@ matrix3d matrix3d::operator*(const matrix3d & otherMat) {
 	return returnMatrix;
 }
 
-matrix3d::operator float*() {
+mat3::operator float*() {
 	return component;
 }
 
-void matrix3d::initIdentity() {
+void mat3::initIdentity() {
 	for (short i = 0; i < 9; i++) component[i] = 0.0f;
 	component[0] = 1.0f;
 	component[4] = 1.0f;
 	component[8] = 1.0f;
 }
 
-float & matrix4d::operator[](short i) {
+float & mat4::operator[](short i) {
 	return component[i];
 }
 
-matrix4d matrix4d::operator*(const matrix4d & otherMat) {
-	matrix4d returnMatrix, other = otherMat;
+mat4 mat4::operator*(const mat4 & otherMat) {
+	mat4 returnMatrix, other = otherMat;
 	returnMatrix[0] = (component[0]*other[0])+(component[4]*other[1])+(component[8]*other[2])+(component[12]*other[3]);
 	returnMatrix[1] = (component[1]*other[0])+(component[5]*other[1])+(component[9]*other[2])+(component[13]*other[3]);
 	returnMatrix[2] = (component[2]*other[0])+(component[6]*other[1])+(component[10]*other[2])+(component[14]*other[3]);
@@ -124,11 +124,11 @@ matrix4d matrix4d::operator*(const matrix4d & otherMat) {
 	return returnMatrix;
 }
 
-matrix4d::operator float*() {
+mat4::operator float*() {
 	return component;
 }
 
-void matrix4d::initIdentity() {
+void mat4::initIdentity() {
 	for (short i = 0; i < 16; i++) component[i] = 0.0f;
 	component[0] = 1.0f;
 	component[5] = 1.0f;
@@ -154,13 +154,13 @@ void vec2::operator-=(const vec2 & otherVector) {
 	y -= otherVector.y;
 }
 
-vec2 vec2::operator*(const matrix2d & matrix) {
+vec2 vec2::operator*(const mat2 & matrix) {
 	return (vec2){
 		{(x*matrix.component[0])+(y*matrix.component[2])},
 		{(x*matrix.component[1])+(y*matrix.component[3])}};
 }
 
-void vec2::operator*=(const matrix2d & matrix) {
+void vec2::operator*=(const mat2 & matrix) {
 	*this = (*this)*matrix;
 }
 
@@ -288,7 +288,7 @@ void vec4::operator-=(const vec4 & otherVector) {
 	w -= otherVector.w;
 }
 
-vec4 vec4::operator*(const matrix4d & matrix) {
+vec4 vec4::operator*(const mat4 & matrix) {
 	vec4 returnVector;
 
 	returnVector.x = (x*matrix.component[0])+(y*matrix.component[4])+(z*matrix.component[8])+(w*matrix.component[12]);
@@ -409,8 +409,8 @@ vec4 getClearColor() {
 	return clearColor;
 }
 
-matrix4d getPerspectiveMatrix(float left, float right, float bottom, float top, float near, float far) {
-	matrix4d returnMatrix;
+mat4 getPerspectiveMatrix(float left, float right, float bottom, float top, float near, float far) {
+	mat4 returnMatrix;
 	returnMatrix[0] = (2.0f*near)/(right-left);
 	returnMatrix[1] = 0.0f;
 	returnMatrix[2] = 0.0f;
@@ -433,17 +433,17 @@ matrix4d getPerspectiveMatrix(float left, float right, float bottom, float top, 
 	return returnMatrix;
 }
 
-matrix4d getPerspectiveMatrix(float angle, float aspectRatio, float front, float back) {
+mat4 getPerspectiveMatrix(float angle, float aspectRatio, float front, float back) {
 	float tangent = tan((angle/2.0f)*(M_PI/180.0f));
 	float height = front*tangent;
 	float width = height*aspectRatio;
 
-	matrix4d returnMatrix = getPerspectiveMatrix(-width, width, -height, height, front, back);
+	mat4 returnMatrix = getPerspectiveMatrix(-width, width, -height, height, front, back);
 	return returnMatrix;
 }
 
-matrix4d getOrthographicMatrix(float left, float right, float bottom, float top, float near, float far) {
-	matrix4d returnMatrix;
+mat4 getOrthographicMatrix(float left, float right, float bottom, float top, float near, float far) {
+	mat4 returnMatrix;
 	returnMatrix[0] = 2.0f/(right-left);
 	returnMatrix[1] = 0.0f;
 	returnMatrix[2] = 0.0f;
@@ -466,10 +466,10 @@ matrix4d getOrthographicMatrix(float left, float right, float bottom, float top,
 	return returnMatrix;
 }
 
-matrix2d get2dRotationMatrix(float angle) {
+mat2 get2dRotationMatrix(float angle) {
 	angle = (angle*M_PI)/180.0f;
 
-	matrix2d returnMatrix;
+	mat2 returnMatrix;
 
 	returnMatrix.component[0] = cos(angle);
 	returnMatrix.component[1] = sin(angle);
@@ -518,12 +518,12 @@ void copyMatrix(matrixEnum srcMatrixId, matrixEnum dstMatrixId) {
 	matrix[dstMatrixId] = matrix[srcMatrixId];
 }
 
-void copyMatrix(matrix4d srcMatrix, matrixEnum dstMatrixId) {
+void copyMatrix(mat4 srcMatrix, matrixEnum dstMatrixId) {
 	if (dstMatrixId == IDENTITY_MATRIX) return;
 	matrix[dstMatrixId] = srcMatrix;
 }
 
-matrix4d getMatrix(matrixEnum matrixId) {
+mat4 getMatrix(matrixEnum matrixId) {
 	return matrix[matrixId];
 }
 
@@ -537,7 +537,7 @@ void popMatrix() {
 }
 
 void translateMatrix(float x, float y, float z) {
-	matrix4d transformationMatrix;
+	mat4 transformationMatrix;
 	transformationMatrix.initIdentity();
 	transformationMatrix[12] = x;
 	transformationMatrix[13] = y;
@@ -551,7 +551,7 @@ void rotateMatrix(float angle, float x, float y, float z) {
 	x /= len;
 	y /= len;
 	z /= len;
-	matrix4d transformationMatrix;
+	mat4 transformationMatrix;
 
 	float c = cos(angle), s = sin(angle), x2 = x*x, y2 = y*y, z2 = z*z;
 	float t = 1.0f-c;
@@ -580,7 +580,7 @@ void rotateMatrix(float angle, float x, float y, float z) {
 }
 
 void scaleMatrix(float xScale, float yScale, float zScale) {
-	matrix4d transformationMatrix;
+	mat4 transformationMatrix;
 	transformationMatrix.initIdentity();
 	transformationMatrix[0] = xScale;
 	transformationMatrix[5] = yScale;

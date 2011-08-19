@@ -23,7 +23,7 @@ class Shader;
 class Model;
 
 struct bone;
-struct matrix4d;
+struct mat4;
 
 enum bufferUsageEnum {
 	STREAM_DRAW = GL_STREAM_DRAW,
@@ -79,10 +79,10 @@ class Model {
 	void initBufferObj(bufferUsageEnum bufferUsage);
 	//void initBufferSmo();
 	//void drawObj(Shader * shaderToUse);
-	//vec3 calculatePoints(float nx, float ny, float nz, matrix4d matrix);
-	//void calculateHitbox(bone * pBone, matrix4d matrix);
+	//vec3 calculatePoints(float nx, float ny, float nz, mat4 matrix);
+	//void calculateHitbox(bone * pBone, mat4 matrix);
 	//void drawBone(bone * pBone, Shader * shaderToUse, bool skipHitboxes);
-	void getBoneModelviewMatrices(matrix4d * matrixArray, bone * pBone);
+	void getBoneModelviewMatrices(mat4 * matrixArray, bone * pBone);
 	void setBoneRotationsFromAnimation(unsigned animationId, float frame, bone * pBone);
 public:
 	friend class Object;

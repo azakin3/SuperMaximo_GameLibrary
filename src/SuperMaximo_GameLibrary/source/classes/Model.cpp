@@ -1113,7 +1113,7 @@ void Model::drawObj(Shader * shaderToUse) {
 	glDrawArrays(GL_TRIANGLES, 0, triangles_.size()*3);
 }*/
 /*
-vec3 Model::calculatePoints(float nx, float ny, float nz, matrix4d matrix) {
+vec3 Model::calculatePoints(float nx, float ny, float nz, mat4 matrix) {
 	vec3 returnNormal;
 	returnNormal.x = (nx*matrix[0])+(ny*matrix[4])+(nz*matrix[8])+matrix[12];
 	returnNormal.y = (nx*matrix[1])+(ny*matrix[5])+(nz*matrix[9])+matrix[13];
@@ -1121,7 +1121,7 @@ vec3 Model::calculatePoints(float nx, float ny, float nz, matrix4d matrix) {
 	return returnNormal;
 }
 
-void Model::calculateHitbox(bone * pBone, matrix4d matrix) {
+void Model::calculateHitbox(bone * pBone, mat4 matrix) {
 	float nx, ny, nz;
 	vec3 point[8];
 
@@ -1182,7 +1182,7 @@ void Model::calculateHitbox(bone * pBone, matrix4d matrix) {
 */
 /*void Model::drawBone(bone * pBone, Shader * shaderToUse, bool skipHitboxes) {
 	pushMatrix();
-		matrix4d modelMatrix, modelNormMatrix;
+		mat4 modelMatrix, modelNormMatrix;
 		pushMatrix();
 			copyMatrix(IDENTITY_MATRIX, MODELVIEW_MATRIX);
 			if (!skipHitboxes) {
@@ -1235,7 +1235,7 @@ void Model::calculateHitbox(bone * pBone, matrix4d matrix) {
 	popMatrix();
 }*/
 
-void Model::getBoneModelviewMatrices(matrix4d * matrixArray, bone * pBone) {
+void Model::getBoneModelviewMatrices(mat4 * matrixArray, bone * pBone) {
 	pushMatrix();
 		translateMatrix(pBone->x, pBone->y, pBone->z);
 		rotateMatrix(pBone->xRot, 1.0f, 0.0f, 0.0f);
@@ -1317,7 +1317,7 @@ void Model::draw(float x, float y, float z, float xRotation, float yRotation, fl
 			if (!skipAnimation && (bones_.size() > 0)) {
 				for (unsigned i = 0; i < bones_.size(); i++)
 					setBoneRotationsFromAnimation(currentAnimationId, frame, bones_[i]);
-				matrix4d matrixArray[bones_.size()];
+				mat4 matrixArray[bones_.size()];
 				getBoneModelviewMatrices(matrixArray, bones_.front());
 				shaderToUse->setUniform16(EXTRA0_LOCATION, (float*)matrixArray, bones_.size());
 			}
@@ -1406,7 +1406,7 @@ void Model::draw(Object * object, bool skipAnimation) {//, bool skipHitboxes) {
 			if (!skipAnimation && (bones_.size() > 0)) {
 				for (unsigned i = 0; i < bones_.size(); i++)
 					setBoneRotationsFromAnimation(object->currentAnimationId[i], object->frame_[i], bones_[i]);
-				matrix4d matrixArray[bones_.size()];
+				mat4 matrixArray[bones_.size()];
 				getBoneModelviewMatrices(matrixArray, bones_.front());
 				shaderToUse->setUniform16(EXTRA0_LOCATION, (float*)matrixArray, bones_.size());
 			}

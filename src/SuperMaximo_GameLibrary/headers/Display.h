@@ -74,26 +74,26 @@ enum blendFuncEquEnum {
 	MAX = GL_MAX
 };
 
-struct matrix2d {
+struct mat2 {
 	float component[4];
 	float & operator[](short i);
-	matrix2d operator*(const matrix2d & otherMat);
+	mat2 operator*(const mat2 & otherMat);
 	operator float*();
 	void initIdentity();
 };
 
-struct matrix3d {
+struct mat3 {
 	float component[9];
 	float & operator[](short i);
-	matrix3d operator*(const matrix3d & otherMat);
+	mat3 operator*(const mat3 & otherMat);
 	operator float*();
 	void initIdentity();
 };
 
-struct matrix4d {
+struct mat4 {
 	float component[16];
 	float & operator[](short i);
-	matrix4d operator*(const matrix4d & otherMat);
+	mat4 operator*(const mat4 & otherMat);
 	operator float*();
 	void initIdentity();
 };
@@ -113,8 +113,8 @@ struct vec2 {
 	vec2 operator-(const vec2 & otherVector);
 	void operator+=(const vec2 & otherVector);
 	void operator-=(const vec2 & otherVector);
-	vec2 operator*(const matrix2d & matrix);
-	void operator*=(const matrix2d & matrix);
+	vec2 operator*(const mat2 & matrix);
+	void operator*=(const mat2 & matrix);
 	vec2 operator*(float num);
 	void operator*=(float num);
 	vec2 operator/(float num);
@@ -178,7 +178,7 @@ struct vec4 {
 	vec4 operator-(const vec4 & otherVector);
 	void operator+=(const vec4 & otherVector);
 	void operator-=(const vec4 & otherVector);
-	vec4 operator*(const matrix4d & matrix);
+	vec4 operator*(const mat4 & matrix);
 	vec4 operator*(float num);
 	void operator*=(float num);
 	vec4 operator/(float num);
@@ -201,11 +201,11 @@ void setClearColor(float r, float g, float b, float a);
 void setClearColor(vec4 color);
 vec4 getClearColor();
 
-matrix4d getPerspectiveMatrix(float left, float right, float bottom, float top, float near, float far);
-matrix4d getPerspectiveMatrix(float angle, float aspectRatio, float front, float back);
-matrix4d getOrthographicMatrix(float left, float right, float bottom, float top, float near, float far);
+mat4 getPerspectiveMatrix(float left, float right, float bottom, float top, float near, float far);
+mat4 getPerspectiveMatrix(float angle, float aspectRatio, float front, float back);
+mat4 getOrthographicMatrix(float left, float right, float bottom, float top, float near, float far);
 
-matrix2d get2dRotationMatrix(float angle);
+mat2 get2dRotationMatrix(float angle);
 
 void bindShader(Shader * shader);
 Shader * boundShader();
@@ -219,8 +219,8 @@ textureUnitEnum boundTexureUnit();
 void setMatrix(matrixEnum matrixId);
 matrixEnum currentMatrix();
 void copyMatrix(matrixEnum srcMatrixId, matrixEnum dstMatrixId);
-void copyMatrix(matrix4d srcMatrix, matrixEnum dstMatrixId);
-matrix4d getMatrix(matrixEnum matrixId);
+void copyMatrix(mat4 srcMatrix, matrixEnum dstMatrixId);
+mat4 getMatrix(matrixEnum matrixId);
 void pushMatrix();
 void popMatrix();
 
