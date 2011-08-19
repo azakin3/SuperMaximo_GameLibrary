@@ -249,6 +249,9 @@ float glSlVersion();
 
 bool vertexArrayObjectSupported();
 
+void disableTexture2dArray();
+bool texture2dArrayDisabled();
+
 }
 
 #endif /* DISPLAY_H_ */

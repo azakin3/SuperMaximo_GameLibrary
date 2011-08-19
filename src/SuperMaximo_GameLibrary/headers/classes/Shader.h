@@ -43,7 +43,9 @@ enum shaderLocationEnum {
 	EXTRA6_LOCATION,
 	EXTRA7_LOCATION,
 	EXTRA8_LOCATION,
-	EXTRA9_LOCATION
+	EXTRA9_LOCATION,
+	TEXCOMPAT_LOCATION,
+	SHADER_LOCATION_ENUM_COUNT
 };
 
 class Sprite;
@@ -52,7 +54,7 @@ class Font;
 
 class Shader {
 	GLuint program_;
-	GLint uniformLocation_[EXTRA9_LOCATION+1];
+	GLint uniformLocation_[SHADER_LOCATION_ENUM_COUNT];
 	std::string name_;
 public:
 	friend class Sprite;

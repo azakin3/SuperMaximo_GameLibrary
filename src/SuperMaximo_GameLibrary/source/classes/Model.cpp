@@ -154,6 +154,7 @@ void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage,
 	for (unsigned i = 0; i < mtlText.size(); i++) {
 		if (lowerCase(leftStr(mtlText[i], 6)) == "newmtl") totalMaterials++;
 	}
+	textureCount = totalMaterials;
 	for (unsigned i = 0; i < mtlText.size(); i++) {
 		if (lowerCase(leftStr(mtlText[i], 6)) == "newmtl") {
 			material newMaterial;
@@ -262,16 +263,31 @@ void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage,
 					if (!initialised) {
 						initialised = true;
 						glGenTextures(1, &texture);
-						glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
-						glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-						glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-						if (openGlVersion() >= 3.0f) glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+						if (texture2dArrayDisabled()) {
+							glBindTexture(GL_TEXTURE_2D, texture);
+							glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+							glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+							if (openGlVersion() >= 3.0f) glGenerateMipmap(GL_TEXTURE_2D);
+							else glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+
+							glTexImage2D(GL_TEXTURE_2D, 0, image->format->BytesPerPixel, image->w*totalMaterials,
+									image->h, 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
+						} else {
+							glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
+							glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+							glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+							if (openGlVersion() >= 3.0f) glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 							else glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_GENERATE_MIPMAP, GL_TRUE);
 
-						glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h,
-								totalMaterials, 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
+							glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h,
+									totalMaterials, 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
+						}
+
 					}
-					glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, materials_.size(), image->w, image->h, 1,
+					if (texture2dArrayDisabled())
+						glTexSubImage2D(GL_TEXTURE_2D, 0, image->w*i, 0, image->w, image->h, textureFormat,
+								GL_UNSIGNED_BYTE, image->pixels);
+					else glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, materials_.size(), image->w, image->h, 1,
 							textureFormat, GL_UNSIGNED_BYTE, image->pixels);
 					SDL_FreeSurface(image);
 					newMaterial.hasTexture = true;
@@ -298,7 +314,7 @@ void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage,
 
 				j = vertStr.find(" ");
 				if (j == -1) coord.y = strtof(vertStr.c_str(), NULL);
-					else coord.y = strtof(leftStr(vertStr, j).c_str(), NULL);
+				else coord.y = strtof(leftStr(vertStr, j).c_str(), NULL);
 				texCoord.push_back(coord);
 			} else if (lowerCase(leftStr(objText[i], 2)) == "v ") {
 				vertex coord;
@@ -526,7 +542,7 @@ void Model::loadSmm(string path, string fileName, bufferUsageEnum bufferUsage) {
 	if (vertexArrayObjectSupported()) glBindVertexArray(0);
 	delete[] data;
 
-	unsigned textureCount = atoi(text[arraySize+1].c_str());
+	textureCount = atoi(text[arraySize+1].c_str());
 	bool initialised = false;
 	for (unsigned i = 0; i < textureCount; i++) {
 		SDL_Surface * image = IMG_Load((path+text[arraySize+2+i]).c_str());
@@ -540,16 +556,30 @@ void Model::loadSmm(string path, string fileName, bufferUsageEnum bufferUsage) {
 			if (!initialised) {
 				initialised = true;
 				glGenTextures(1, &texture);
-				glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
-				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-				glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				if (openGlVersion() >= 3.0f) glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
-					else glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_GENERATE_MIPMAP, GL_TRUE);
-				glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h, textureCount, 0,
-						textureFormat, GL_UNSIGNED_BYTE, NULL);
+				if (texture2dArrayDisabled()) {
+					glBindTexture(GL_TEXTURE_2D, texture);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+					if (openGlVersion() >= 3.0f) glGenerateMipmap(GL_TEXTURE_2D);
+					else glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+
+					glTexImage2D(GL_TEXTURE_2D, 0, image->format->BytesPerPixel, image->w*textureCount,
+							image->h, 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
+				} else {
+					glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
+					glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+					glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+					if (openGlVersion() >= 3.0f) glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+						else glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_GENERATE_MIPMAP, GL_TRUE);
+					glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h,
+							textureCount, 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
+				}
 			}
-			glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, image->w, image->h, 1, textureFormat, GL_UNSIGNED_BYTE,
-					image->pixels);
+			if (texture2dArrayDisabled())
+				glTexSubImage2D(GL_TEXTURE_2D, 0, image->w*i, 0, image->w, image->h, textureFormat,
+						GL_UNSIGNED_BYTE, image->pixels);
+			else glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, image->w, image->h, 1, textureFormat,
+					GL_UNSIGNED_BYTE, image->pixels);
 			SDL_FreeSurface(image);
 		}
 		materials_.push_back((material){"", text[arraySize+2+i]});
@@ -1340,7 +1370,10 @@ void Model::draw(float x, float y, float z, float xRotation, float yRotation, fl
 
 	if (shaderToUse != NULL) {
 		glUseProgram(shaderToUse->program_);
-		glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
+		if (texture2dArrayDisabled()) {
+			glBindTexture(GL_TEXTURE_2D, texture);
+			shaderToUse->setUniform1(TEXCOMPAT_LOCATION, (int)textureCount);
+		} else glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
 		shaderToUse->setUniform1(TEXSAMPLER_LOCATION, 0);
 
 		setMatrix(MODELVIEW_MATRIX);
@@ -1432,7 +1465,10 @@ void Model::draw(Object * object, bool skipAnimation) {//, bool skipHitboxes) {
 
 	if (shaderToUse != NULL) {
 		glUseProgram(shaderToUse->program_);
-		glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
+		if (texture2dArrayDisabled()) {
+			glBindTexture(GL_TEXTURE_2D, texture);
+			shaderToUse->setUniform1(TEXCOMPAT_LOCATION, (int)textureCount);
+		} else glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
 		shaderToUse->setUniform1(TEXSAMPLER_LOCATION, 0);
 
 		setMatrix(MODELVIEW_MATRIX);

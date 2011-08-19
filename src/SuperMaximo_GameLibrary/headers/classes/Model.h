@@ -68,7 +68,7 @@ class Model {
 	std::vector<bone *> bones_;
 	GLuint vao, vbo, texture;
 	Shader * boundShader_;
-	unsigned framerate_, vertexCount_;
+	unsigned framerate_, vertexCount_, textureCount;
 	void loadObj(std::string path, std::string fileName, bufferUsageEnum bufferUsage = STATIC_DRAW,
 			void (*customBufferFunction)(GLuint*, Model*, void*) = NULL, void * customData = NULL);
 	void loadSmm(std::string path, std::string fileName, bufferUsageEnum bufferUsage = STATIC_DRAW);

@@ -16,6 +16,7 @@ using namespace std;
 #include <SDL/SDL_image.h>
 #include "../../headers/classes/Texture.h"
 #include "../../headers/Utils.h"
+#include "../../headers/Display.h"
 using namespace SuperMaximo;
 
 vector<Texture*> allTextures[27];
@@ -109,9 +110,16 @@ void Texture::reload(textureTypeEnum textureType, unsigned numLayers, ...) {
 	type_ = textureType;
 	if (textureType == TEXTURE_3D) {
 		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
-		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		if (texture2dArrayDisabled()) {
+			glBindTexture(GL_TEXTURE_2D, texture);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		} else {
+			glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		}
+
 		bool initialised = false;
 		va_list files;
 		va_start(files, numLayers);
@@ -126,11 +134,15 @@ void Texture::reload(textureTypeEnum textureType, unsigned numLayers, ...) {
 					if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGB; else textureFormat = GL_BGR;
 				}
 				if (!initialised) {
-					glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h, numLayers, 0,
-							textureFormat, GL_UNSIGNED_BYTE, NULL);
+					if (texture2dArrayDisabled()) glTexImage2D(GL_TEXTURE_2D, 0, image->format->BytesPerPixel,
+							image->w*numLayers, image->h, 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
+					else glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h,
+							numLayers, 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
 					initialised = true;
 				}
-				glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, image->w, image->h, 1, textureFormat,
+				if (texture2dArrayDisabled()) glTexSubImage2D(GL_TEXTURE_2D, 0, image->w*i, 0, image->w, image->h,
+						textureFormat, GL_UNSIGNED_BYTE, image->pixels);
+				else glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, image->w, image->h, 1, textureFormat,
 						GL_UNSIGNED_BYTE, image->pixels);
 				SDL_FreeSurface(image);
 			}
@@ -144,9 +156,16 @@ void Texture::reload(textureTypeEnum textureType, vector<string> fileNames) {
 	type_ = textureType;
 	if (textureType == TEXTURE_3D) {
 		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
-		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		if (texture2dArrayDisabled()) {
+			glBindTexture(GL_TEXTURE_2D, texture);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		} else {
+			glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		}
+
 		bool initialised = false;
 		for (unsigned i = 0; i < fileNames.size(); i++) {
 			SDL_Surface * image = IMG_Load(fileNames[i].c_str());
@@ -158,11 +177,15 @@ void Texture::reload(textureTypeEnum textureType, vector<string> fileNames) {
 					if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGB; else textureFormat = GL_BGR;
 				}
 				if (!initialised) {
-					glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h,
+					if (texture2dArrayDisabled()) glTexImage2D(GL_TEXTURE_2D, 0, image->format->BytesPerPixel,
+							image->w*fileNames.size(), image->h, 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
+					else glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h,
 							fileNames.size(), 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
 					initialised = true;
 				}
-				glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, image->w, image->h, 1, textureFormat,
+				if (texture2dArrayDisabled()) glTexSubImage2D(GL_TEXTURE_2D, 0, image->w*i, 0, image->w, image->h,
+						textureFormat, GL_UNSIGNED_BYTE, image->pixels);
+				else glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, image->w, image->h, 1, textureFormat,
 						GL_UNSIGNED_BYTE, image->pixels);
 				SDL_FreeSurface(image);
 			}
