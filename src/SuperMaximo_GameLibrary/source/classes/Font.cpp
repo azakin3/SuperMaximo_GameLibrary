@@ -137,7 +137,6 @@ void Font::write(string text, int x, int y, float depth, bool useCache, float ro
 
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
 		glDisableVertexAttribArray(VERTEX_ATTRIBUTE);
 	popMatrix();
 

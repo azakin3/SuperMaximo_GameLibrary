@@ -128,10 +128,13 @@ Sprite::Sprite(string newName, SDL_Surface * surface, int imageX, int imageY, in
 	SDL_FreeSurface(tempSurface);
 	boundShader_ = NULL;
 	vertices_ = 6;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
+
+	if (vertexArrayObjectSupported()) {
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
+	}
 	if (customBufferFunction == NULL) initBuffer(); else (*customBufferFunction)(&vbo, this, customData);
-	glBindVertexArray(0);
+	if (vertexArrayObjectSupported()) glBindVertexArray(0);
 	for (char i = 0; i < 16; i++) glDisableVertexAttribArray(i);
 	glBindTexture(GL_TEXTURE_RECTANGLE, 0);
 }
@@ -142,7 +145,7 @@ Sprite::~Sprite() {
 		for (unsigned i = 0; i < frames; i++) glDeleteTextures(1, &(texture_[i]));
 	}
 	glDeleteBuffers(1, &vbo);
-	glDeleteVertexArrays(1, &vao);
+	if (vertexArrayObjectSupported()) glDeleteVertexArrays(1, &vao);
 }
 
 void Sprite::initBuffer() {
@@ -231,11 +234,18 @@ void Sprite::defaultDraw(Shader * shaderToUse, spriteDrawParams * params) {
 			shaderToUse->setUniform16(PROJECTION_LOCATION, getMatrix(PROJECTION_MATRIX));
 			shaderToUse->setUniform1(TEXSAMPLER_LOCATION, 0);
 
-			glBindVertexArray(vao);
-			glBindBuffer(GL_ARRAY_BUFFER, vbo);
+			if (vertexArrayObjectSupported()) {
+				glBindVertexArray(vao);
+				glBindBuffer(GL_ARRAY_BUFFER, vbo);
+			} else {
+				glBindBuffer(GL_ARRAY_BUFFER, vbo);
+				glVertexAttribPointer(VERTEX_ATTRIBUTE, 4, GL_FLOAT, GL_FALSE, 0, 0);
+				glEnableVertexAttribArray(VERTEX_ATTRIBUTE);
+			}
+
 			glDrawArrays(GL_TRIANGLES, 0, vertices_);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			glBindVertexArray(0);
+			if (vertexArrayObjectSupported()) glBindVertexArray(0);
 		popMatrix();
 	}
 }

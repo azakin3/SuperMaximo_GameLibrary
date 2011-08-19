@@ -96,7 +96,7 @@ Model::~Model() {
 	glDeleteTextures(1, &texture);
 	for (unsigned i = 0; i < bones_.size(); i++) delete bones_[i];
 	glDeleteBuffers(1, &vbo);
-	glDeleteVertexArrays(1, &vao);
+	if (vertexArrayObjectSupported()) glDeleteVertexArrays(1, &vao);
 }
 
 void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage,
@@ -442,10 +442,12 @@ void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage,
 	}
 	vertexCount_ = triangles_.size()*3;
 
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
+	if (vertexArrayObjectSupported()) {
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
+	}
 	if (customBufferFunction == NULL) initBufferObj(bufferUsage); else (*customBufferFunction)(&vbo, this, customData);
-	glBindVertexArray(0);
+	if (vertexArrayObjectSupported()) glBindVertexArray(0);
 	for (char i = 0; i < 16; i++) glDisableVertexAttribArray(i);
 }
 
@@ -478,8 +480,10 @@ void Model::loadSmm(string path, string fileName, bufferUsageEnum bufferUsage) {
 	}
 	for (unsigned i = 0; i < arraySize; i++) data[i] = strtof(text[i+1].c_str(), NULL);
 
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
+	if (vertexArrayObjectSupported()) {
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
+	}
 
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -519,7 +523,7 @@ void Model::loadSmm(string path, string fileName, bufferUsageEnum bufferUsage) {
 	glEnableVertexAttribArray(EXTRA3_ATTRIBUTE);
 	glEnableVertexAttribArray(EXTRA4_ATTRIBUTE);
 
-	glBindVertexArray(0);
+	if (vertexArrayObjectSupported()) glBindVertexArray(0);
 	delete[] data;
 
 	unsigned textureCount = atoi(text[arraySize+1].c_str());
@@ -1293,6 +1297,42 @@ string Model::name() {
 	return name_;
 }
 
+inline void setupVertexAttribs() {
+	glVertexAttribPointer(VERTEX_ATTRIBUTE, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24, 0);
+	glVertexAttribPointer(NORMAL_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*4));
+	glVertexAttribPointer(COLOR0_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*7));
+	glVertexAttribPointer(COLOR1_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*10));
+	glVertexAttribPointer(COLOR2_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*13));
+	glVertexAttribPointer(TEXTURE0_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*16));
+	glVertexAttribPointer(EXTRA0_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*19));
+	glVertexAttribPointer(EXTRA1_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*20));
+	glVertexAttribPointer(EXTRA2_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*21));
+	glVertexAttribPointer(EXTRA3_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*22));
+	glVertexAttribPointer(EXTRA4_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*24,
+			(const GLvoid*)(sizeof(GLfloat)*23));
+
+	glEnableVertexAttribArray(VERTEX_ATTRIBUTE);
+	glEnableVertexAttribArray(NORMAL_ATTRIBUTE);
+	glEnableVertexAttribArray(COLOR0_ATTRIBUTE);
+	glEnableVertexAttribArray(COLOR1_ATTRIBUTE);
+	glEnableVertexAttribArray(COLOR2_ATTRIBUTE);
+	glEnableVertexAttribArray(TEXTURE0_ATTRIBUTE);
+	glEnableVertexAttribArray(EXTRA0_ATTRIBUTE);
+	glEnableVertexAttribArray(EXTRA1_ATTRIBUTE);
+	glEnableVertexAttribArray(EXTRA2_ATTRIBUTE);
+	glEnableVertexAttribArray(EXTRA3_ATTRIBUTE);
+	glEnableVertexAttribArray(EXTRA4_ATTRIBUTE);
+}
+
 void Model::draw(float x, float y, float z, float xRotation, float yRotation, float zRotation, float xScale,
 		float yScale, float zScale, float frame, int currentAnimationId, bool skipAnimation) {
 	Shader * shaderToUse;
@@ -1322,9 +1362,12 @@ void Model::draw(float x, float y, float z, float xRotation, float yRotation, fl
 				shaderToUse->setUniform16(EXTRA0_LOCATION, (float*)matrixArray, bones_.size());
 			}
 
-			glBindVertexArray(vao);
+			if (vertexArrayObjectSupported()) glBindVertexArray(vao); else {
+				glBindBuffer(GL_ARRAY_BUFFER, vbo);
+				setupVertexAttribs();
+			}
 			glDrawArrays(GL_TRIANGLES, 0, vertexCount_);
-			glBindVertexArray(0);
+			if (vertexArrayObjectSupported()) glBindVertexArray(0); else glBindBuffer(GL_ARRAY_BUFFER, 0);
 			/*glBindVertexArray(vao);
 			if (loadedFromObj) drawObj(shaderToUse); else {
 				if (!skipAnimation) {
@@ -1411,9 +1454,12 @@ void Model::draw(Object * object, bool skipAnimation) {//, bool skipHitboxes) {
 				shaderToUse->setUniform16(EXTRA0_LOCATION, (float*)matrixArray, bones_.size());
 			}
 
-			glBindVertexArray(vao);
+			if (vertexArrayObjectSupported()) glBindVertexArray(vao); else {
+				glBindBuffer(GL_ARRAY_BUFFER, vbo);
+				setupVertexAttribs();
+			}
 			glDrawArrays(GL_TRIANGLES, 0, vertexCount_);
-			glBindVertexArray(0);
+			if (vertexArrayObjectSupported()) glBindVertexArray(0); else glBindBuffer(GL_ARRAY_BUFFER, 0);
 		popMatrix();
 	}
 	if (::boundShader() != NULL) glUseProgram(::boundShader()->program_); else glUseProgram(0);
