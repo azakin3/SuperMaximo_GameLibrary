@@ -33,10 +33,12 @@ public:
 	Texture(std::string newName, textureTypeEnum textureType, std::string fileName, ...);
 	Texture(std::string newName, textureTypeEnum textureType, unsigned numLayers, ...);
 	Texture(std::string newName, textureTypeEnum textureType, std::vector<std::string> fileNames);
+	Texture(std::string newName, textureTypeEnum textureType, unsigned numLayers, std::string * fileNames);
 	~Texture();
 	void reload(textureTypeEnum textureType, std::string fileName, ...);
 	void reload(textureTypeEnum textureType, unsigned numLayers, ...);
 	void reload(textureTypeEnum textureType, std::vector<std::string> fileNames);
+	void reload(textureTypeEnum textureType, unsigned numLayers, std::string * fileNames);
 	std::string name();
 	textureTypeEnum type();
 };

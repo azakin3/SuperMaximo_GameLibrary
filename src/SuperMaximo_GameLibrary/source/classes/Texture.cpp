@@ -57,6 +57,11 @@ Texture::Texture(string newName, textureTypeEnum textureType, vector<string> fil
 	reload(textureType, fileNames);
 }
 
+Texture::Texture(string newName, textureTypeEnum textureType, unsigned numLayers, string * fileNames) {
+	name_ = newName;
+	reload(textureType, numLayers, fileNames);
+}
+
 Texture::~Texture() {
 	glDeleteTextures(1, &texture);
 }
@@ -181,6 +186,84 @@ void Texture::reload(textureTypeEnum textureType, vector<string> fileNames) {
 							image->w*fileNames.size(), image->h, 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
 					else glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h,
 							fileNames.size(), 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
+					initialised = true;
+				}
+				if (texture2dArrayDisabled()) glTexSubImage2D(GL_TEXTURE_2D, 0, image->w*i, 0, image->w, image->h,
+						textureFormat, GL_UNSIGNED_BYTE, image->pixels);
+				else glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, image->w, image->h, 1, textureFormat,
+						GL_UNSIGNED_BYTE, image->pixels);
+				SDL_FreeSurface(image);
+			}
+		}
+		glBindTexture(textureType, 0);
+	} else {
+		SDL_Surface * image = IMG_Load(fileNames[0].c_str());
+		if (image == NULL) cout << "Could not load image " << fileNames[0] << endl; else {
+			GLenum textureFormat;
+			if (image->format->BytesPerPixel == 4) {
+				if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGBA; else textureFormat = GL_BGRA;
+			} else {
+				if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGB; else textureFormat = GL_BGR;
+			}
+			glGenTextures(1, &texture);
+			glBindTexture(textureType, texture);
+			glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+			if (textureType != TEXTURE_CUBE) {
+				glTexImage2D(textureType, 0, image->format->BytesPerPixel, image->w, image->h, 0, textureFormat,
+						GL_UNSIGNED_BYTE, image->pixels);
+				SDL_FreeSurface(image);
+			} else {
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, image->format->BytesPerPixel, image->w, image->h, 0,
+						textureFormat, GL_UNSIGNED_BYTE, image->pixels);
+				SDL_FreeSurface(image);
+
+				GLenum sides[5] = {GL_TEXTURE_CUBE_MAP_NEGATIVE_X, GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+						GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, GL_TEXTURE_CUBE_MAP_POSITIVE_Z, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z};
+				for (short i = 0; i < 4; i++) {
+					image = IMG_Load(fileNames[i+1].c_str());
+					if (image == NULL) cout << "Could not load image " << fileNames[i+1] << endl; else {
+						glTexImage2D(sides[i], 0, image->format->BytesPerPixel, image->w, image->h, 0, textureFormat,
+								GL_UNSIGNED_BYTE, image->pixels);
+						SDL_FreeSurface(image);
+					}
+				}
+			}
+			glBindTexture(textureType, 0);
+		}
+	}
+}
+
+void Texture::reload(textureTypeEnum textureType, unsigned numLayers, string * fileNames) {
+	type_ = textureType;
+	if (textureType == TEXTURE_3D) {
+		glGenTextures(1, &texture);
+		if (texture2dArrayDisabled()) {
+			glBindTexture(GL_TEXTURE_2D, texture);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		} else {
+			glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		}
+
+		bool initialised = false;
+		for (unsigned i = 0; i < numLayers; i++) {
+			SDL_Surface * image = IMG_Load(fileNames[i].c_str());
+			if (image == NULL) cout << "Could not load image " << fileNames[i] << endl; else {
+				GLenum textureFormat;
+				if (image->format->BytesPerPixel == 4) {
+					if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGBA; else textureFormat = GL_BGRA;
+				} else {
+					if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGB; else textureFormat = GL_BGR;
+				}
+				if (!initialised) {
+					if (texture2dArrayDisabled()) glTexImage2D(GL_TEXTURE_2D, 0, image->format->BytesPerPixel,
+							image->w*numLayers, image->h, 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
+					else glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h,
+							numLayers, 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
 					initialised = true;
 				}
 				if (texture2dArrayDisabled()) glTexSubImage2D(GL_TEXTURE_2D, 0, image->w*i, 0, image->w, image->h,
