@@ -116,6 +116,8 @@ void Texture::reload(textureTypeEnum textureType, unsigned numLayers, ...) {
 	if (textureType == TEXTURE_3D) {
 		glGenTextures(1, &texture);
 		if (texture2dArrayDisabled()) {
+			textureType = TEXTURE_2D;
+			type_ = TEXTURE_2D;
 			glBindTexture(GL_TEXTURE_2D, texture);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -162,6 +164,8 @@ void Texture::reload(textureTypeEnum textureType, vector<string> fileNames) {
 	if (textureType == TEXTURE_3D) {
 		glGenTextures(1, &texture);
 		if (texture2dArrayDisabled()) {
+			textureType = TEXTURE_2D;
+			type_ = TEXTURE_2D;
 			glBindTexture(GL_TEXTURE_2D, texture);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -240,6 +244,8 @@ void Texture::reload(textureTypeEnum textureType, unsigned numLayers, string * f
 	if (textureType == TEXTURE_3D) {
 		glGenTextures(1, &texture);
 		if (texture2dArrayDisabled()) {
+			textureType = TEXTURE_2D;
+			type_ = TEXTURE_2D;
 			glBindTexture(GL_TEXTURE_2D, texture);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
