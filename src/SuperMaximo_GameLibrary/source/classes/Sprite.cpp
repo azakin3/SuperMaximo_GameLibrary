@@ -77,10 +77,12 @@ Sprite::Sprite(string newName, string fileName, int imageX, int imageY, int imag
 	}
 	boundShader_ = NULL;
 	vertices_ = 6;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
+	if (vertexArrayObjectSupported()) {
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
+	}
 	if (customBufferFunction == NULL) initBuffer(); else (*customBufferFunction)(&vbo, this, customData);
-	glBindVertexArray(0);
+	if (vertexArrayObjectSupported()) glBindVertexArray(0);
 	for (char i = 0; i < 16; i++) glDisableVertexAttribArray(i);
 	glBindTexture(GL_TEXTURE_RECTANGLE, 0);
 }
@@ -220,7 +222,7 @@ void Sprite::defaultDraw(Shader * shaderToUse, spriteDrawParams * params) {
 	if (shaderToUse != NULL) {
 		while (params->frame >= frames) params->frame--;
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_RECTANGLE, texture_[params->frame-1]);
+		glBindTexture(GL_TEXTURE_RECTANGLE, texture_[params->frame]);
 		pushMatrix();
 			translateMatrix(params->x-originX, params->y-originY, params->depth);
 			translateMatrix(originX, originY, 0.0f);
