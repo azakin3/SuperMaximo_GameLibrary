@@ -7,12 +7,10 @@
 // Description : SuperMaximo GameLibrary Texture class
 //============================================================================
 
-#define GL3_PROTOTYPES 1
-#include <GL3/gl3.h>
-
 #include <iostream>
 #include <vector>
 using namespace std;
+#include <GL/glew.h>
 #include <SDL/SDL_image.h>
 #include "../../headers/classes/Texture.h"
 #include "../../headers/Utils.h"

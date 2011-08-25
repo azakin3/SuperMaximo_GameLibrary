@@ -11,8 +11,8 @@
 #include <vector>
 #include <cmath>
 using namespace std;
+#include <GL/glew.h>
 #include <SDL/SDL_video.h>
-#include <GL/gl.h>
 #include "../../headers/classes/Object.h"
 #include "../../headers/classes/Sprite.h"
 #include "../../headers/classes/Model.h"

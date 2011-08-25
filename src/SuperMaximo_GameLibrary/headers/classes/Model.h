@@ -13,7 +13,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
-#include <GL/gl.h>
+#include <GL/glew.h>
 #include "../Display.h"
 
 namespace SuperMaximo {

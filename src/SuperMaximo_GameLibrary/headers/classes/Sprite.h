@@ -13,7 +13,7 @@
 #include <iostream>
 #include <vector>
 #include <SDL/SDL_image.h>
-#include <GL/gl.h>
+#include <GL/glew.h>
 
 namespace SuperMaximo {
 

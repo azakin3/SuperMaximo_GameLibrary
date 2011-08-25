@@ -7,14 +7,12 @@
 // Description : SuperMaximo GameLibrary 3D Model class
 //============================================================================
 
-#define GL3_PROTOTYPES 1
-#include <GL3/gl3.h>
-
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <cmath>
 using namespace std;
+#include <GL/glew.h>
 #include <SDL/SDL_image.h>
 #include "../../headers/classes/Model.h"
 #include "../../headers/classes/Object.h"

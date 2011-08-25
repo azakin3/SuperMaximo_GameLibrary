@@ -7,12 +7,10 @@
 // Description : SuperMaximo GameLibrary Font class for drawing text
 //============================================================================
 
-#define GL3_PROTOTYPES 1
-#include <GL3/gl3.h>
-
 #include <iostream>
 #include <vector>
 using namespace std;
+#include <GL/glew.h>
 #include <SDL/SDL_ttf.h>
 #include "../../headers/classes/Font.h"
 #include "../../headers/classes/Shader.h"

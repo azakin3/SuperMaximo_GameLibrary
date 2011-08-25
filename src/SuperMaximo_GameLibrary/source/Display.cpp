@@ -7,13 +7,11 @@
 // Description : SuperMaximo GameLibrary OpenGL functions and helpful types
 //============================================================================
 
-#define GL3_PROTOTYPES 1
-#include <GL3/gl3.h>
-
 #include <iostream>
 #include <vector>
 #include <cmath>
 using namespace std;
+#include <GL/glew.h>
 #include <SDL/SDL_framerate.h>
 #include <SDL/SDL_video.h>
 #include <SDL/SDL_image.h>
@@ -337,6 +335,8 @@ bool initDisplay(unsigned width, unsigned height, unsigned depth, unsigned maxFr
 		maximumFramerate = maxFramerate;
 		if (maxFramerate > 0) idealFramerate = maxFramerate;
 		ticks = SDL_GetTicks();
+
+		if (glewInit() != GLEW_OK) return false;
 
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);

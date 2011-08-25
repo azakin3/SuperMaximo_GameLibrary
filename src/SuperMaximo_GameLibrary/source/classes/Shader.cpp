@@ -7,13 +7,12 @@
 // Description : SuperMaximo GameLibrary OpenGL GLSL Shader class
 //============================================================================
 
-#define GL3_PROTOTYPES 1
-#include <GL3/gl3.h>
 #include <iostream>
 #include <vector>
 #include <fstream>
 #include <cstdarg>
 using namespace std;
+#include <GL/glew.h>
 #include "../../headers/classes/Shader.h"
 #include "../../headers/Display.h"
 #include "../../headers/Utils.h"
