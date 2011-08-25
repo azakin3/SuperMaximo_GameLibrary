@@ -25,7 +25,7 @@ public:
 	std::string name();
 	void setVolume(int percentage, bool relative = false);
 	int volume();
-	int play(int newVolume = -1);
+	int play(int newVolume = -1, int channel = -1);
 	void stop();
 	void setSoundPosition(int angle = 90, int distance = 0);
 };

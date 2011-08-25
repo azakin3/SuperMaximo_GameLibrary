@@ -11,6 +11,7 @@
 #define UTILS_H_
 
 #include <iostream>
+#include <sstream>
 #include <math.h>
 #include "Display.h"
 

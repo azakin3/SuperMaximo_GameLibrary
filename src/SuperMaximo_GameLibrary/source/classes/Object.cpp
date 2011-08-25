@@ -323,6 +323,10 @@ unsigned Object::currentAnimation(int boneId) {
 }
 
 void Object::setFrame(float newFrame, bool relative, int boneId, bool withChildren) {
+	if (!hasModel_) {
+		if (relative) frame_.front() += newFrame*compensation(); else frame_.front() = newFrame;
+		return;
+	}
 	if (model_->bones_.size() == 0) return;
 
 	if (boneId < 0) boneId = 0;
