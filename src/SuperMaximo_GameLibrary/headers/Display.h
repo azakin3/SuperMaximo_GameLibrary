@@ -252,6 +252,9 @@ bool vertexArrayObjectSupported();
 void disableTexture2dArray();
 bool texture2dArrayDisabled();
 
+void disableTextureRectangle();
+bool textureRectangleDisabled();
+
 }
 
 #endif /* DISPLAY_H_ */

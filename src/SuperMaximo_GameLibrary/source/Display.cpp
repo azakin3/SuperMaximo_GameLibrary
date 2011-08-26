@@ -27,7 +27,8 @@ matrixEnum currentMatrixId;
 mat4 matrix[IDENTITY_MATRIX+1];
 vector<mat4> matrixStack[IDENTITY_MATRIX]; //We don't want a stack for the identity matrix.
 												//Make sure IDENTITY_MATRIX enum is last
-bool blendingEnabled_ = false, depthTestingEnabled_ = true, texture2dArrayDisabled_ = false;
+bool blendingEnabled_ = false, depthTestingEnabled_ = true, texture2dArrayDisabled_ = false,
+		textureRectangleDisabled_ = false;
 Shader * boundShader_ = NULL;
 customDrawFunctionType customDrawFunction = NULL;
 textureUnitEnum boundTexureUnit_ = TEXTURE0;
@@ -700,6 +701,14 @@ void disableTexture2dArray() {
 
 bool texture2dArrayDisabled() {
 	return texture2dArrayDisabled_;
+}
+
+void disableTextureRectangle() {
+	textureRectangleDisabled_ = true;
+}
+
+bool textureRectangleDisabled() {
+	return textureRectangleDisabled_;
 }
 
 }

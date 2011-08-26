@@ -38,6 +38,10 @@ Sprite::Sprite(string newName, string fileName, int imageX, int imageY, int imag
 	originY = newOriginY;
 	customDrawFunction = NULL;
 	image = IMG_Load(fileName.c_str());
+
+	GLenum textureType;
+	if (textureRectangleDisabled()) textureType = GL_TEXTURE_2D; else textureType = GL_TEXTURE_RECTANGLE;
+
 	if (image == NULL) cout << "Could not load image " << fileName << endl; else {
 		SDL_SetAlpha(image, 0, 0);
 		GLenum textureFormat;
@@ -65,10 +69,10 @@ Sprite::Sprite(string newName, string fileName, int imageX, int imageY, int imag
 			tempRect.x = frame*rect.w;
 			tempRect.y = row*rect.h;
 			SDL_BlitSurface(image, &tempRect, tempSurface, NULL);
-			glBindTexture(GL_TEXTURE_RECTANGLE, texture_[i]);
-			glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexImage2D(GL_TEXTURE_RECTANGLE, 0, tempSurface->format->BytesPerPixel, rect.w, rect.h, 0, textureFormat,
+			glBindTexture(textureType, texture_[i]);
+			glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexImage2D(textureType, 0, tempSurface->format->BytesPerPixel, rect.w, rect.h, 0, textureFormat,
 					GL_UNSIGNED_BYTE, tempSurface->pixels);
 		}
 		SDL_FreeSurface(tempSurface);
@@ -82,7 +86,7 @@ Sprite::Sprite(string newName, string fileName, int imageX, int imageY, int imag
 	if (customBufferFunction == NULL) initBuffer(); else (*customBufferFunction)(&vbo, this, customData);
 	if (vertexArrayObjectSupported()) glBindVertexArray(0);
 	for (char i = 0; i < 16; i++) glDisableVertexAttribArray(i);
-	glBindTexture(GL_TEXTURE_RECTANGLE, 0);
+	glBindTexture(textureType, 0);
 }
 
 Sprite::Sprite(string newName, SDL_Surface * surface, int imageX, int imageY, int imageWidth, int imageHeight,
@@ -107,6 +111,10 @@ Sprite::Sprite(string newName, SDL_Surface * surface, int imageX, int imageY, in
 	}
 	SDL_Surface * tempSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, rect.w, rect.h, 32, 0, 0, 0, 0);
 	SDL_Rect tempRect = rect;
+
+	GLenum textureType;
+	if (textureRectangleDisabled()) textureType = GL_TEXTURE_2D; else textureType = GL_TEXTURE_RECTANGLE;
+
 	for (unsigned i = 0; i < frames; i++) {
 		int frame = i, row = 0;
 		int numFrames = div(image->w, rect.w).quot;
@@ -119,11 +127,11 @@ Sprite::Sprite(string newName, SDL_Surface * surface, int imageX, int imageY, in
 		tempRect.x = frame*rect.w;
 		tempRect.y = row*rect.h;
 		SDL_BlitSurface(image, &tempRect, tempSurface, NULL);
-		glBindTexture(GL_TEXTURE_RECTANGLE, texture_[i]);
-		glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_RECTANGLE, 0, image->format->BytesPerPixel, rect.w, rect.h, 0, textureFormat,
-				GL_UNSIGNED_BYTE, tempSurface->pixels);
+		glBindTexture(textureType, texture_[i]);
+		glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexImage2D(textureType, 0, image->format->BytesPerPixel, rect.w, rect.h, 0, textureFormat, GL_UNSIGNED_BYTE,
+				tempSurface->pixels);
 	}
 	SDL_FreeSurface(tempSurface);
 	boundShader_ = NULL;
@@ -136,7 +144,7 @@ Sprite::Sprite(string newName, SDL_Surface * surface, int imageX, int imageY, in
 	if (customBufferFunction == NULL) initBuffer(); else (*customBufferFunction)(&vbo, this, customData);
 	if (vertexArrayObjectSupported()) glBindVertexArray(0);
 	for (char i = 0; i < 16; i++) glDisableVertexAttribArray(i);
-	glBindTexture(GL_TEXTURE_RECTANGLE, 0);
+	glBindTexture(textureType, 0);
 }
 
 Sprite::~Sprite() {
@@ -220,7 +228,10 @@ void Sprite::defaultDraw(Shader * shaderToUse, spriteDrawParams * params) {
 	if (shaderToUse != NULL) {
 		while (params->frame >= frames) params->frame--;
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_RECTANGLE, texture_[params->frame]);
+
+		if (textureRectangleDisabled()) glBindTexture(GL_TEXTURE_2D, texture_[params->frame]);
+		else glBindTexture(GL_TEXTURE_RECTANGLE, texture_[params->frame]);
+
 		pushMatrix();
 			translateMatrix(params->x-originX, params->y-originY, params->depth);
 			translateMatrix(originX, originY, 0.0f);
