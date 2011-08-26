@@ -72,38 +72,38 @@ bool NetworkService::startServer(int newMaxSockets, int newPort) {
 	maxSockets = newMaxSockets, serverPort = newPort;
 	bool result = true;
 	for (int i  = 0; i < maxSockets; i++) {
-		serverTCPSockets.push_back(NULL);
-		serverUDPAddresses.push_back(NULL);
+		serverTcpSockets.push_back(NULL);
+		serverUdpAddresses.push_back(NULL);
 	}
 	cout << "Attempting to start server on port " << serverPort << endl;
-	serverTCPSocketSet = SDLNet_AllocSocketSet(maxSockets+2);
-	serverUDPSocketSet = SDLNet_AllocSocketSet(maxSockets+1);
-	if ((serverTCPSocketSet == NULL) || (serverUDPSocketSet == NULL)) {
+	serverTcpSocketSet = SDLNet_AllocSocketSet(maxSockets+2);
+	serverUdpSocketSet = SDLNet_AllocSocketSet(maxSockets+1);
+	if ((serverTcpSocketSet == NULL) || (serverUdpSocketSet == NULL)) {
 		cout << "Socketsets could not be initalised" << endl;
 		cout << SDLNet_GetError() << endl;
-		if (serverTCPSocketSet != NULL) SDLNet_FreeSocketSet(serverTCPSocketSet);
-		if (serverUDPSocketSet != NULL) SDLNet_FreeSocketSet(serverUDPSocketSet);
+		if (serverTcpSocketSet != NULL) SDLNet_FreeSocketSet(serverTcpSocketSet);
+		if (serverUdpSocketSet != NULL) SDLNet_FreeSocketSet(serverUdpSocketSet);
 		result = false;
-	} else if (SDLNet_ResolveHost(&serverIP, NULL, serverPort) == -1) {
+	} else if (SDLNet_ResolveHost(&serverIp, NULL, serverPort) == -1) {
 		cout << "Host could not be resolved for initialising server" << endl;
 		cout << SDLNet_GetError() << endl;
-		SDLNet_FreeSocketSet(serverTCPSocketSet);
-		SDLNet_FreeSocketSet(serverUDPSocketSet);
+		SDLNet_FreeSocketSet(serverTcpSocketSet);
+		SDLNet_FreeSocketSet(serverUdpSocketSet);
 		result = false;
 	} else {
-		serverTCPSocket = SDLNet_TCP_Open(&serverIP);
-		serverUDPSocket = SDLNet_UDP_Open(serverPort);
-		if ((serverTCPSocket == NULL) || (serverUDPSocket == NULL)) {
+		serverTcpSocket = SDLNet_TCP_Open(&serverIp);
+		serverUdpSocket = SDLNet_UDP_Open(serverPort);
+		if ((serverTcpSocket == NULL) || (serverUdpSocket == NULL)) {
 			cout << "TCP or UDP sockets could not be opened" << endl;
 			cout << SDLNet_GetError() << endl;
 			closeServer();
 			result = false;
-		} else if (SDLNet_TCP_AddSocket(serverTCPSocketSet, serverTCPSocket) == -1) {
+		} else if (SDLNet_TCP_AddSocket(serverTcpSocketSet, serverTcpSocket) == -1) {
 			cout << "Server TCP socket could not be added to TCP socketset" << endl;
 			cout << SDLNet_GetError() << endl;
 			closeServer();
 			result = false;
-		} else if (SDLNet_UDP_AddSocket(serverUDPSocketSet, serverUDPSocket) == -1) {
+		} else if (SDLNet_UDP_AddSocket(serverUdpSocketSet, serverUdpSocket) == -1) {
 			cout << "Server UDP socket could not be added to UDP socketset" << endl;
 			cout << SDLNet_GetError() << endl;
 			closeServer();
@@ -123,12 +123,12 @@ void NetworkService::closeServer() {
 	for (int i = 0; i < maxSockets; i++) {
 		if (clientExists(i)) kickClient(i);
 	}
-	serverTCPSockets.clear();
-	serverUDPAddresses.clear();
-	if (serverTCPSocket != NULL) SDLNet_TCP_Close(serverTCPSocket);
-	if (serverUDPSocket != NULL) SDLNet_UDP_Close(serverUDPSocket);
-	if (serverTCPSocketSet != NULL) SDLNet_FreeSocketSet(serverTCPSocketSet);
-	if (serverUDPSocketSet != NULL) SDLNet_FreeSocketSet(serverUDPSocketSet);
+	serverTcpSockets.clear();
+	serverUdpAddresses.clear();
+	if (serverTcpSocket != NULL) SDLNet_TCP_Close(serverTcpSocket);
+	if (serverUdpSocket != NULL) SDLNet_UDP_Close(serverUdpSocket);
+	if (serverTcpSocketSet != NULL) SDLNet_FreeSocketSet(serverTcpSocketSet);
+	if (serverUdpSocketSet != NULL) SDLNet_FreeSocketSet(serverUdpSocketSet);
 
 	cout << "Server shut down" << endl;
 }
@@ -139,10 +139,10 @@ bool NetworkService::restartServer() {
 }
 
 Uint32 NetworkService::newLocalAddress() {
-	localHostName = SDLNet_ResolveIP(&localResolveIP);
-	if (serverStart) SDLNet_ResolveHost(&localResolveIP, localHostName.c_str(), serverPort);
-		else SDLNet_ResolveHost(&localResolveIP, localHostName.c_str(), 9001);
-	localAddress_ = localResolveIP.host;
+	localHostName = SDLNet_ResolveIP(&localResolveIp);
+	if (serverStart) SDLNet_ResolveHost(&localResolveIp, localHostName.c_str(), serverPort);
+		else SDLNet_ResolveHost(&localResolveIp, localHostName.c_str(), 9001);
+	localAddress_ = localResolveIp.host;
 	return SDLNet_Read32(&localAddress_);
 }
 
@@ -151,122 +151,122 @@ Uint32 NetworkService::localAddress() {
 	return SDLNet_Read32(&localAddress_);
 }
 
-int NetworkService::checkForNewClient(bool useUDP) {
-	int newClientID = -1;
-	if (SDLNet_CheckSockets(serverTCPSocketSet, 0) > 0) {
-		if (SDLNet_SocketReady((SDLNet_GenericSocket)serverTCPSocket)) {
+int NetworkService::checkForNewClient(bool useUdp) {
+	int newClientId = -1;
+	if (SDLNet_CheckSockets(serverTcpSocketSet, 0) > 0) {
+		if (SDLNet_SocketReady((SDLNet_GenericSocket)serverTcpSocket)) {
 			for (int i = 0; i < maxSockets; i++) {
-				if (serverTCPSockets[i] == NULL) {
-					serverTCPSockets[i] = SDLNet_TCP_Accept(serverTCPSocket);
-					if (serverTCPSockets[i] != NULL) {
-						if (SDLNet_TCP_AddSocket(serverTCPSocketSet, serverTCPSockets[i]) == -1) {
+				if (serverTcpSockets[i] == NULL) {
+					serverTcpSockets[i] = SDLNet_TCP_Accept(serverTcpSocket);
+					if (serverTcpSockets[i] != NULL) {
+						if (SDLNet_TCP_AddSocket(serverTcpSocketSet, serverTcpSockets[i]) == -1) {
 							cout << "Client TCP socket could not be added to TCP socketset (the socket may be NULL or"
 									"the socketset may be full" << endl;
-							SDLNet_TCP_Close(serverTCPSockets[i]);
-							serverTCPSockets[i] = NULL;
-						} else newClientID = i;
+							SDLNet_TCP_Close(serverTcpSockets[i]);
+							serverTcpSockets[i] = NULL;
+						} else newClientId = i;
 					}
 					break;
 				} else {
 					if (i == maxSockets-1) {
 						cout << "No free TCP sockets" << endl;
-						serverTCPSockets[i+1] = SDLNet_TCP_Accept(serverTCPSocket);
-						SDLNet_TCP_AddSocket(serverTCPSocketSet, serverTCPSockets[i+1]);
-						do {} while (!sendStrTCP("DISCONNECTED", i+1, true));
+						serverTcpSockets[i+1] = SDLNet_TCP_Accept(serverTcpSocket);
+						SDLNet_TCP_AddSocket(serverTcpSocketSet, serverTcpSockets[i+1]);
+						do {} while (!sendStrTcp("DISCONNECTED", i+1, true));
 						kickClient(i+1);
 					}
 				}
 			}
 		}
 	}
-	if (useUDP && (newClientID > -1)) {
+	if (useUdp && (newClientId > -1)) {
 		bool quit = false;
-		int num, newID;
+		int num, newId;
 		do {
-			if (recvStrTCP(newClientID, true) == "DISCONNECTED") {
-				kickClient(newClientID);
+			if (recvStrTcp(newClientId, true) == "DISCONNECTED") {
+				kickClient(newClientId);
 				return -1;
 			}
 			cout << "Waiting for message via UDP" << endl;
-			num = recvIntUDP(&newID, true);
+			num = recvIntUdp(&newId, true);
 			if (keyPressed(27)) quit = true;
-		} while (!(((num = 123) && (newID < 0)) || quit));
+		} while (!(((num = 123) && (newId < 0)) || quit));
 		if (quit) return -1;
-		serverUDPAddresses[newClientID] = new IPaddress;
-		*serverUDPAddresses[newClientID] = recvIntPacket->address;
+		serverUdpAddresses[newClientId] = new IPaddress;
+		*serverUdpAddresses[newClientId] = recvIntPacket->address;
 		do {
 			if (keyPressed(27)) quit = true;
-		} while (!(sendStrTCP("CAPTURED", newClientID, true) || quit));
+		} while (!(sendStrTcp("CAPTURED", newClientId, true) || quit));
 		if (quit) return -1;
 		do {
-			if (sendIntUDP(123, newClientID, true)) cout << "Sending message via UDP to new client" << endl;
-			recvStrTCP(newClientID, true);
+			if (sendIntUdp(123, newClientId, true)) cout << "Sending message via UDP to new client" << endl;
+			recvStrTcp(newClientId, true);
 			if (keyPressed(27)) recvStrBuffer = "DISCONNECTED";
 			if (recvStrBuffer == "DISCONNECTED") break;
 		} while (recvStrBuffer != "CONNECTED");
 		if (recvStrBuffer == "DISCONNECTED") {
-			kickClient(newClientID);
+			kickClient(newClientId);
 			return -1;
 		} else {
 			do {
 				cout << "Allocating ID to new client" << endl;
-				recvIntTCP(newClientID, true);
+				recvIntTcp(newClientId, true);
 				if (keyPressed(27)) {
-					kickClient(newClientID);
+					kickClient(newClientId);
 					return -1;
 				}
-			} while (!sendIntTCP(newClientID+100, newClientID, true));
-			if (SDLNet_UDP_Bind(serverUDPSocket, newClientID, serverUDPAddresses[newClientID]) < 0) {
-				kickClient(newClientID);
+			} while (!sendIntTcp(newClientId+100, newClientId, true));
+			if (SDLNet_UDP_Bind(serverUdpSocket, newClientId, serverUdpAddresses[newClientId]) < 0) {
+				kickClient(newClientId);
 				return -1;
 			}
-			cout << "Client " << newClientID << " has connected" << endl;
+			cout << "Client " << newClientId << " has connected" << endl;
 		}
 	}
-	return newClientID;
+	return newClientId;
 }
 
-bool NetworkService::clientExists(int ID) {
-	if (serverTCPSockets[ID] != NULL) return false; else return true;
+bool NetworkService::clientExists(int id) {
+	if (serverTcpSockets[id] != NULL) return false; else return true;
 }
 
 int NetworkService::totalClients() {
 	int count = 0;
-	for (unsigned int i = 0; i < serverTCPSockets.size(); i++) {
-		if (serverTCPSockets[i] != NULL) count += 1;
+	for (unsigned int i = 0; i < serverTcpSockets.size(); i++) {
+		if (serverTcpSockets[i] != NULL) count += 1;
 	}
 	return count;
 }
 
-void NetworkService::kickClient(int ID) {
+void NetworkService::kickClient(int id) {
 	bool sockPresent = false;
-	if (serverTCPSockets[ID] != NULL) {
-		SDLNet_TCP_DelSocket(serverTCPSocketSet, serverTCPSockets[ID]);
+	if (serverTcpSockets[id] != NULL) {
+		SDLNet_TCP_DelSocket(serverTcpSocketSet, serverTcpSockets[id]);
 		sockPresent = true;
 	}
-	if (serverTCPSockets[ID] != NULL) {
-		SDLNet_TCP_Close(serverTCPSockets[ID]);
+	if (serverTcpSockets[id] != NULL) {
+		SDLNet_TCP_Close(serverTcpSockets[id]);
 		sockPresent = true;
 	}
-	serverTCPSockets[ID] = NULL;
-	delete serverUDPAddresses[ID];
-	serverUDPAddresses[ID] = NULL;
-	SDLNet_UDP_Unbind(serverUDPSocket, ID);
-	if ((ID != maxSockets) && (sockPresent)) cout << "Client " << ID << " disconnected" << endl;
+	serverTcpSockets[id] = NULL;
+	delete serverUdpAddresses[id];
+	serverUdpAddresses[id] = NULL;
+	SDLNet_UDP_Unbind(serverUdpSocket, id);
+	if ((id != maxSockets) && (sockPresent)) cout << "Client " << id << " disconnected" << endl;
 }
 
 bool NetworkService::startClient(string newAddress, int newPort) {
-	clientStart = true, clientID = -1, clientAddress = newAddress, clientPort = newPort, clientUDPSocket = NULL;
-	clientTCPSockets.push_back(NULL);
-	clientUDPAddresses.push_back(NULL);
-	clientTCPSocketSet = SDLNet_AllocSocketSet(1);
-	clientUDPSocketSet = SDLNet_AllocSocketSet(1);
-	if ((clientTCPSocketSet == NULL) || (clientUDPSocketSet == NULL)) {
+	clientStart = true, clientId = -1, clientAddress = newAddress, clientPort = newPort, clientUdpSocket = NULL;
+	clientTcpSockets.push_back(NULL);
+	clientUdpAddresses.push_back(NULL);
+	clientTcpSocketSet = SDLNet_AllocSocketSet(1);
+	clientUdpSocketSet = SDLNet_AllocSocketSet(1);
+	if ((clientTcpSocketSet == NULL) || (clientUdpSocketSet == NULL)) {
 		cout << "Could not initialise client socketsets" << endl;
 		closeClient();
 		return false;
 	} else {
-		if (SDLNet_ResolveHost(&clientIP, clientAddress.c_str(), clientPort) == -1) {
+		if (SDLNet_ResolveHost(&clientIp, clientAddress.c_str(), clientPort) == -1) {
 			cout << "Could not resolve host" << endl;
 			closeClient();
 			return false;
@@ -277,23 +277,23 @@ bool NetworkService::startClient(string newAddress, int newPort) {
 
 void NetworkService::closeClient() {
 	clientStart = false;
-	if (clientUDPAddresses[0] != NULL) delete clientUDPAddresses[0];
-	clientUDPAddresses.clear();
-	if (clientTCPSockets[0] != NULL) {
-		SDLNet_TCP_Close(clientTCPSockets[0]);
+	if (clientUdpAddresses[0] != NULL) delete clientUdpAddresses[0];
+	clientUdpAddresses.clear();
+	if (clientTcpSockets[0] != NULL) {
+		SDLNet_TCP_Close(clientTcpSockets[0]);
 		cout << "Closing TCP connection to server" << endl;
 	}
-	clientTCPSockets[0] = NULL;
-	clientTCPSockets.clear();
-	if (clientUDPSocket != NULL) {
-		SDLNet_UDP_Close(clientUDPSocket);
+	clientTcpSockets[0] = NULL;
+	clientTcpSockets.clear();
+	if (clientUdpSocket != NULL) {
+		SDLNet_UDP_Close(clientUdpSocket);
 		cout << "Closing UDP connections on port " << clientPort << endl;
 	}
-	clientUDPSocket = NULL;
-	if (clientTCPSocketSet != NULL) SDLNet_FreeSocketSet(clientTCPSocketSet);
-	clientTCPSocketSet = NULL;
-	if (clientUDPSocketSet != NULL) SDLNet_FreeSocketSet(clientUDPSocketSet);
-	clientUDPSocketSet = NULL;
+	clientUdpSocket = NULL;
+	if (clientTcpSocketSet != NULL) SDLNet_FreeSocketSet(clientTcpSocketSet);
+	clientTcpSocketSet = NULL;
+	if (clientUdpSocketSet != NULL) SDLNet_FreeSocketSet(clientUdpSocketSet);
+	clientUdpSocketSet = NULL;
 	cout << "Client shut down" << endl;
 }
 
@@ -302,16 +302,16 @@ bool NetworkService::restartClient() {
 	return startClient(clientAddress, clientPort);
 }
 
-bool NetworkService::connectToServer(bool useUDP) {
-	clientTCPSockets[0] = SDLNet_TCP_Open(&clientIP);
-	if (clientTCPSockets[0] != NULL) {
-		SDLNet_TCP_AddSocket(clientTCPSocketSet, clientTCPSockets[0]);
-		if (useUDP) {
-			clientUDPSocket = SDLNet_UDP_Open(0);
-			if (clientUDPSocket != NULL) {
-				SDLNet_TCP_AddSocket(clientUDPSocketSet, clientUDPSocket);
-				clientUDPAddresses[0] = new IPaddress;
-				*clientUDPAddresses[0] = clientIP;
+bool NetworkService::connectToServer(bool useUdp) {
+	clientTcpSockets[0] = SDLNet_TCP_Open(&clientIp);
+	if (clientTcpSockets[0] != NULL) {
+		SDLNet_TCP_AddSocket(clientTcpSocketSet, clientTcpSockets[0]);
+		if (useUdp) {
+			clientUdpSocket = SDLNet_UDP_Open(0);
+			if (clientUdpSocket != NULL) {
+				SDLNet_UDP_AddSocket(clientUdpSocketSet, clientUdpSocket);
+				clientUdpAddresses[0] = new IPaddress;
+				*clientUdpAddresses[0] = clientIp;
 			} else {
 				cout << "UDP socket could not be opened" << endl;
 				return false;
@@ -321,10 +321,10 @@ bool NetworkService::connectToServer(bool useUDP) {
 		cout << "TCP socket with server could not be opened" << endl;
 		return false;
 	}
-	if (!useUDP) return true;
+	if (!useUdp) return true;
 	do {
-		if (sendIntUDP(123)) cout << "Sending message via UDP" << endl;
-		recvStrTCP();
+		if (sendIntUdp(123)) cout << "Sending message via UDP" << endl;
+		recvStrTcp();
 		if (keyPressed(27)) recvStrBuffer = "DISCONNECTED";
 		if (recvStrBuffer == "DISCONNECTED") break;
 	} while (recvStrBuffer != "CAPTURED");
@@ -332,13 +332,13 @@ bool NetworkService::connectToServer(bool useUDP) {
 		closeClient();
 		return false;
 	} else {
-		int num, newID;
+		int num, newId;
 		do {
 			cout << "Waiting for response from server..." << endl;
-			num = recvIntUDP(&newID);
+			num = recvIntUdp(&newId);
 			if (keyPressed(27)) num = -1;
 			if (num == -1) break;
-		} while (!((num == 123) && (newID == -1)));
+		} while (!((num == 123) && (newId == -1)));
 		if (recvStrBuffer != "DISCONNECTED") {
 			do {
 				cout << "Sending success message to server via TCP" << endl;
@@ -346,7 +346,7 @@ bool NetworkService::connectToServer(bool useUDP) {
 					closeClient();
 					return false;
 				}
-			} while(!sendStrTCP("CONNECTED"));
+			} while(!sendStrTcp("CONNECTED"));
 			cout << "Waiting for response from server..." << endl;
 			do {
 				if (keyPressed(27)) {
@@ -354,14 +354,14 @@ bool NetworkService::connectToServer(bool useUDP) {
 					return false;
 				}
 				cout << "Waiting for client ID allocation from server via TCP" << endl;
-				clientID = recvIntTCP();
-				cout << clientID << " received from server" << endl;
-				if (clientID < 100) sendStrTCP("NEEDID");
-			} while (!((clientID == -1) || (clientID > 99)));
-			if (clientID > 99) {
-				clientID -= 100;
-				cout << "Connected to server" << endl << "ID for this client is " << clientID << endl;
-				SDLNet_UDP_Bind(clientUDPSocket, clientID, clientUDPAddresses[0]);
+				clientId = recvIntTcp();
+				cout << clientId << " received from server" << endl;
+				if (clientId < 100) sendStrTcp("NEEDID");
+			} while (!((clientId == -1) || (clientId > 99)));
+			if (clientId > 99) {
+				clientId -= 100;
+				cout << "Connected to server" << endl << "ID for this client is " << clientId << endl;
+				SDLNet_UDP_Bind(clientUdpSocket, clientId, clientUdpAddresses[0]);
 				return true;
 			} else {
 				closeClient();
@@ -375,16 +375,16 @@ bool NetworkService::connectToServer(bool useUDP) {
 }
 
 int NetworkService::clientNumber() {
-	return clientID;
+	return clientId;
 }
 
-bool NetworkService::sendStrTCP(string data, int ID, bool isServer, int size) {
+bool NetworkService::sendStrTcp(string data, int id, bool isServer, int size) {
 	if (size < 1) size = STR_SIZE;
-	if (isServer) SDLNet_CheckSockets(serverTCPSocketSet, WAIT_TIME);
-		else SDLNet_CheckSockets(clientTCPSocketSet, WAIT_TIME);
-	if (ID >= 0) {
+	if (isServer) SDLNet_CheckSockets(serverTcpSocketSet, WAIT_TIME);
+		else SDLNet_CheckSockets(clientTcpSocketSet, WAIT_TIME);
+	if (id >= 0) {
 		TCPsocket sock = NULL;
-		if (isServer) sock = serverTCPSockets[ID]; else sock = clientTCPSockets[0];
+		if (isServer) sock = serverTcpSockets[id]; else sock = clientTcpSockets[0];
 		sendStrBuffer = data;
 		if (sock != NULL) {
 			if (!SDLNet_SocketReady((SDLNet_GenericSocket)sock)) {
@@ -398,15 +398,15 @@ bool NetworkService::sendStrTCP(string data, int ID, bool isServer, int size) {
 	return true;
 }
 
-string NetworkService::recvStrTCP(int ID, bool isServer, int size) {
+string NetworkService::recvStrTcp(int id, bool isServer, int size) {
 	string returnStr = "";
 	if (size < 1) size = STR_SIZE;
 	int i = -1;
-	if (isServer) i = SDLNet_CheckSockets(serverTCPSocketSet, WAIT_TIME);
-		else i = SDLNet_CheckSockets(clientTCPSocketSet, WAIT_TIME);
+	if (isServer) i = SDLNet_CheckSockets(serverTcpSocketSet, WAIT_TIME);
+		else i = SDLNet_CheckSockets(clientTcpSocketSet, WAIT_TIME);
 	if (i > -1) {
 		TCPsocket sock = NULL;
-		if (isServer) sock = serverTCPSockets[ID]; else sock = clientTCPSockets[0];
+		if (isServer) sock = serverTcpSockets[id]; else sock = clientTcpSockets[0];
 		if (sock != NULL) {
 			if (SDLNet_SocketReady((SDLNet_GenericSocket)sock)) {
 				char buffer[STR_BUFFER_SIZE];
@@ -422,21 +422,21 @@ string NetworkService::recvStrTCP(int ID, bool isServer, int size) {
 		}
 	}
 	if (isServer && (returnStr == "NEEDID")) {
-		if (sendIntTCP(ID+100, ID, true)) cout << "Sending ID to a client via TCP" << endl; else {
-			do; while (recvStrTCP(ID, isServer, size) != "");
-			if (sendIntTCP(ID+100, ID, true)) cout << "Sending ID to a client via TCP" << endl;
+		if (sendIntTcp(id+100, id, true)) cout << "Sending ID to a client via TCP" << endl; else {
+			do; while (recvStrTcp(id, isServer, size) != "");
+			if (sendIntTcp(id+100, id, true)) cout << "Sending ID to a client via TCP" << endl;
 		}
 		returnStr = "";
 	}
 	return returnStr;
 }
 
-bool NetworkService::sendIntTCP(int data, int ID, bool isServer) {
-	if (isServer) SDLNet_CheckSockets(serverTCPSocketSet, WAIT_TIME);
-		else SDLNet_CheckSockets(clientTCPSocketSet, WAIT_TIME);
-	if (ID >= 0) {
+bool NetworkService::sendIntTcp(int data, int id, bool isServer) {
+	if (isServer) SDLNet_CheckSockets(serverTcpSocketSet, WAIT_TIME);
+		else SDLNet_CheckSockets(clientTcpSocketSet, WAIT_TIME);
+	if (id >= 0) {
 		TCPsocket sock = NULL;
-		if (isServer) sock = serverTCPSockets[ID]; else sock = clientTCPSockets[0];
+		if (isServer) sock = serverTcpSockets[id]; else sock = clientTcpSockets[0];
 		sendIntBuffer = data;
 		if (sock != NULL) {
 			if (!SDLNet_SocketReady((SDLNet_GenericSocket)sock)) {
@@ -447,13 +447,13 @@ bool NetworkService::sendIntTCP(int data, int ID, bool isServer) {
 	return true;
 }
 
-int NetworkService::recvIntTCP(int ID, bool isServer) {
+int NetworkService::recvIntTcp(int id, bool isServer) {
 	int i = -1;
-	if (isServer) i = SDLNet_CheckSockets(serverTCPSocketSet, WAIT_TIME);
-		else i = SDLNet_CheckSockets(clientTCPSocketSet, WAIT_TIME);
+	if (isServer) i = SDLNet_CheckSockets(serverTcpSocketSet, WAIT_TIME);
+		else i = SDLNet_CheckSockets(clientTcpSocketSet, WAIT_TIME);
 	if (i > -1) {
 		TCPsocket sock = NULL;
-		if (isServer) sock = serverTCPSockets[ID]; else sock = clientTCPSockets[0];
+		if (isServer) sock = serverTcpSockets[id]; else sock = clientTcpSockets[0];
 		if (sock != NULL) {
 			if (SDLNet_SocketReady((SDLNet_GenericSocket)sock)) {
 				if (SDLNet_TCP_Recv(sock, &recvIntBuffer, INT_SIZE) < 1) return -1; else return recvIntBuffer;
@@ -463,43 +463,43 @@ int NetworkService::recvIntTCP(int ID, bool isServer) {
 	return 0;
 }
 
-bool NetworkService::sendStrUDP(string data, int ID, bool isServer) {
-	if (isServer) SDLNet_CheckSockets(serverUDPSocketSet, WAIT_TIME);
-		else SDLNet_CheckSockets(clientUDPSocketSet, WAIT_TIME);
-	if (ID >= 0) {
+bool NetworkService::sendStrUdp(string data, int id, bool isServer) {
+	if (isServer) SDLNet_CheckSockets(serverUdpSocketSet, WAIT_TIME);
+		else SDLNet_CheckSockets(clientUdpSocketSet, WAIT_TIME);
+	if (id >= 0) {
 		UDPsocket sock = NULL;
-		if (isServer) sock = serverUDPSocket; else sock = clientUDPSocket;
+		if (isServer) sock = serverUdpSocket; else sock = clientUdpSocket;
 		if (!SDLNet_SocketReady((SDLNet_GenericSocket)sock)) {
 			if (sendStrPacket != NULL) {
 				SDLNet_FreePacket(sendStrPacket);
 				sendStrPacket = NULL;
 			}
 			IPaddress * addr = NULL;
-			if (isServer) addr = serverUDPAddresses[ID]; else addr = clientUDPAddresses[0];
+			if (isServer) addr = serverUdpAddresses[id]; else addr = clientUdpAddresses[0];
 			sendStrPacket = SDLNet_AllocPacket(data.size());
 			sendStrPacket->address = *addr;
 			sendStrPacket->data = (Uint8 *)data.c_str();
 			sendStrPacket->len = data.size();
 			sendStrPacket->maxlen = data.size();
-			int sendID;
-			if (isServer) sendID = -1; else sendID = clientID;
-			if (SDLNet_UDP_Send(sock, sendID, sendStrPacket) == 0) return false;
+			int sendId;
+			if (isServer) sendId = -1; else sendId = clientId;
+			if (SDLNet_UDP_Send(sock, sendId, sendStrPacket) == 0) return false;
 		} else {
-			recvStrUDP(isServer);
-			return sendStrUDP(data, ID, isServer);
+			recvStrUdp(isServer);
+			return sendStrUdp(data, id, isServer);
 		}
 	} else return false;
 	return true;
 }
 
-string NetworkService::recvStrUDP(bool isServer) {
+string NetworkService::recvStrUdp(bool isServer) {
 	int i = -1;
 	string returnStr = "";
-	if (isServer) i = SDLNet_CheckSockets(serverUDPSocketSet, WAIT_TIME);
-		else i = SDLNet_CheckSockets(clientUDPSocketSet, WAIT_TIME);
+	if (isServer) i = SDLNet_CheckSockets(serverUdpSocketSet, WAIT_TIME);
+		else i = SDLNet_CheckSockets(clientUdpSocketSet, WAIT_TIME);
 	if (i > -1) {
 		UDPsocket sock = NULL;
-		if (isServer) sock = serverUDPSocket; else sock = clientUDPSocket;
+		if (isServer) sock = serverUdpSocket; else sock = clientUdpSocket;
 		if (SDLNet_SocketReady((SDLNet_GenericSocket)sock)) {
 			if (recvStrPacket != NULL) {
 				SDLNet_FreePacket(recvStrPacket);
@@ -514,14 +514,14 @@ string NetworkService::recvStrUDP(bool isServer) {
 	return returnStr;
 }
 
-string NetworkService::recvStrUDP(int * IDBuffer, bool isServer) {
+string NetworkService::recvStrUdp(int * idBuffer, bool isServer) {
 	int i = -1;
 	string returnStr = "";
-	if (isServer) i = SDLNet_CheckSockets(serverUDPSocketSet, WAIT_TIME);
-		else i = SDLNet_CheckSockets(clientUDPSocketSet, WAIT_TIME);
+	if (isServer) i = SDLNet_CheckSockets(serverUdpSocketSet, WAIT_TIME);
+		else i = SDLNet_CheckSockets(clientUdpSocketSet, WAIT_TIME);
 	if (i > -1) {
 		UDPsocket sock = NULL;
-		if (isServer) sock = serverUDPSocket; else sock = clientUDPSocket;
+		if (isServer) sock = serverUdpSocket; else sock = clientUdpSocket;
 		if (SDLNet_SocketReady((SDLNet_GenericSocket)sock)) {
 			if (recvStrPacket != NULL) {
 				SDLNet_FreePacket(recvStrPacket);
@@ -530,24 +530,24 @@ string NetworkService::recvStrUDP(int * IDBuffer, bool isServer) {
 			recvStrPacket = SDLNet_AllocPacket(STR_SIZE);
 			if (SDLNet_UDP_Recv(sock, recvStrPacket) == -1) {
 				returnStr = "ERROR";
-				*IDBuffer = -1;
+				*idBuffer = -1;
 			} else {
 				for (i = 0; i < recvStrPacket->len; i++) returnStr += (char)recvStrPacket->data[i];
-				*IDBuffer = recvStrPacket->channel;
+				*idBuffer = recvStrPacket->channel;
 			}
 		} else return "";
 	}
 	return returnStr;
 }
 
-int NetworkService::recvStrUDP(string * stringBuffer, bool isServer) {
+int NetworkService::recvStrUdp(string * stringBuffer, bool isServer) {
 	int i = -1;
 	*stringBuffer = "";
-	if (isServer) i = SDLNet_CheckSockets(serverUDPSocketSet, WAIT_TIME);
-		else i = SDLNet_CheckSockets(clientUDPSocketSet, WAIT_TIME);
+	if (isServer) i = SDLNet_CheckSockets(serverUdpSocketSet, WAIT_TIME);
+		else i = SDLNet_CheckSockets(clientUdpSocketSet, WAIT_TIME);
 	if (i > -1) {
 		UDPsocket sock = NULL;
-		if (isServer) sock = serverUDPSocket; else sock = clientUDPSocket;
+		if (isServer) sock = serverUdpSocket; else sock = clientUdpSocket;
 		if (SDLNet_SocketReady((SDLNet_GenericSocket)sock)) {
 			if (recvStrPacket != NULL) {
 				SDLNet_FreePacket(recvStrPacket);
@@ -566,42 +566,42 @@ int NetworkService::recvStrUDP(string * stringBuffer, bool isServer) {
 	return i;
 }
 
-bool NetworkService::sendIntUDP(int data, int ID, bool isServer) {
-	if (isServer) SDLNet_CheckSockets(serverUDPSocketSet, WAIT_TIME);
-		else SDLNet_CheckSockets(clientUDPSocketSet, WAIT_TIME);
-	if (ID >= 0) {
+bool NetworkService::sendIntUdp(int data, int id, bool isServer) {
+	if (isServer) SDLNet_CheckSockets(serverUdpSocketSet, WAIT_TIME);
+		else SDLNet_CheckSockets(clientUdpSocketSet, WAIT_TIME);
+	if (id >= 0) {
 		UDPsocket sock = NULL;
-		if (isServer) sock = serverUDPSocket; else sock = clientUDPSocket;
+		if (isServer) sock = serverUdpSocket; else sock = clientUdpSocket;
 		if (!SDLNet_SocketReady((SDLNet_GenericSocket)sock)) {
 			if (sendIntPacket != NULL) {
 				SDLNet_FreePacket(sendIntPacket);
 				sendIntPacket = NULL;
 			}
 			IPaddress * addr = NULL;
-			if (isServer) addr = serverUDPAddresses[ID]; else addr = clientUDPAddresses[0];
+			if (isServer) addr = serverUdpAddresses[id]; else addr = clientUdpAddresses[0];
 			sendIntPacket = SDLNet_AllocPacket(INT_SIZE);
 			sendIntPacket->address = *addr;
 			sendIntPacket->data[0] = data;
 			sendIntPacket->len = INT_SIZE;
 			sendIntPacket->maxlen = INT_SIZE;
-			int sendID;
-			if (isServer) sendID = -1; else sendID = clientID;
-			if (SDLNet_UDP_Send(sock, sendID, sendIntPacket) == 0) return false;
+			int sendId;
+			if (isServer) sendId = -1; else sendId = clientId;
+			if (SDLNet_UDP_Send(sock, sendId, sendIntPacket) == 0) return false;
 		} else {
-			recvIntUDP(isServer);
-			return sendIntUDP(data, ID, isServer);
+			recvIntUdp(isServer);
+			return sendIntUdp(data, id, isServer);
 		}
 	} else return false;
 	return true;
 }
 
-int NetworkService::recvIntUDP(bool isServer) {
+int NetworkService::recvIntUdp(bool isServer) {
 	int i = -1;
-	if (isServer) i = SDLNet_CheckSockets(serverUDPSocketSet, WAIT_TIME);
-		else i = SDLNet_CheckSockets(clientUDPSocketSet, WAIT_TIME);
+	if (isServer) i = SDLNet_CheckSockets(serverUdpSocketSet, WAIT_TIME);
+		else i = SDLNet_CheckSockets(clientUdpSocketSet, WAIT_TIME);
 	if (i > -1) {
 		UDPsocket sock = NULL;
-		if (isServer) sock = serverUDPSocket; else sock = clientUDPSocket;
+		if (isServer) sock = serverUdpSocket; else sock = clientUdpSocket;
 		if (SDLNet_SocketReady((SDLNet_GenericSocket)sock)) {
 			if (recvIntPacket != NULL) {
 				SDLNet_FreePacket(recvIntPacket);
@@ -614,13 +614,13 @@ int NetworkService::recvIntUDP(bool isServer) {
 	return i;
 }
 
-int NetworkService::recvIntUDP(int * IDBuffer, bool isServer) {
+int NetworkService::recvIntUdp(int * idBuffer, bool isServer) {
 	int i = -1;
-	if (isServer) i = SDLNet_CheckSockets(serverUDPSocketSet, WAIT_TIME);
-		else i = SDLNet_CheckSockets(clientUDPSocketSet, WAIT_TIME);
+	if (isServer) i = SDLNet_CheckSockets(serverUdpSocketSet, WAIT_TIME);
+		else i = SDLNet_CheckSockets(clientUdpSocketSet, WAIT_TIME);
 	if (i > -1) {
 		UDPsocket sock = NULL;
-		if (isServer) sock = serverUDPSocket; else sock = clientUDPSocket;
+		if (isServer) sock = serverUdpSocket; else sock = clientUdpSocket;
 		if (SDLNet_SocketReady((SDLNet_GenericSocket)sock)) {
 			if (recvIntPacket != NULL) {
 				SDLNet_FreePacket(recvIntPacket);
@@ -629,23 +629,23 @@ int NetworkService::recvIntUDP(int * IDBuffer, bool isServer) {
 			recvIntPacket = SDLNet_AllocPacket(INT_SIZE);
 			if (SDLNet_UDP_Recv(sock, recvIntPacket) == -1) {
 				i = -1;
-				*IDBuffer = -1;
+				*idBuffer = -1;
 			} else {
 				i = recvIntPacket->data[0];
-				*IDBuffer = recvIntPacket->channel;
+				*idBuffer = recvIntPacket->channel;
 			}
 		} else return -1;
 	}
 	return i;
 }
 
-int NetworkService::recvIntUDPID(int * intBuffer, bool isServer) {
+int NetworkService::recvIntUdpId(int * intBuffer, bool isServer) {
 	int i = -1;
-	if (isServer) i = SDLNet_CheckSockets(serverUDPSocketSet, WAIT_TIME);
-		else i = SDLNet_CheckSockets(clientUDPSocketSet, WAIT_TIME);
+	if (isServer) i = SDLNet_CheckSockets(serverUdpSocketSet, WAIT_TIME);
+		else i = SDLNet_CheckSockets(clientUdpSocketSet, WAIT_TIME);
 	if (i > -1) {
 		UDPsocket sock = NULL;
-		if (isServer) sock = serverUDPSocket; else sock = clientUDPSocket;
+		if (isServer) sock = serverUdpSocket; else sock = clientUdpSocket;
 		if (SDLNet_SocketReady((SDLNet_GenericSocket)sock)) {
 			if (recvIntPacket != NULL) {
 				SDLNet_FreePacket(recvIntPacket);

@@ -63,12 +63,14 @@ public:
 	Shader(std::string newName, std::string vertexShaderFile, std::string fragmentShaderFile, ...);
 	Shader(std::string newName, std::string vertexShaderFile, std::string fragmentShaderFile, std::vector<int> enums,
 			std::vector<char *>attributeNames);
+	Shader(std::string newName, std::string vertexShaderFile, std::string fragmentShaderFile, unsigned count,
+			int * enums, const char ** attributeNames);
 	~Shader();
 	std::string name();
 	void bind();
 	void use();
 	GLuint program();
-	GLint setUniformLocation(shaderLocationEnum dstLocation, string locationName);
+	GLint setUniformLocation(shaderLocationEnum dstLocation, std::string locationName);
 	GLint uniformLocation(shaderLocationEnum location);
 
 	void setUniform1(shaderLocationEnum location, GLfloat * data, unsigned count = 1);
@@ -95,9 +97,9 @@ public:
 	void setUniform4(shaderLocationEnum location, int data1, int data2, int data3, int data4);
 };
 
-Shader * shader(string searchName);
-Shader * addShader(string newName, string vertexShaderFile, string fragmentShaderFile, ...);
-void destroyShader(string searchName);
+Shader * shader(std::string searchName);
+Shader * addShader(std::string newName, std::string vertexShaderFile, std::string fragmentShaderFile, ...);
+void destroyShader(std::string searchName);
 void destroyAllShaders();
 
 }

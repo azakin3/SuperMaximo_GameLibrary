@@ -46,7 +46,7 @@ void stopMusic() {
 	Mix_HaltMusic();
 }
 
-void fadeMusic(long int time) {
+void fadeMusic(int time) {
 	Mix_FadeOutMusic(time);
 }
 

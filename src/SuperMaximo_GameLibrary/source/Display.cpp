@@ -409,26 +409,26 @@ vec4 getClearColor() {
 	return clearColor;
 }
 
-mat4 getPerspectiveMatrix(float left, float right, float bottom, float top, float near, float far) {
+mat4 getPerspectiveMatrix(float left, float right, float bottom, float top, float front, float back) {
 	mat4 returnMatrix;
-	returnMatrix[0] = (2.0f*near)/(right-left);
+	returnMatrix[0] = (2.0f*front)/(right-left);
 	returnMatrix[1] = 0.0f;
 	returnMatrix[2] = 0.0f;
 	returnMatrix[3] = 0.0f;
 
 	returnMatrix[4] = 0.0f;
-	returnMatrix[5] = (2.0f*near)/(top-bottom);
+	returnMatrix[5] = (2.0f*front)/(top-bottom);
 	returnMatrix[6] = 0.0f;
 	returnMatrix[7] = 0.0f;
 
 	returnMatrix[8] = (right+left)/(right-left);
 	returnMatrix[9] = (top+bottom)/(top-bottom);
-	returnMatrix[10] = (-(far+near))/(far-near);
+	returnMatrix[10] = (-(back+front))/(back-front);
 	returnMatrix[11] = -1.0f;
 
 	returnMatrix[12] = 0.0f;
 	returnMatrix[13] = 0.0f;
-	returnMatrix[14] = (-2.0f*far*near)/(far-near);
+	returnMatrix[14] = (-2.0f*back*front)/(back-front);
 	returnMatrix[15] = 0.0f;
 	return returnMatrix;
 }
@@ -442,7 +442,7 @@ mat4 getPerspectiveMatrix(float angle, float aspectRatio, float front, float bac
 	return returnMatrix;
 }
 
-mat4 getOrthographicMatrix(float left, float right, float bottom, float top, float near, float far) {
+mat4 getOrthographicMatrix(float left, float right, float bottom, float top, float front, float back) {
 	mat4 returnMatrix;
 	returnMatrix[0] = 2.0f/(right-left);
 	returnMatrix[1] = 0.0f;
@@ -456,12 +456,12 @@ mat4 getOrthographicMatrix(float left, float right, float bottom, float top, flo
 
 	returnMatrix[8] = 0.0f;
 	returnMatrix[9] = 0.0f;
-	returnMatrix[10] = -2.0f/(far-near);
+	returnMatrix[10] = -2.0f/(back-front);
 	returnMatrix[11] = 0.0f;
 
 	returnMatrix[12] = -((right+left)/(right-left));
 	returnMatrix[13] = -((top+bottom)/(top-bottom));
-	returnMatrix[14] = -((far+near)/(far-near));
+	returnMatrix[14] = -((back+front)/(back-front));
 	returnMatrix[15] = 1.0f;
 	return returnMatrix;
 }

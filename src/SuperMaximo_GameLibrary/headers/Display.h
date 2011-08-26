@@ -201,9 +201,9 @@ void setClearColor(float r, float g, float b, float a);
 void setClearColor(vec4 color);
 vec4 getClearColor();
 
-mat4 getPerspectiveMatrix(float left, float right, float bottom, float top, float near, float far);
+mat4 getPerspectiveMatrix(float left, float right, float bottom, float top, float front, float back);
 mat4 getPerspectiveMatrix(float angle, float aspectRatio, float front, float back);
-mat4 getOrthographicMatrix(float left, float right, float bottom, float top, float near, float far);
+mat4 getOrthographicMatrix(float left, float right, float bottom, float top, float front, float back);
 
 mat2 get2dRotationMatrix(float angle);
 
@@ -214,7 +214,7 @@ void bindCustomDrawFunction(customDrawFunctionType newCustomDrawFunction);
 customDrawFunctionType boundCustomDrawFunction();
 
 void bindTextureUnit(textureUnitEnum textureUnit);
-textureUnitEnum boundTexureUnit();
+textureUnitEnum boundTextureUnit();
 
 void setMatrix(matrixEnum matrixId);
 matrixEnum currentMatrix();

@@ -209,6 +209,95 @@ Shader::Shader(string newName, string vertexShaderFile, string fragmentShaderFil
 	}
 }
 
+Shader::Shader(string newName, string vertexShaderFile, string fragmentShaderFile, unsigned count,
+		int * enums, const char ** attributeNames) {
+	name_ = newName;
+	program_ = (GLuint)NULL;
+	for (short i = 0; i <= EXTRA9_LOCATION; i++) uniformLocation_[i] = -1;
+	string text = "";
+	ifstream file;
+	file.open(vertexShaderFile.c_str());
+	if (file.is_open()) {
+		while (!file.eof()) {
+			string tempStr;
+			getline(file, tempStr);
+			text += tempStr+"\n";
+		}
+		text += '\0';
+		file.close();
+	} else {
+		cout << "Could not open file " << vertexShaderFile << endl;
+		return;
+	}
+
+	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	GLchar * arr[1];
+	arr[0] = (GLchar *)text.c_str();
+	glShaderSource(vertexShader, 1, (const GLchar **)arr, NULL);
+	glCompileShader(vertexShader);
+	int success;
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+	if (success == GL_FALSE) {
+		cout << "Error with compiling vertex shader" << endl;
+		char log[1024];
+		glGetShaderInfoLog(vertexShader, 1024, NULL, log);
+		cout << log << endl;
+		glDeleteShader(vertexShader);
+		return;
+	}
+
+	text = "";
+	file.open(fragmentShaderFile.c_str());
+	if (file.is_open()) {
+		while (!file.eof()) {
+			string tempStr;
+			getline(file, tempStr);
+			text += tempStr+"\n";
+		}
+		text += '\0';
+		file.close();
+	} else {
+		glDeleteShader(vertexShader);
+		cout << "Could not open file " << fragmentShaderFile << endl;
+		return;
+	}
+
+	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	arr[0] = (GLchar *)text.c_str();
+	glShaderSource(fragmentShader, 1, (const GLchar **)arr, NULL);
+	glCompileShader(fragmentShader);
+	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+	if (success == GL_FALSE) {
+		cout << "Error with compiling fragment shader" << endl;
+		char log[1024];
+		glGetShaderInfoLog(fragmentShader, 1024, NULL, log);
+		cout << log << endl;
+		glDeleteShader(fragmentShader);
+		glDeleteShader(vertexShader);
+		return;
+	}
+
+	program_ = glCreateProgram();
+	glAttachShader(program_, vertexShader);
+	glAttachShader(program_, fragmentShader);
+
+	for (unsigned i = 0; i < count; i++) glBindAttribLocation(program_, enums[i], attributeNames[i]);
+
+	glLinkProgram(program_);
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
+
+	glGetProgramiv(program_, GL_LINK_STATUS, &success);
+	if (success == GL_FALSE) {
+		cout << "Error with linking shader program" << endl;
+		char log[1024];
+		glGetProgramInfoLog(program_, 1024, NULL, log);
+		cout << log << endl;
+		glDeleteProgram(program_);
+		return;
+	}
+}
+
 Shader::~Shader() {
 	glDeleteProgram(program_);
 }
