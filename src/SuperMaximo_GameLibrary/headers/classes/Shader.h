@@ -14,6 +14,8 @@
 #include <iostream>
 #include <vector>
 
+#include "../Display.h"
+
 namespace SuperMaximo {
 
 enum shaderAttributeEnum {
@@ -95,6 +97,10 @@ public:
 	void setUniform2(shaderLocationEnum location, int data1, int data2);
 	void setUniform3(shaderLocationEnum location, int data1, int data2, int data3);
 	void setUniform4(shaderLocationEnum location, int data1, int data2, int data3, int data4);
+
+	void setUniform2(shaderLocationEnum location, vec2 data);
+	void setUniform3(shaderLocationEnum location, vec3 data);
+	void setUniform4(shaderLocationEnum location, vec4 data);
 };
 
 Shader * shader(std::string searchName);

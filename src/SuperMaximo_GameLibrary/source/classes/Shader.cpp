@@ -399,6 +399,18 @@ void Shader::setUniform4(shaderLocationEnum location, int data1, int data2, int 
 	glUniform4i(uniformLocation_[location], data1, data2, data3, data4);
 }
 
+void Shader::setUniform2(shaderLocationEnum location, vec2 data) {
+	glUniform2f(uniformLocation_[location], data.x, data.y);
+}
+
+void Shader::setUniform3(shaderLocationEnum location, vec3 data) {
+	glUniform3f(uniformLocation_[location], data.x, data.y, data.z);
+}
+
+void Shader::setUniform4(shaderLocationEnum location, vec4 data) {
+	glUniform4f(uniformLocation_[location], data.x, data.y, data.z, data.w);
+}
+
 Shader * shader(string searchName) {
 	int letter = numCharInAlphabet(searchName[0]);
 	Shader * returnShader = NULL;
