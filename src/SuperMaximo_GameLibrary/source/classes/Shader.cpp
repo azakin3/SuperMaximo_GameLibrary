@@ -52,7 +52,7 @@ Shader::Shader(string newName, string vertexShaderFile, string fragmentShaderFil
 	int success;
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
 	if (success == GL_FALSE) {
-		cout << "Error with compiling vertex shader" << endl;
+		cout << "Error with compiling vertex shader (" << vertexShaderFile << ")" << endl;
 		char log[1024];
 		glGetShaderInfoLog(vertexShader, 1024, NULL, log);
 		cout << log << endl;
@@ -82,7 +82,7 @@ Shader::Shader(string newName, string vertexShaderFile, string fragmentShaderFil
 	glCompileShader(fragmentShader);
 	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
 	if (success == GL_FALSE) {
-		cout << "Error with compiling fragment shader" << endl;
+		cout << "Error with compiling fragment shader (" << fragmentShaderFile << ")" << endl;
 		char log[1024];
 		glGetShaderInfoLog(fragmentShader, 1024, NULL, log);
 		cout << log << endl;

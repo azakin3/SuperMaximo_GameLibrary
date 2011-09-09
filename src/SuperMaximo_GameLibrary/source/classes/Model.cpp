@@ -991,7 +991,7 @@ void Model::initBufferObj(bufferUsageEnum bufferUsage) {
 			count++;
 			vertexArray[count] = materials_[triangles_[i].mtlNum].alpha;
 			count++;
-			vertexArray[count] = -1;
+			vertexArray[count] = -1.0f;
 			count++;
 		}
 	}
