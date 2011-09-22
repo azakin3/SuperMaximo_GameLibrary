@@ -83,11 +83,13 @@ void Font::write(string text, int x, int y, float depth, bool useCache, float ro
 		w = textSurface->w;
 		h = textSurface->h;
 	}
-	GLenum textureFormat;
+	GLenum textureFormat, textureType;
+	if (textureRectangleDisabled()) textureType = GL_TEXTURE_2D; else textureType = GL_TEXTURE_RECTANGLE;
 	GLuint tempTexture;
 	glActiveTexture(GL_TEXTURE0);
+
 	if (cacheSuccess) {
-		glBindTexture(GL_TEXTURE_RECTANGLE, fontCache[letter][cacheIndex].texture);
+		glBindTexture(textureType, fontCache[letter][cacheIndex].texture);
 		w = fontCache[letter][cacheIndex].w;
 		h = fontCache[letter][cacheIndex].h;
 		glBindBuffer(GL_ARRAY_BUFFER, fontCache[letter][cacheIndex].vbo);
@@ -99,11 +101,11 @@ void Font::write(string text, int x, int y, float depth, bool useCache, float ro
 			if (textSurface->format->Rmask == 0x000000ff) textureFormat = GL_RGB; else textureFormat = GL_BGR;
 		}
 		glGenTextures(1, &tempTexture);
-		glBindTexture(GL_TEXTURE_RECTANGLE, tempTexture);
-		glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_RECTANGLE, 0, textSurface->format->BytesPerPixel, w, h, 0, textureFormat,
-				GL_UNSIGNED_BYTE, textSurface->pixels);
+		glBindTexture(textureType, tempTexture);
+		glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexImage2D(textureType, 0, textSurface->format->BytesPerPixel, w, h, 0, textureFormat, GL_UNSIGNED_BYTE,
+				textSurface->pixels);
 
 		GLfloat vertexArray[] = {
 			0.0f, h, 0.0f, 1.0f,
@@ -126,11 +128,8 @@ void Font::write(string text, int x, int y, float depth, bool useCache, float ro
 		rotateMatrix(rotation, 0.0f, 0.0f, 1.0f);
 		scaleMatrix(xScale, yScale, 0.0f);
 
-		GLfloat mat[16];
-		for (short i = 0; i < 16; i++) mat[i] = getMatrix(MODELVIEW_MATRIX)[i];
-		fontShader->setUniform16(MODELVIEW_LOCATION, mat);
-		for (short i = 0; i < 16; i++) mat[i] = getMatrix(PROJECTION_MATRIX)[i];
-		fontShader->setUniform16(PROJECTION_LOCATION, mat);
+		fontShader->setUniform16(MODELVIEW_LOCATION, getMatrix(MODELVIEW_MATRIX));
+		fontShader->setUniform16(PROJECTION_LOCATION, getMatrix(PROJECTION_MATRIX));
 		fontShader->setUniform1(TEXSAMPLER_LOCATION, 0);
 
 		glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -180,18 +179,20 @@ void Font::cache(string text) {
 	color.g = 255;
 	color.b = 255;
 	SDL_Surface * textSurface = TTF_RenderText_Blended(font, text.c_str(), color);
-	GLenum textureFormat;
+	GLenum textureFormat, textureType;
 	if (textSurface->format->BytesPerPixel == 4) {
 		if (textSurface->format->Rmask == 0x000000ff) textureFormat = GL_RGBA; else textureFormat = GL_BGRA;
 	} else {
 		if (textSurface->format->Rmask == 0x000000ff) textureFormat = GL_RGB; else textureFormat = GL_BGR;
 	}
+	if (textureRectangleDisabled()) textureType = GL_TEXTURE_2D; else textureType = GL_TEXTURE_RECTANGLE;
+
 	glGenTextures(1, &newRecord.texture);
-	glBindTexture(GL_TEXTURE_RECTANGLE, newRecord.texture);
-	glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_RECTANGLE, 0, textSurface->format->BytesPerPixel, textSurface->w, textSurface->h, 0,
-			textureFormat, GL_UNSIGNED_BYTE, textSurface->pixels);
+	glBindTexture(textureType, newRecord.texture);
+	glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(textureType, 0, textSurface->format->BytesPerPixel, textSurface->w, textSurface->h, 0, textureFormat,
+			GL_UNSIGNED_BYTE, textSurface->pixels);
 
 	GLfloat vertexArray[] = {
 		0.0f, textSurface->h, 0.0f, 1.0f,
