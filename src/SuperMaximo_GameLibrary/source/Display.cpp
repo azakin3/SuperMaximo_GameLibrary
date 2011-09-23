@@ -43,12 +43,12 @@ float & mat2::operator[](short i) {
 }
 
 mat2 mat2::operator*(const mat2 & otherMat) {
-	mat2 returnMatrix, other = otherMat;
-	returnMatrix[0] = (component[0]*other[0])+(component[2]*other[1]);
-	returnMatrix[1] = (component[1]*other[0])+(component[3]*other[1]);
+	mat2 returnMatrix;
+	returnMatrix.component[0] = (component[0]*otherMat.component[0])+(component[2]*otherMat.component[1]);
+	returnMatrix.component[1] = (component[1]*otherMat.component[0])+(component[3]*otherMat.component[1]);
 
-	returnMatrix[2] = (component[0]*other[2])+(component[2]*other[3]);
-	returnMatrix[3] = (component[1]*other[2])+(component[3]*other[3]);
+	returnMatrix.component[2] = (component[0]*otherMat.component[2])+(component[2]*otherMat.component[3]);
+	returnMatrix.component[3] = (component[1]*otherMat.component[2])+(component[3]*otherMat.component[3]);
 
 	return returnMatrix;
 }
@@ -67,18 +67,27 @@ float & mat3::operator[](short i) {
 }
 
 mat3 mat3::operator*(const mat3 & otherMat) {
-	mat3 returnMatrix, other = otherMat;
-	returnMatrix[0] = (component[0]*other[0])+(component[3]*other[1])+(component[6]*other[2]);
-	returnMatrix[1] = (component[1]*other[0])+(component[4]*other[1])+(component[7]*other[2]);
-	returnMatrix[2] = (component[2]*other[0])+(component[5]*other[1])+(component[8]*other[2]);
+	mat3 returnMatrix;
+	returnMatrix.component[0] = (component[0]*otherMat.component[0])+(component[3]*otherMat.component[1])+
+			(component[6]*otherMat.component[2]);
+	returnMatrix.component[1] = (component[1]*otherMat.component[0])+(component[4]*otherMat.component[1])+
+			(component[7]*otherMat.component[2]);
+	returnMatrix.component[2] = (component[2]*otherMat.component[0])+(component[5]*otherMat.component[1])+
+			(component[8]*otherMat.component[2]);
 
-	returnMatrix[3] = (component[0]*other[3])+(component[3]*other[4])+(component[6]*other[5]);
-	returnMatrix[4] = (component[1]*other[3])+(component[4]*other[4])+(component[7]*other[5]);
-	returnMatrix[5] = (component[2]*other[3])+(component[5]*other[4])+(component[8]*other[5]);
+	returnMatrix.component[3] = (component[0]*otherMat.component[3])+(component[3]*otherMat.component[4])+
+			(component[6]*otherMat.component[5]);
+	returnMatrix.component[4] = (component[1]*otherMat.component[3])+(component[4]*otherMat.component[4])+
+			(component[7]*otherMat.component[5]);
+	returnMatrix.component[5] = (component[2]*otherMat.component[3])+(component[5]*otherMat.component[4])+
+			(component[8]*otherMat.component[5]);
 
-	returnMatrix[6] = (component[0]*other[6])+(component[3]*other[7])+(component[6]*other[8]);
-	returnMatrix[7] = (component[1]*other[6])+(component[4]*other[7])+(component[7]*other[8]);
-	returnMatrix[8] = (component[2]*other[6])+(component[5]*other[7])+(component[8]*other[8]);
+	returnMatrix.component[6] = (component[0]*otherMat.component[6])+(component[3]*otherMat.component[7])+
+			(component[6]*otherMat.component[8]);
+	returnMatrix.component[7] = (component[1]*otherMat.component[6])+(component[4]*otherMat.component[7])+
+			(component[7]*otherMat.component[8]);
+	returnMatrix.component[8] = (component[2]*otherMat.component[6])+(component[5]*otherMat.component[7])+
+			(component[8]*otherMat.component[8]);
 
 	return returnMatrix;
 }
@@ -99,26 +108,42 @@ float & mat4::operator[](short i) {
 }
 
 mat4 mat4::operator*(const mat4 & otherMat) {
-	mat4 returnMatrix, other = otherMat;
-	returnMatrix[0] = (component[0]*other[0])+(component[4]*other[1])+(component[8]*other[2])+(component[12]*other[3]);
-	returnMatrix[1] = (component[1]*other[0])+(component[5]*other[1])+(component[9]*other[2])+(component[13]*other[3]);
-	returnMatrix[2] = (component[2]*other[0])+(component[6]*other[1])+(component[10]*other[2])+(component[14]*other[3]);
-	returnMatrix[3] = (component[3]*other[0])+(component[7]*other[1])+(component[11]*other[2])+(component[15]*other[3]);
+	mat4 returnMatrix;
+	returnMatrix.component[0] = (component[0]*otherMat.component[0])+(component[4]*otherMat.component[1])+
+			(component[8]*otherMat.component[2])+(component[12]*otherMat.component[3]);
+	returnMatrix.component[1] = (component[1]*otherMat.component[0])+(component[5]*otherMat.component[1])+
+			(component[9]*otherMat.component[2])+(component[13]*otherMat.component[3]);
+	returnMatrix.component[2] = (component[2]*otherMat.component[0])+(component[6]*otherMat.component[1])+
+			(component[10]*otherMat.component[2])+(component[14]*otherMat.component[3]);
+	returnMatrix.component[3] = (component[3]*otherMat.component[0])+(component[7]*otherMat.component[1])+
+			(component[11]*otherMat.component[2])+(component[15]*otherMat.component[3]);
 
-	returnMatrix[4] = (component[0]*other[4])+(component[4]*other[5])+(component[8]*other[6])+(component[12]*other[7]);
-	returnMatrix[5] = (component[1]*other[4])+(component[5]*other[5])+(component[9]*other[6])+(component[13]*other[7]);
-	returnMatrix[6] = (component[2]*other[4])+(component[6]*other[5])+(component[10]*other[6])+(component[14]*other[7]);
-	returnMatrix[7] = (component[3]*other[4])+(component[7]*other[5])+(component[11]*other[6])+(component[15]*other[7]);
+	returnMatrix.component[4] = (component[0]*otherMat.component[4])+(component[4]*otherMat.component[5])+
+			(component[8]*otherMat.component[6])+(component[12]*otherMat.component[7]);
+	returnMatrix.component[5] = (component[1]*otherMat.component[4])+(component[5]*otherMat.component[5])+
+			(component[9]*otherMat.component[6])+(component[13]*otherMat.component[7]);
+	returnMatrix.component[6] = (component[2]*otherMat.component[4])+(component[6]*otherMat.component[5])+
+			(component[10]*otherMat.component[6])+(component[14]*otherMat.component[7]);
+	returnMatrix.component[7] = (component[3]*otherMat.component[4])+(component[7]*otherMat.component[5])+
+			(component[11]*otherMat.component[6])+(component[15]*otherMat.component[7]);
 
-	returnMatrix[8] = (component[0]*other[8])+(component[4]*other[9])+(component[8]*other[10])+(component[12]*other[11]);
-	returnMatrix[9] = (component[1]*other[8])+(component[5]*other[9])+(component[9]*other[10])+(component[13]*other[11]);
-	returnMatrix[10] = (component[2]*other[8])+(component[6]*other[9])+(component[10]*other[10])+(component[14]*other[11]);
-	returnMatrix[11] = (component[3]*other[8])+(component[7]*other[9])+(component[11]*other[10])+(component[15]*other[11]);
+	returnMatrix.component[8] = (component[0]*otherMat.component[8])+(component[4]*otherMat.component[9])+
+			(component[8]*otherMat.component[10])+(component[12]*otherMat.component[11]);
+	returnMatrix.component[9] = (component[1]*otherMat.component[8])+(component[5]*otherMat.component[9])+
+			(component[9]*otherMat.component[10])+(component[13]*otherMat.component[11]);
+	returnMatrix.component[10] = (component[2]*otherMat.component[8])+(component[6]*otherMat.component[9])+
+			(component[10]*otherMat.component[10])+(component[14]*otherMat.component[11]);
+	returnMatrix.component[11] = (component[3]*otherMat.component[8])+(component[7]*otherMat.component[9])+
+			(component[11]*otherMat.component[10])+(component[15]*otherMat.component[11]);
 
-	returnMatrix[12] = (component[0]*other[12])+(component[4]*other[13])+(component[8]*other[14])+(component[12]*other[15]);
-	returnMatrix[13] = (component[1]*other[12])+(component[5]*other[13])+(component[9]*other[14])+(component[13]*other[15]);
-	returnMatrix[14] = (component[2]*other[12])+(component[6]*other[13])+(component[10]*other[14])+(component[14]*other[15]);
-	returnMatrix[15] = (component[3]*other[12])+(component[7]*other[13])+(component[11]*other[14])+(component[15]*other[15]);
+	returnMatrix.component[12] = (component[0]*otherMat.component[12])+(component[4]*otherMat.component[13])+
+			(component[8]*otherMat.component[14])+(component[12]*otherMat.component[15]);
+	returnMatrix.component[13] = (component[1]*otherMat.component[12])+(component[5]*otherMat.component[13])+
+			(component[9]*otherMat.component[14])+(component[13]*otherMat.component[15]);
+	returnMatrix.component[14] = (component[2]*otherMat.component[12])+(component[6]*otherMat.component[13])+
+			(component[10]*otherMat.component[14])+(component[14]*otherMat.component[15]);
+	returnMatrix.component[15] = (component[3]*otherMat.component[12])+(component[7]*otherMat.component[13])+
+			(component[11]*otherMat.component[14])+(component[15]*otherMat.component[15]);
 
 	return returnMatrix;
 }
@@ -412,25 +437,25 @@ vec4 getClearColor() {
 
 mat4 getPerspectiveMatrix(float left, float right, float bottom, float top, float front, float back) {
 	mat4 returnMatrix;
-	returnMatrix[0] = (2.0f*front)/(right-left);
-	returnMatrix[1] = 0.0f;
-	returnMatrix[2] = 0.0f;
-	returnMatrix[3] = 0.0f;
+	returnMatrix.component[0] = (2.0f*front)/(right-left);
+	returnMatrix.component[1] = 0.0f;
+	returnMatrix.component[2] = 0.0f;
+	returnMatrix.component[3] = 0.0f;
 
-	returnMatrix[4] = 0.0f;
-	returnMatrix[5] = (2.0f*front)/(top-bottom);
-	returnMatrix[6] = 0.0f;
-	returnMatrix[7] = 0.0f;
+	returnMatrix.component[4] = 0.0f;
+	returnMatrix.component[5] = (2.0f*front)/(top-bottom);
+	returnMatrix.component[6] = 0.0f;
+	returnMatrix.component[7] = 0.0f;
 
-	returnMatrix[8] = (right+left)/(right-left);
-	returnMatrix[9] = (top+bottom)/(top-bottom);
-	returnMatrix[10] = (-(back+front))/(back-front);
-	returnMatrix[11] = -1.0f;
+	returnMatrix.component[8] = (right+left)/(right-left);
+	returnMatrix.component[9] = (top+bottom)/(top-bottom);
+	returnMatrix.component[10] = (-(back+front))/(back-front);
+	returnMatrix.component[11] = -1.0f;
 
-	returnMatrix[12] = 0.0f;
-	returnMatrix[13] = 0.0f;
-	returnMatrix[14] = (-2.0f*back*front)/(back-front);
-	returnMatrix[15] = 0.0f;
+	returnMatrix.component[12] = 0.0f;
+	returnMatrix.component[13] = 0.0f;
+	returnMatrix.component[14] = (-2.0f*back*front)/(back-front);
+	returnMatrix.component[15] = 0.0f;
 	return returnMatrix;
 }
 
@@ -445,25 +470,25 @@ mat4 getPerspectiveMatrix(float angle, float aspectRatio, float front, float bac
 
 mat4 getOrthographicMatrix(float left, float right, float bottom, float top, float front, float back) {
 	mat4 returnMatrix;
-	returnMatrix[0] = 2.0f/(right-left);
-	returnMatrix[1] = 0.0f;
-	returnMatrix[2] = 0.0f;
-	returnMatrix[3] = 0.0f;
+	returnMatrix.component[0] = 2.0f/(right-left);
+	returnMatrix.component[1] = 0.0f;
+	returnMatrix.component[2] = 0.0f;
+	returnMatrix.component[3] = 0.0f;
 
-	returnMatrix[4] = 0.0f;
-	returnMatrix[5] = 2.0f/(top-bottom);
-	returnMatrix[6] = 0.0f;
-	returnMatrix[7] = 0.0f;
+	returnMatrix.component[4] = 0.0f;
+	returnMatrix.component[5] = 2.0f/(top-bottom);
+	returnMatrix.component[6] = 0.0f;
+	returnMatrix.component[7] = 0.0f;
 
-	returnMatrix[8] = 0.0f;
-	returnMatrix[9] = 0.0f;
-	returnMatrix[10] = -2.0f/(back-front);
-	returnMatrix[11] = 0.0f;
+	returnMatrix.component[8] = 0.0f;
+	returnMatrix.component[9] = 0.0f;
+	returnMatrix.component[10] = -2.0f/(back-front);
+	returnMatrix.component[11] = 0.0f;
 
-	returnMatrix[12] = -((right+left)/(right-left));
-	returnMatrix[13] = -((top+bottom)/(top-bottom));
-	returnMatrix[14] = -((back+front)/(back-front));
-	returnMatrix[15] = 1.0f;
+	returnMatrix.component[12] = -((right+left)/(right-left));
+	returnMatrix.component[13] = -((top+bottom)/(top-bottom));
+	returnMatrix.component[14] = -((back+front)/(back-front));
+	returnMatrix.component[15] = 1.0f;
 	return returnMatrix;
 }
 
@@ -540,9 +565,9 @@ void popMatrix() {
 void translateMatrix(float x, float y, float z) {
 	mat4 transformationMatrix;
 	transformationMatrix.initIdentity();
-	transformationMatrix[12] = x;
-	transformationMatrix[13] = y;
-	transformationMatrix[14] = z;
+	transformationMatrix.component[12] = x;
+	transformationMatrix.component[13] = y;
+	transformationMatrix.component[14] = z;
 	matrix[currentMatrixId] = matrix[currentMatrixId]*transformationMatrix;
 }
 
@@ -557,25 +582,25 @@ void rotateMatrix(float angle, float x, float y, float z) {
 	float c = cos(angle), s = sin(angle), x2 = x*x, y2 = y*y, z2 = z*z;
 	float t = 1.0f-c;
 
-	transformationMatrix[0] = (x2*t)+c;
-	transformationMatrix[1] = (y*x*t)+z*s;
-	transformationMatrix[2] = (x*z*t)-(y*s);
-	transformationMatrix[3] = 0.0f;
+	transformationMatrix.component[0] = (x2*t)+c;
+	transformationMatrix.component[1] = (y*x*t)+z*s;
+	transformationMatrix.component[2] = (x*z*t)-(y*s);
+	transformationMatrix.component[3] = 0.0f;
 
-	transformationMatrix[4] = (x*y*t)-(z*s);
-	transformationMatrix[5] = (y2*t)+c;
-	transformationMatrix[6] = (y*z*t)+(x*s);
-	transformationMatrix[7] = 0.0f;
+	transformationMatrix.component[4] = (x*y*t)-(z*s);
+	transformationMatrix.component[5] = (y2*t)+c;
+	transformationMatrix.component[6] = (y*z*t)+(x*s);
+	transformationMatrix.component[7] = 0.0f;
 
-	transformationMatrix[8] = (x*z*t)+(y*s);
-	transformationMatrix[9] = (y*z*t)-(x*s);
-	transformationMatrix[10] = (z2*t)+c;
-	transformationMatrix[11] = 0.0f;
+	transformationMatrix.component[8] = (x*z*t)+(y*s);
+	transformationMatrix.component[9] = (y*z*t)-(x*s);
+	transformationMatrix.component[10] = (z2*t)+c;
+	transformationMatrix.component[11] = 0.0f;
 
-	transformationMatrix[12] = 0.0f;
-	transformationMatrix[13] = 0.0f;
-	transformationMatrix[14] = 0.0f;
-	transformationMatrix[15] = 1.0f;
+	transformationMatrix.component[12] = 0.0f;
+	transformationMatrix.component[13] = 0.0f;
+	transformationMatrix.component[14] = 0.0f;
+	transformationMatrix.component[15] = 1.0f;
 
 	matrix[currentMatrixId] = matrix[currentMatrixId]*transformationMatrix;
 }
@@ -583,9 +608,9 @@ void rotateMatrix(float angle, float x, float y, float z) {
 void scaleMatrix(float xScale, float yScale, float zScale) {
 	mat4 transformationMatrix;
 	transformationMatrix.initIdentity();
-	transformationMatrix[0] = xScale;
-	transformationMatrix[5] = yScale;
-	transformationMatrix[10] = zScale;
+	transformationMatrix.component[0] = xScale;
+	transformationMatrix.component[5] = yScale;
+	transformationMatrix.component[10] = zScale;
 	matrix[currentMatrixId] = matrix[currentMatrixId]*transformationMatrix;
 }
 

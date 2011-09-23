@@ -6,3 +6,4 @@ Debug/*
 *.exe
 *.o
 *.so
+*.c
