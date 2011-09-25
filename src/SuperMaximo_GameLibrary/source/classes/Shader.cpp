@@ -22,6 +22,10 @@ vector<Shader *> allShaders[27];
 
 namespace SuperMaximo {
 
+Shader::operator GLuint() {
+	return program_;
+}
+
 Shader::Shader(string newName, string vertexShaderFile, string fragmentShaderFile, ...) {
 	name_ = newName;
 	program_ = (GLuint)NULL;
@@ -312,10 +316,6 @@ void Shader::bind() {
 
 void Shader::use() {
 	glUseProgram(program_);
-}
-
-GLuint Shader::program() {
-	return program_;
 }
 
 GLint Shader::setUniformLocation(shaderLocationEnum dstLocation, string locationName) {

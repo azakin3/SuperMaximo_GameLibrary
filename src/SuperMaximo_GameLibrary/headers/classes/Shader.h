@@ -62,6 +62,7 @@ public:
 	friend class Sprite;
 	friend class Model;
 	friend class Font;
+	operator GLuint();
 	Shader(std::string newName, std::string vertexShaderFile, std::string fragmentShaderFile, ...);
 	Shader(std::string newName, std::string vertexShaderFile, std::string fragmentShaderFile, std::vector<int> enums,
 			std::vector<char *>attributeNames);
@@ -71,7 +72,6 @@ public:
 	std::string name();
 	void bind();
 	void use();
-	GLuint program();
 	GLint setUniformLocation(shaderLocationEnum dstLocation, std::string locationName);
 	GLint uniformLocation(shaderLocationEnum location);
 

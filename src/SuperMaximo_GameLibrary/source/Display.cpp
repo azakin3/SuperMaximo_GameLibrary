@@ -506,7 +506,7 @@ mat2 get2dRotationMatrix(float angle) {
 }
 
 void bindShader(Shader * shader) {
-	glUseProgram(shader->program());
+	shader->use();
 	boundShader_ = shader;
 }
 
