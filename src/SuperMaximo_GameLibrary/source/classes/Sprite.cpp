@@ -34,8 +34,8 @@ Sprite::Sprite(string newName, string fileName, int imageX, int imageY, int imag
 	rect.y = imageY;
 	rect.w = imageWidth;
 	rect.h = imageHeight;
-	originX = newOriginX;
-	originY = newOriginY;
+	originX_ = newOriginX;
+	originY_ = newOriginY;
 	customDrawFunction = NULL;
 	image = IMG_Load(fileName.c_str());
 
@@ -99,8 +99,8 @@ Sprite::Sprite(string newName, SDL_Surface * surface, int imageX, int imageY, in
 	rect.y = imageY;
 	rect.w = imageWidth;
 	rect.h = imageHeight;
-	originX = newOriginX;
-	originY = newOriginY;
+	originX_ = newOriginX;
+	originY_ = newOriginY;
 	customDrawFunction = NULL;
 	image = surface;
 	GLenum textureFormat;
@@ -233,11 +233,11 @@ void Sprite::defaultDraw(Shader * shaderToUse, spriteDrawParams * params) {
 		else glBindTexture(GL_TEXTURE_RECTANGLE, texture_[params->frame]);
 
 		pushMatrix();
-			translateMatrix(params->x-originX, params->y-originY, params->depth);
-			translateMatrix(originX, originY, 0.0f);
+			translateMatrix(params->x-originX_, params->y-originY_, params->depth);
+			translateMatrix(originX_, originY_, 0.0f);
 			rotateMatrix(params->rotation, 0.0f, 0.0f, 1.0f);
 			scaleMatrix(params->xScale, params->yScale, 0.0f);
-			translateMatrix(-originX, -originY, 0.0f);
+			translateMatrix(-originX_, -originY_, 0.0f);
 
 			glUseProgram(shaderToUse->program_);
 
@@ -292,6 +292,14 @@ int Sprite::width() {
 
 int Sprite::height() {
 	return rect.h;
+}
+
+int Sprite::originX() {
+	return originX_;
+}
+
+int Sprite::originY() {
+	return originY_;
 }
 
 SDL_Surface * Sprite::surface() {

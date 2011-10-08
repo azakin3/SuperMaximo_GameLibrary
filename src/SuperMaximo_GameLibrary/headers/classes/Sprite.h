@@ -32,7 +32,7 @@ class Sprite {
 	SDL_Surface * image;
 	std::vector<GLuint> texture_;
 	unsigned frames, vertices_, framerate_;
-	int originX, originY;
+	int originX_, originY_;
 	std::string name_;
 	SDL_Rect rect;
 	GLuint vao, vbo;
@@ -68,6 +68,8 @@ public:
 
 	int width();
 	int height();
+	int originX();
+	int originY();
 
 	SDL_Surface * surface();
 	GLuint texture(unsigned frame);

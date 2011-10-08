@@ -32,7 +32,7 @@ Object::Object(string newName, float destX, float destY, float destZ, Sprite * n
 	alpha_ = 1.0f, hasModel_ = false;
 
 	if (sprite_ != NULL) {
-		width_ = sprite_->rect.w, height_ = sprite_->rect.h, originX = sprite_->originX, originY = sprite_->originY;
+		width_ = sprite_->rect.w, height_ = sprite_->rect.h, originX = sprite_->originX_, originY = sprite_->originY_;
 	}
 	zRotatedWidth_ = width_, zRotatedHeight_ = height_;
 	boundShader_ = NULL;
@@ -72,7 +72,7 @@ string Object::name() {
 void Object::setSprite(Sprite * newSprite) {
 	sprite_ = newSprite;
 	if (sprite_ != NULL)
-		width_ = sprite_->rect.w, height_ = sprite_->rect.h, originX = sprite_->originX, originY = sprite_->originY;
+		width_ = sprite_->rect.w, height_ = sprite_->rect.h, originX = sprite_->originX_, originY = sprite_->originY_;
 	hasModel_ = false;
 
 	frame_.clear();
