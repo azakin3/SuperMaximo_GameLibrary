@@ -69,6 +69,8 @@ void Texture::reload(textureTypeEnum textureType, string fileName, ...) {
 	if (textureType == TEXTURE_3D) cout << "Cannot create a 3D texture with the arguments given" << endl; else {
 		SDL_Surface * image = IMG_Load(fileName.c_str());
 		if (image == NULL) cout << "Could not load image " << fileName << endl; else {
+			width_ = image->w;
+			height_ = image->h;
 			GLenum textureFormat;
 			if (image->format->BytesPerPixel == 4) {
 				if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGBA; else textureFormat = GL_BGRA;
@@ -132,6 +134,8 @@ void Texture::reload(textureTypeEnum textureType, unsigned numLayers, ...) {
 			char * file = va_arg(files, char *);
 			SDL_Surface * image = IMG_Load(file);
 			if (image == NULL) cout << "Could not load image " << file << endl; else {
+				width_ = image->w;
+				height_ = image->h;
 				GLenum textureFormat;
 				if (image->format->BytesPerPixel == 4) {
 					if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGBA; else textureFormat = GL_BGRA;
@@ -177,6 +181,8 @@ void Texture::reload(textureTypeEnum textureType, vector<string> fileNames) {
 		for (unsigned i = 0; i < fileNames.size(); i++) {
 			SDL_Surface * image = IMG_Load(fileNames[i].c_str());
 			if (image == NULL) cout << "Could not load image " << fileNames[i] << endl; else {
+				width_ = image->w;
+				height_ = image->h;
 				GLenum textureFormat;
 				if (image->format->BytesPerPixel == 4) {
 					if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGBA; else textureFormat = GL_BGRA;
@@ -201,6 +207,8 @@ void Texture::reload(textureTypeEnum textureType, vector<string> fileNames) {
 	} else {
 		SDL_Surface * image = IMG_Load(fileNames[0].c_str());
 		if (image == NULL) cout << "Could not load image " << fileNames[0] << endl; else {
+			width_ = image->w;
+			height_ = image->h;
 			GLenum textureFormat;
 			if (image->format->BytesPerPixel == 4) {
 				if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGBA; else textureFormat = GL_BGRA;
@@ -257,6 +265,8 @@ void Texture::reload(textureTypeEnum textureType, unsigned numLayers, string * f
 		for (unsigned i = 0; i < numLayers; i++) {
 			SDL_Surface * image = IMG_Load(fileNames[i].c_str());
 			if (image == NULL) cout << "Could not load image " << fileNames[i] << endl; else {
+				width_ = image->w;
+				height_ = image->h;
 				GLenum textureFormat;
 				if (image->format->BytesPerPixel == 4) {
 					if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGBA; else textureFormat = GL_BGRA;
@@ -281,6 +291,8 @@ void Texture::reload(textureTypeEnum textureType, unsigned numLayers, string * f
 	} else {
 		SDL_Surface * image = IMG_Load(fileNames[0].c_str());
 		if (image == NULL) cout << "Could not load image " << fileNames[0] << endl; else {
+			width_ = image->w;
+			height_ = image->h;
 			GLenum textureFormat;
 			if (image->format->BytesPerPixel == 4) {
 				if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGBA; else textureFormat = GL_BGRA;
@@ -323,6 +335,14 @@ string Texture::name() {
 
 textureTypeEnum Texture::type() {
 	return type_;
+}
+
+int Texture::width() {
+	return width_;
+}
+
+int Texture::height() {
+	return height_;
 }
 
 Texture * texture(std::string searchName) {

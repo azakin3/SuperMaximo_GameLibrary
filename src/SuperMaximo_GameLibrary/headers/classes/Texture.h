@@ -28,6 +28,7 @@ class Texture {
 	std::string name_;
 	GLuint texture;
 	textureTypeEnum type_;
+	int width_, height_;
 public:
 	operator GLuint();
 	Texture(std::string newName, textureTypeEnum textureType, std::string fileName, ...);
@@ -41,6 +42,7 @@ public:
 	void reload(textureTypeEnum textureType, unsigned numLayers, std::string * fileNames);
 	std::string name();
 	textureTypeEnum type();
+	int width(), height();
 };
 
 Texture * texture(std::string searchName);
