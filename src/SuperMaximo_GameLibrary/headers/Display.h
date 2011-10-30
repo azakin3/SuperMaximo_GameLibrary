@@ -98,6 +98,9 @@ struct mat4 {
 	void initIdentity();
 };
 
+struct vec3;
+struct vec4;
+
 struct vec2 {
 	union {
 		float x;
@@ -124,6 +127,8 @@ struct vec2 {
 	bool polygonCollision(unsigned vertexCount, ...);
 	bool polygonCollision(unsigned vertexCount, vec2 * vertices);
 	bool polygonCollision(unsigned vertexCount, std::vector<vec2> vertices);
+	operator vec3();
+	operator vec4();
 };
 
 struct vec3 {
@@ -152,6 +157,7 @@ struct vec3 {
 	void operator/=(float num);
 	float dotProduct(const vec3 & otherVector);
 	operator vec2();
+	operator vec4();
 };
 
 struct vec4 {
@@ -185,6 +191,7 @@ struct vec4 {
 	vec4 operator/(float num);
 	void operator/=(float num);
 	float dotProduct(const vec4 & otherVector);
+	operator vec2();
 	operator vec3();
 };
 

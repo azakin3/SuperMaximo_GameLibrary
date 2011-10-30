@@ -250,6 +250,14 @@ bool vec2::polygonCollision(unsigned vertexCount, std::vector<vec2> vertices) {
 	return true;
 }
 
+vec2::operator SuperMaximo::vec3() {
+	return (vec3){{x}, {y}, {0.0f}};
+}
+
+vec2::operator SuperMaximo::vec4() {
+	return (vec4){{x}, {y}, {0.0f}, {0.0f}};
+}
+
 vec3 vec3::operator+(const vec3 & otherVector) {
 	return (vec3){{x+otherVector.x}, {y+otherVector.y}, {z+otherVector.z}};
 }
@@ -292,6 +300,10 @@ float vec3::dotProduct(const vec3 & otherVector) {
 
 vec3::operator SuperMaximo::vec2() {
 	return (vec2){{x}, {y}};
+}
+
+vec3::operator SuperMaximo::vec4() {
+	return (vec4){{x}, {y}, {z}, {0.0f}};
 }
 
 vec4 vec4::operator+(const vec4 & otherVector) {
@@ -345,6 +357,10 @@ void vec4::operator/=(float num) {
 
 float vec4::dotProduct(const vec4 & otherVector) {
 	return (x*otherVector.x)+(y*otherVector.y)+(z*otherVector.z)+(w*otherVector.w);
+}
+
+vec4::operator SuperMaximo::vec2() {
+	return (vec2){{x}, {y}};
 }
 
 vec4::operator SuperMaximo::vec3() {
