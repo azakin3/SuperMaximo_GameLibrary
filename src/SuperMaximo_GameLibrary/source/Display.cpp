@@ -290,6 +290,10 @@ float vec3::dotProduct(const vec3 & otherVector) {
 	return (x*otherVector.x)+(y*otherVector.y)+(z*otherVector.z);
 }
 
+vec3::operator SuperMaximo::vec2() {
+	return (vec2){{x}, {y}};
+}
+
 vec4 vec4::operator+(const vec4 & otherVector) {
 	return (vec4){{x+otherVector.x}, {y+otherVector.y}, {z+otherVector.z}, {w+otherVector.w}};
 }

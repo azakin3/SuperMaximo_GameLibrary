@@ -151,6 +151,7 @@ struct vec3 {
 	vec3 operator/(float num);
 	void operator/=(float num);
 	float dotProduct(const vec3 & otherVector);
+	operator vec2();
 };
 
 struct vec4 {
