@@ -20,7 +20,7 @@ class Sound {
 	int volume_, currentChannel;
 	std::string name_;
 public:
-	Sound(std::string newName, std::string fileName);
+	Sound(const std::string & newName, const std::string & fileName);
 	~Sound();
 	std::string name();
 	void setVolume(int percentage, bool relative = false);
@@ -32,10 +32,10 @@ public:
 
 void allocateSoundChannels(unsigned channels);
 
-Sound * sound(std::string searchName);
+Sound * sound(const std::string & searchName);
 Sound * sound(int channel);
-Sound * addSound(std::string newName, std::string fileName);
-void destroySound(std::string searchName);
+Sound * addSound(const std::string & newName, const std::string & fileName);
+void destroySound(const std::string & searchName);
 void destroySound(int channel);
 void destroyAllSounds();
 

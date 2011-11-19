@@ -19,15 +19,15 @@ class Music {
 	Mix_Music * mixMusic;
 	std::string name_;
 public:
-	Music(std::string newName, std::string fileName);
+	Music(const std::string & newName, const std::string & fileName);
 	~Music();
 	std::string name();
 	void play();
 };
 
-Music * music(std::string searchName);
-Music * addMusic(std::string newName, std::string fileName);
-void destroyMusic(std::string searchName);
+Music * music(const std::string & searchName);
+Music * addMusic(const std::string & newName, const std::string & fileName);
+void destroyMusic(const std::string & searchName);
 void destroyAllMusic();
 
 }

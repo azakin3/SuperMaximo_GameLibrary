@@ -19,19 +19,24 @@ namespace SuperMaximo {
 
 int numCharInAlphabet(int letter);
 
-std::string leftStr(std::string str, int amount);
+std::string leftStr(const std::string & str, int amount);
 
 void leftStr(std::string * str, int amount);
 
-std::string rightStr(std::string str, int amount);
+std::string rightStr(const std::string & str, int amount);
 
 void rightStr(std::string * str, int amount);
 
-std::string lowerCase(std::string str);
+std::string lowerCase(const std::string & str);
 
-std::string upperCase(std::string str);
+std::string upperCase(const std::string & str);
 
-std::string intToStr(int i);
+template <typename variableType>
+std::string toString(const variableType & variable) {
+	std::stringstream stream;
+	stream << variable;
+	return stream.str();
+}
 
 template<typename number>
 number degToRad(number angle) {

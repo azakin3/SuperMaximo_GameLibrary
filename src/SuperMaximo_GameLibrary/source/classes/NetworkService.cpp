@@ -29,7 +29,7 @@ void quitNetworking() {
 	SDLNet_Quit();
 }
 
-NetworkService::NetworkService(string newName) {
+NetworkService::NetworkService(const string & newName) {
 	serverStart = false, clientStart = false, localAddress_ = 0;
 	recvIntPacket = NULL, sendIntPacket = NULL, recvStrPacket = NULL, sendStrPacket = NULL;
 	name_ = newName;
@@ -255,7 +255,7 @@ void NetworkService::kickClient(int id) {
 	if ((id != maxSockets) && (sockPresent)) cout << "Client " << id << " disconnected" << endl;
 }
 
-bool NetworkService::startClient(string newAddress, int newPort) {
+bool NetworkService::startClient(const string & newAddress, int newPort) {
 	clientStart = true, clientId = -1, clientAddress = newAddress, clientPort = newPort, clientUdpSocket = NULL;
 	clientTcpSockets.push_back(NULL);
 	clientUdpAddresses.push_back(NULL);
@@ -378,7 +378,7 @@ int NetworkService::clientNumber() {
 	return clientId;
 }
 
-bool NetworkService::sendStrTcp(string data, int id, bool isServer, int size) {
+bool NetworkService::sendStrTcp(const string & data, int id, bool isServer, int size) {
 	if (size < 1) size = STR_SIZE;
 	if (isServer) SDLNet_CheckSockets(serverTcpSocketSet, WAIT_TIME);
 		else SDLNet_CheckSockets(clientTcpSocketSet, WAIT_TIME);
@@ -463,7 +463,7 @@ int NetworkService::recvIntTcp(int id, bool isServer) {
 	return 0;
 }
 
-bool NetworkService::sendStrUdp(string data, int id, bool isServer) {
+bool NetworkService::sendStrUdp(const string & data, int id, bool isServer) {
 	if (isServer) SDLNet_CheckSockets(serverUdpSocketSet, WAIT_TIME);
 		else SDLNet_CheckSockets(clientUdpSocketSet, WAIT_TIME);
 	if (id >= 0) {
@@ -664,7 +664,7 @@ int NetworkService::recvIntUdpId(int * intBuffer, bool isServer) {
 	return i;
 }
 
-NetworkService * networkService(string searchName) {
+NetworkService * networkService(const string & searchName) {
 	int letter = numCharInAlphabet(searchName[0]);
 	NetworkService * returnNetworkService = NULL;
 	if (allNetworkServices[letter].size() > 0) {
@@ -678,14 +678,14 @@ NetworkService * networkService(string searchName) {
 	return returnNetworkService;
 }
 
-NetworkService * addNetworkService(string newName) {
+NetworkService * addNetworkService(const string & newName) {
 	int letter = numCharInAlphabet(newName[0]);
 	NetworkService * newNetworkService = new NetworkService(newName);
 	allNetworkServices[letter].push_back(newNetworkService);
 	return newNetworkService;
 }
 
-void destroyNetworkService(string searchName) {
+void destroyNetworkService(const string & searchName) {
 	int letter = numCharInAlphabet(searchName[0]);
 	if (allNetworkServices[letter].size() > 0) {
 		for (unsigned int i = 0; i < allNetworkServices[letter].size(); i++) {

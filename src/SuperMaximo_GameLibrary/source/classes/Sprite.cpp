@@ -24,8 +24,8 @@ vector<Sprite*> allSprites[27];
 
 namespace SuperMaximo {
 
-Sprite::Sprite(string newName, string fileName, int imageX, int imageY, int imageWidth, int imageHeight,
-		int aniFrames, unsigned framerate, int newOriginX, int newOriginY,
+Sprite::Sprite(const string & newName, const string & fileName, int imageX, int imageY, int imageWidth,
+		int imageHeight, int aniFrames, unsigned framerate, int newOriginX, int newOriginY,
 		void (*customBufferFunction)(GLuint*, Sprite*, void*), void * customData) {
 	name_ = newName;
 	frames = aniFrames;
@@ -89,7 +89,7 @@ Sprite::Sprite(string newName, string fileName, int imageX, int imageY, int imag
 	glBindTexture(textureType, 0);
 }
 
-Sprite::Sprite(string newName, SDL_Surface * surface, int imageX, int imageY, int imageWidth, int imageHeight,
+Sprite::Sprite(const string & newName, SDL_Surface * surface, int imageX, int imageY, int imageWidth, int imageHeight,
 		int aniFrames, unsigned framerate, int newOriginX, int newOriginY,
 		void (*customBufferFunction)(GLuint*, Sprite*, void*), void * customData) {
 	name_ = newName;
@@ -331,7 +331,7 @@ customDrawFunctionType Sprite::boundCustomDrawFunction() {
 	return customDrawFunction;
 }
 
-Sprite * sprite(string searchName) {
+Sprite * sprite(const string & searchName) {
 	int letter = numCharInAlphabet(searchName[0]);
 	Sprite * returnSprite = NULL;
 	if (allSprites[letter].size() > 0) {
@@ -345,8 +345,8 @@ Sprite * sprite(string searchName) {
 	return returnSprite;
 }
 
-Sprite * addSprite(string newName, string fileName, int imageX, int imageY, int imageWidth, int imageHeight,
-		int aniFrames, unsigned framerate, int newOriginX, int newOriginY,
+Sprite * addSprite(const string & newName, const string & fileName, int imageX, int imageY, int imageWidth,
+		int imageHeight, int aniFrames, unsigned framerate, int newOriginX, int newOriginY,
 		void (*customBufferFunction)(GLuint*, Sprite*, void*), void * customData) {
 
 	int letter = numCharInAlphabet(newName[0]);
@@ -356,8 +356,8 @@ Sprite * addSprite(string newName, string fileName, int imageX, int imageY, int 
 	return newSprite;
 }
 
-Sprite * addSprite(string newName, SDL_Surface * surface, int imageX, int imageY, int imageWidth, int imageHeight,
-		int aniFrames, unsigned framerate, int newOriginX, int newOriginY,
+Sprite * addSprite(const string & newName, SDL_Surface * surface, int imageX, int imageY, int imageWidth,
+		int imageHeight, int aniFrames, unsigned framerate, int newOriginX, int newOriginY,
 		void (*customBufferFunction)(GLuint*, Sprite*, void*), void * customData) {
 
 	int letter = numCharInAlphabet(newName[0]);
@@ -367,7 +367,7 @@ Sprite * addSprite(string newName, SDL_Surface * surface, int imageX, int imageY
 	return newSprite;
 }
 
-void destroySprite(string searchName) {
+void destroySprite(const string & searchName) {
 	int letter = numCharInAlphabet(searchName[0]);
 	if (allSprites[letter].size() > 0) {
 		for (unsigned int i = 0; i < allSprites[letter].size(); i++) {

@@ -25,7 +25,7 @@ typedef void (*customDrawFunctionType)(void*, Shader*, void*);
 class Object {
 	Sprite * sprite_;
 	Model * model_;
-	bool hasModel_;//, interpolating;
+	bool hasModel_;
 	float x_, y_, z_, xRotation_, yRotation_, zRotation_, xScale_, yScale_, zScale_, width_, height_, alpha_,
 		xRotatedWidth_, yRotatedWidth_, zRotatedWidth_, xRotatedHeight_, yRotatedHeight_, zRotatedHeight_, originX,
 		originY;
@@ -34,13 +34,13 @@ class Object {
 	std::string name_;
 	Shader * boundShader_;
 	customDrawFunctionType customDrawFunction;
-	//keyFrame * fakeKeyFrame1, * fakeKeyFrame2;
+
 public:
 	friend class Sprite;
 	friend class Model;
-	Object(std::string newName, float destX, float destY, float destZ, Sprite * newSprite = NULL);
-	Object(std::string newName, float destX, float destY, float destZ, Model * newModel = NULL);
-	~Object();
+
+	Object(const std::string & newName, float destX, float destY, float destZ, Sprite * newSprite = NULL);
+	Object(const std::string & newName, float destX, float destY, float destZ, Model * newModel = NULL);
 
 	std::string name();
 	void setSprite(Sprite * newSprite);
@@ -97,12 +97,7 @@ public:
 	void setFrame(float newFrame, bool relative = false, int boneId = -1, bool withChildren = true);
 	float frame(int boneId = -1);
 
-	//void animate(unsigned start, unsigned finish, unsigned animationId = 0);
-	//void setInterpolation(int startFrame, unsigned animation1Id, int endFrame, unsigned animation2Id,
-	//	unsigned numFramesToTake);
-	//void setInterpolation();
-
-	void draw(bool skipAnimation = false);//, bool skipHitboxes = false);
+	void draw(bool skipAnimation = false);
 
 	bool roughMouseOverBox();
 	bool mouseOverBox();
@@ -110,17 +105,12 @@ public:
 	bool boxCollision(Object * other, bool allStages = true);
 	bool roughBoxCollision(Object * other);
 	bool circleCollision(Object * other);
-
-	/*bool roughHitboxCollision(bone * bone1, bone * bone2);
-	bool hitBoxCollision(bone * bone1, bone * bone2);
-	bool roughModelCollision(Object * other, int hitboxId = -1, int hitboxOtherId = -1);
-	bool modelCollision(Object * other, int hitboxId = -1, int hitboxOtherId = -1);*/
 };
 
-Object * object(std::string searchName);
-Object * addObject(std::string newName, float destX, float destY, float destZ, Sprite * newSprite = NULL);
-Object * addObject(std::string newName, float destX, float destY, float destZ, Model * newModel = NULL);
-void destroyObject(std::string searchName);
+Object * object(const std::string & searchName);
+Object * addObject(const std::string & newName, float destX, float destY, float destZ, Sprite * newSprite = NULL);
+Object * addObject(const std::string & newName, float destX, float destY, float destZ, Model * newModel = NULL);
+void destroyObject(const std::string & searchName);
 void destroyAllObjects();
 
 }

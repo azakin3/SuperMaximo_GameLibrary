@@ -58,21 +58,26 @@ class Shader {
 	GLuint program_;
 	GLint uniformLocation_[SHADER_LOCATION_ENUM_COUNT];
 	std::string name_;
+
 public:
 	friend class Sprite;
 	friend class Model;
 	friend class Font;
+
 	operator GLuint();
-	Shader(std::string newName, std::string vertexShaderFile, std::string fragmentShaderFile, ...);
-	Shader(std::string newName, std::string vertexShaderFile, std::string fragmentShaderFile, std::vector<int> enums,
-			std::vector<char *>attributeNames);
-	Shader(std::string newName, std::string vertexShaderFile, std::string fragmentShaderFile, unsigned count,
-			int * enums, const char ** attributeNames);
+
+	Shader(const std::string & newName, const std::string & vertexShaderFile, const std::string & fragmentShaderFile,
+			...);
+	Shader(const std::string & newName, const std::string & vertexShaderFile, const std::string & fragmentShaderFile,
+			const std::vector<int> & enums, const std::vector<char *> & attributeNames);
+	Shader(const std::string & newName, const std::string & vertexShaderFile, const std::string & fragmentShaderFile,
+			unsigned count, int * enums, const char ** attributeNames);
 	~Shader();
+
 	std::string name();
 	void bind();
 	void use();
-	GLint setUniformLocation(shaderLocationEnum dstLocation, std::string locationName);
+	GLint setUniformLocation(shaderLocationEnum dstLocation, const std::string & locationName);
 	GLint uniformLocation(shaderLocationEnum location);
 
 	void setUniform1(shaderLocationEnum location, GLfloat * data, unsigned count = 1);
@@ -103,9 +108,10 @@ public:
 	void setUniform4(shaderLocationEnum location, vec4 data);
 };
 
-Shader * shader(std::string searchName);
-Shader * addShader(std::string newName, std::string vertexShaderFile, std::string fragmentShaderFile, ...);
-void destroyShader(std::string searchName);
+Shader * shader(const std::string & searchName);
+Shader * addShader(const std::string & newName, const std::string & vertexShaderFile,
+		const std::string & fragmentShaderFile, ...);
+void destroyShader(const std::string & searchName);
 void destroyAllShaders();
 
 }

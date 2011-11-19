@@ -24,7 +24,7 @@ int numCharInAlphabet(int letter) {
 	return letter;
 }
 
-string leftStr(string str, int amount) {
+string leftStr(const string & str, int amount) {
 	string returnStr = "";
 	for (int i = 0; i < amount; i++) returnStr += str[i];
 	return returnStr;
@@ -36,7 +36,7 @@ void leftStr(string * str, int amount) {
 	*str = tempStr;
 }
 
-string rightStr(string str, int amount) {
+string rightStr(const string & str, int amount) {
 	string returnStr = "";
 	for (int i = 0; i < amount; i++) returnStr += str[(str.size()-amount)+i];
 	return returnStr;
@@ -48,22 +48,16 @@ void rightStr(string * str, int amount) {
 	*str = tempStr;
 }
 
-string lowerCase(string str) {
+string lowerCase(const string & str) {
 	string returnStr = str;
 	transform(returnStr.begin(), returnStr.end(), returnStr.begin(), ::tolower);
 	return returnStr;
 }
 
-string upperCase(string str) {
+string upperCase(const string & str) {
 	string returnStr = str;
 	transform(returnStr.begin(), returnStr.end(), returnStr.begin(), ::toupper);
 	return returnStr;
-}
-
-string intToStr(int i) {
-	stringstream out;
-	out << i;
-	return out.str();
 }
 
 }

@@ -368,7 +368,7 @@ vec4::operator SuperMaximo::vec3() {
 }
 
 bool initDisplay(unsigned width, unsigned height, unsigned depth, unsigned maxFramerate, bool fullScreen,
-		string windowTitle) {
+		const string & windowTitle) {
 	if ((width > 0) && (height > 0)) {
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 		if (fullScreen) screen = SDL_SetVideoMode(width, height, 32, SDL_OPENGL | SDL_FULLSCREEN);

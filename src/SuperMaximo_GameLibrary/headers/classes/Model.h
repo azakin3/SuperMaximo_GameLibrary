@@ -38,30 +38,24 @@ enum bufferUsageEnum {
 };
 
 class Model {
-	/*struct normal {
-		float x, y, z;
-		normal operator- (normal const & other);
-	};*/
 	struct vertex {
 		float x, y, z;
 		vec3 normal_;
-		//int boneId;
 		vertex operator- (vertex const & other);
 	};
 	struct material {
 		std::string name, fileName;
-		//int textureId;
 		bool hasTexture;
 		vec3 ambientColor, diffuseColor, specularColor;
 		float shininess, alpha;
 	};
 	struct triangle {
 		vertex coords[3], texCoords[3];
-		int mtlNum;//, boneId;
-		//bone * pBone;
-		//bool sharedCoord[3];
+		int mtlNum;
+
 		vec3 surfaceNormal();
 	};
+
 	std::string name_;
 	std::vector<triangle> triangles_;
 	std::vector<material> materials_;
@@ -69,43 +63,40 @@ class Model {
 	GLuint vao, vbo, texture;
 	Shader * boundShader_;
 	unsigned framerate_, vertexCount_, textureCount;
-	void loadObj(std::string path, std::string fileName, bufferUsageEnum bufferUsage = STATIC_DRAW,
+
+	void loadObj(const std::string & path, const std::string & fileName, bufferUsageEnum bufferUsage = STATIC_DRAW,
 			void (*customBufferFunction)(GLuint*, Model*, void*) = NULL, void * customData = NULL);
-	void loadSmm(std::string path, std::string fileName, bufferUsageEnum bufferUsage = STATIC_DRAW);
-	void loadSms(std::string fileName);
-	void loadSma(std::string fileName);
-	void loadSmo(std::string path, std::string fileName, bufferUsageEnum bufferUsage = STATIC_DRAW);
-	//, void (*customBufferFunction)(GLuint*, Model*, void*) = NULL, void * customData = NULL);
+	void loadSmm(const std::string & path, const std::string & fileName, bufferUsageEnum bufferUsage = STATIC_DRAW);
+	void loadSms(const std::string & fileName);
+	void loadSma(const std::string & fileName);
+	void loadSmo(const std::string & path, const std::string & fileName, bufferUsageEnum bufferUsage = STATIC_DRAW);
+
 	void initBufferObj(bufferUsageEnum bufferUsage);
-	//void initBufferSmo();
-	//void drawObj(Shader * shaderToUse);
-	//vec3 calculatePoints(float nx, float ny, float nz, mat4 matrix);
-	//void calculateHitbox(bone * pBone, mat4 matrix);
-	//void drawBone(bone * pBone, Shader * shaderToUse, bool skipHitboxes);
+
 	void getBoneModelviewMatrices(mat4 * matrixArray, bone * pBone);
 	void setBoneRotationsFromAnimation(unsigned animationId, float frame, bone * pBone);
+
 public:
 	friend class Object;
 	friend struct keyFrame;
 	friend struct bone;
-	Model(std::string newName, std::string path, std::string fileName, unsigned framerate = 60,
+	Model(const std::string & newName, const std::string & path, const std::string & fileName, unsigned framerate = 60,
 			bufferUsageEnum bufferUsage = STATIC_DRAW, void (*customBufferFunction)(GLuint*, Model*, void*) = NULL,
 			void * customData = NULL);
 	~Model();
 	std::string name();
-	void draw(Object * object, bool skipAnimation = false);//, bool skipHitboxes = false);
+	void draw(Object * object, bool skipAnimation = false);
 	void draw(float x, float y, float z, float xRotation = 0.0f, float yRotation = 0.0f, float zRotation = 0.0f,
 			float xScale = 1.0f, float yScale = 1.0f, float zScale = 1.0f, float frame = 1.0f,
 			int currentAnimationId = 0, bool skipAnimation = false);
-		//, bool skipHitboxes = false);
 
 	void bindShader(Shader * shader);
 	Shader * boundShader();
 
-	int boneId(std::string boneName);
+	int boneId(const std::string & boneName);
 	std::string boneName(unsigned boneId);
 
-	int animationId(std::string searchName);
+	int animationId(const std::string & searchName);
 	void setFramerate(unsigned newFramerate);
 	unsigned framerate();
 
@@ -152,11 +143,11 @@ struct bone {
 };
 
 
-Model * model(std::string searchName);
-Model * addModel(std::string newName, std::string path, std::string fileName,
+Model * model(const std::string & searchName);
+Model * addModel(const std::string & newName, const std::string & path, const std::string & fileName,
 		bufferUsageEnum bufferUsage = STATIC_DRAW, unsigned framerate = 60,
 		void (*customBufferFunction)(GLuint*, Model*, void*) = NULL, void * customData = NULL);
-void destroyModel(std::string searchName);
+void destroyModel(const std::string & searchName);
 void destroyAllModels();
 
 }

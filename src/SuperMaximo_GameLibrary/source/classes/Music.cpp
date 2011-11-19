@@ -19,7 +19,7 @@ vector<Music*> allMusic[27];
 
 namespace SuperMaximo {
 
-Music::Music(string newName, string fileName) {
+Music::Music(const string & newName, const string & fileName) {
 	name_ = newName, mixMusic = Mix_LoadMUS(fileName.c_str());
 }
 
@@ -35,7 +35,7 @@ void Music::play() {
 	Mix_PlayMusic(mixMusic, -1);
 }
 
-Music * music(string searchName) {
+Music * music(const string & searchName) {
 	int letter = numCharInAlphabet(searchName[0]);
 	Music * returnMusic = NULL;
 	if (allMusic[letter].size() > 0) {
@@ -46,14 +46,14 @@ Music * music(string searchName) {
 	return returnMusic;
 }
 
-Music * addMusic(string newName, string fileName) {
+Music * addMusic(const string & newName, const string & fileName) {
 	int letter = numCharInAlphabet(newName[0]);
 	Music * newMusic = new Music(newName, fileName);
 	allMusic[letter].push_back(newMusic);
 	return newMusic;
 }
 
-void destroyMusic(string searchName) {
+void destroyMusic(const string & searchName) {
 	int letter = numCharInAlphabet(searchName[0]);
 	if (allMusic[letter].size() > 0) {
 		for (unsigned int i = 0; i < allMusic[letter].size(); i++) {

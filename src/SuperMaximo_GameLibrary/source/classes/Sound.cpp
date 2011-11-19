@@ -33,7 +33,7 @@ void allocateSoundChannels(unsigned channels) {
 	}
 }
 
-Sound::Sound(string newName, string fileName) {
+Sound::Sound(const string & newName, const string & fileName) {
 	name_ = newName, chunk = Mix_LoadWAV(fileName.c_str()), volume_ = 100, currentChannel = -1;
 }
 
@@ -73,7 +73,7 @@ void Sound::setSoundPosition(int angle, int distance) {
 	if (Mix_GetChunk(currentChannel) == chunk) Mix_SetPosition(currentChannel, angle, distance);
 }
 
-Sound * sound(string searchName) {
+Sound * sound(const string & searchName) {
 	int letter = numCharInAlphabet(searchName[0]);
 	Sound * returnSound = NULL;
 	if (allSounds[letter].size() > 0) {
@@ -88,14 +88,14 @@ Sound * sound(int channel) {
 	return allChannels[channel];
 }
 
-Sound * addSound(string newName, string fileName) {
+Sound * addSound(const string & newName, const string & fileName) {
 	int letter = numCharInAlphabet(newName[0]);
 	Sound * newSound = new Sound(newName, fileName);
 	allSounds[letter].push_back(newSound);
 	return newSound;
 }
 
-void destroySound(std::string searchName) {
+void destroySound(const string & searchName) {
 	int letter = numCharInAlphabet(searchName[0]);
 	if (allSounds[letter].size() > 0) {
 		for (unsigned int i = 0; i < allSounds[letter].size(); i++) {

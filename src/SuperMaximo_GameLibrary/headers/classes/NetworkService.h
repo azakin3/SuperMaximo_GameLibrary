@@ -37,8 +37,9 @@ class NetworkService {
 	int recvIntBuffer, sendIntBuffer, clientId, maxSockets, serverPort, clientPort;
 	UDPpacket * recvIntPacket, * sendIntPacket, * recvStrPacket, * sendStrPacket;
 	Uint32 localAddress_;
+
 public:
-	NetworkService(std::string newName);
+	NetworkService(const std::string & newName);
 	~NetworkService();
 
 	std::string name();
@@ -56,18 +57,18 @@ public:
 	int totalClients();
 	void kickClient(int id);
 
-	bool startClient(std::string newAddress, int newPort);
+	bool startClient(const std::string & newAddress, int newPort);
 	void closeClient();
 	bool restartClient();
 	bool connectToServer(bool useUdp = true);
 	int clientNumber();
 
-	bool sendStrTcp(std::string data, int id = 0, bool isServer = false, int size = 0);
+	bool sendStrTcp(const std::string & data, int id = 0, bool isServer = false, int size = 0);
 	std::string recvStrTcp(int id = 0, bool isServer = false, int size = 0);
 	bool sendIntTcp(int data, int id = 0, bool isServer = false);
 	int recvIntTcp(int id = 0, bool isServer = false);
 
-	bool sendStrUdp(std::string data, int id = 0, bool isServer = false);
+	bool sendStrUdp(const std::string & data, int id = 0, bool isServer = false);
 	std::string recvStrUdp(bool isServer = false);
 	std::string recvStrUdp(int * idBuffer, bool isServer = false);
 	int recvStrUdp(std::string * stringBuffer, bool isServer = false);
@@ -77,13 +78,11 @@ public:
 	int recvIntUdpId(int * intBuffer, bool isServer = false);
 };
 
-NetworkService * networkService(std::string searchName);
+NetworkService * networkService(const std::string & searchName);
 
-NetworkService * addNetworkService(std::string newName);
+NetworkService * addNetworkService(const std::string & newName);
 
-NetworkService * addNetworkService(std::string newName);
-
-void destroyNetworkService(std::string searchName);
+void destroyNetworkService(const std::string & searchName);
 
 void destroyAllNetworkServices();
 

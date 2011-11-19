@@ -25,7 +25,7 @@ Texture::operator GLuint() {
 	return texture;
 }
 
-Texture::Texture(string newName, textureTypeEnum textureType, string fileName, ...) {
+Texture::Texture(const string & newName, textureTypeEnum textureType, const string & fileName, ...) {
 	name_ = newName;
 	vector<string> fileNames;
 	fileNames.push_back(fileName);
@@ -38,7 +38,7 @@ Texture::Texture(string newName, textureTypeEnum textureType, string fileName, .
 	reload(textureType, fileNames);
 }
 
-Texture::Texture(string newName, textureTypeEnum textureType, unsigned numLayers, ...) {
+Texture::Texture(const string & newName, textureTypeEnum textureType, unsigned numLayers, ...) {
 	name_ = newName;
 	vector<string> fileNames;
 	va_list files;
@@ -50,12 +50,12 @@ Texture::Texture(string newName, textureTypeEnum textureType, unsigned numLayers
 	reload(textureType, fileNames);
 }
 
-Texture::Texture(string newName, textureTypeEnum textureType, vector<string> fileNames) {
+Texture::Texture(const string & newName, textureTypeEnum textureType, const vector<string> & fileNames) {
 	name_ = newName;
 	reload(textureType, fileNames);
 }
 
-Texture::Texture(string newName, textureTypeEnum textureType, unsigned numLayers, string * fileNames) {
+Texture::Texture(const string & newName, textureTypeEnum textureType, unsigned numLayers, string * fileNames) {
 	name_ = newName;
 	reload(textureType, numLayers, fileNames);
 }
@@ -64,7 +64,7 @@ Texture::~Texture() {
 	glDeleteTextures(1, &texture);
 }
 
-void Texture::reload(textureTypeEnum textureType, string fileName, ...) {
+void Texture::reload(textureTypeEnum textureType, const string & fileName, ...) {
 	type_ = textureType;
 	if (textureType == TEXTURE_3D) cout << "Cannot create a 3D texture with the arguments given" << endl; else {
 		SDL_Surface * image = IMG_Load(fileName.c_str());
@@ -161,7 +161,7 @@ void Texture::reload(textureTypeEnum textureType, unsigned numLayers, ...) {
 	} else cout << "Wrong type of texture specified" << endl;
 }
 
-void Texture::reload(textureTypeEnum textureType, vector<string> fileNames) {
+void Texture::reload(textureTypeEnum textureType, const vector<string> & fileNames) {
 	type_ = textureType;
 	if (textureType == TEXTURE_3D) {
 		glGenTextures(1, &texture);
@@ -345,7 +345,7 @@ int Texture::height() {
 	return height_;
 }
 
-Texture * texture(std::string searchName) {
+Texture * texture(const string & searchName) {
 	int letter = numCharInAlphabet(searchName[0]);
 	Texture * returnTexture = NULL;
 	if (allTextures[letter].size() > 0) {
@@ -356,7 +356,7 @@ Texture * texture(std::string searchName) {
 	return returnTexture;
 }
 
-Texture * addTexture(std::string newName, textureTypeEnum textureType, std::string fileName, ...) {
+Texture * addTexture(const string & newName, textureTypeEnum textureType, std::string fileName, ...) {
 	int letter = numCharInAlphabet(newName[0]);
 	vector<string> fileNames;
 	fileNames.push_back(fileName);
@@ -371,7 +371,7 @@ Texture * addTexture(std::string newName, textureTypeEnum textureType, std::stri
 	return newTexture;
 }
 
-Texture * addTexture(std::string newName, textureTypeEnum textureType, unsigned numLayers, ...) {
+Texture * addTexture(const string & newName, textureTypeEnum textureType, unsigned numLayers, ...) {
 	int letter = numCharInAlphabet(newName[0]);
 	vector<string> fileNames;
 	va_list files;
@@ -385,7 +385,7 @@ Texture * addTexture(std::string newName, textureTypeEnum textureType, unsigned 
 	return newTexture;
 }
 
-void destroyTexture(std::string searchName) {
+void destroyTexture(const string & searchName) {
 	int letter = numCharInAlphabet(searchName[0]);
 	if (allTextures[letter].size() > 0) {
 		for (unsigned int i = 0; i < allTextures[letter].size(); i++) {

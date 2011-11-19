@@ -29,26 +29,30 @@ class Texture {
 	GLuint texture;
 	textureTypeEnum type_;
 	int width_, height_;
+
 public:
 	operator GLuint();
-	Texture(std::string newName, textureTypeEnum textureType, std::string fileName, ...);
-	Texture(std::string newName, textureTypeEnum textureType, unsigned numLayers, ...);
-	Texture(std::string newName, textureTypeEnum textureType, std::vector<std::string> fileNames);
-	Texture(std::string newName, textureTypeEnum textureType, unsigned numLayers, std::string * fileNames);
+
+	Texture(const std::string & newName, textureTypeEnum textureType, const std::string & fileName, ...);
+	Texture(const std::string & newName, textureTypeEnum textureType, unsigned numLayers, ...);
+	Texture(const std::string & newName, textureTypeEnum textureType, const std::vector<std::string> & fileNames);
+	Texture(const std::string & newName, textureTypeEnum textureType, unsigned numLayers, std::string * fileNames);
 	~Texture();
-	void reload(textureTypeEnum textureType, std::string fileName, ...);
+
+	void reload(textureTypeEnum textureType, const std::string & fileName, ...);
 	void reload(textureTypeEnum textureType, unsigned numLayers, ...);
-	void reload(textureTypeEnum textureType, std::vector<std::string> fileNames);
+	void reload(textureTypeEnum textureType, const std::vector<std::string> & fileNames);
 	void reload(textureTypeEnum textureType, unsigned numLayers, std::string * fileNames);
+
 	std::string name();
 	textureTypeEnum type();
 	int width(), height();
 };
 
-Texture * texture(std::string searchName);
-Texture * addTexture(std::string newName, textureTypeEnum textureType, std::string fileName, ...);
-Texture * addTexture(std::string newName, textureTypeEnum textureType, unsigned numLayers, ...);
-void destroyTexture(std::string searchName);
+Texture * texture(const std::string & searchName);
+Texture * addTexture(const std::string & newName, textureTypeEnum textureType, const std::string & fileName, ...);
+Texture * addTexture(const std::string & newName, textureTypeEnum textureType, unsigned numLayers, ...);
+void destroyTexture(const std::string & searchName);
 void destroyAllTextures();
 
 }

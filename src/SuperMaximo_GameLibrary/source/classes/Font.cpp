@@ -32,7 +32,7 @@ GLuint vbo = 0;
 
 namespace SuperMaximo {
 
-Font::Font(string newName, string fileName, unsigned newSize) {
+Font::Font(const string & newName, const string & fileName, unsigned newSize) {
 	name_ = newName;
 	size = newSize;
 	font = TTF_OpenFont(fileName.c_str(), size);
@@ -46,7 +46,8 @@ string Font::name() {
 	return name_;
 }
 
-void Font::write(string text, int x, int y, float depth, bool useCache, float rotation, float xScale, float yScale) {
+void Font::write(const string & text, int x, int y, float depth, bool useCache, float rotation, float xScale,
+		float yScale) {
 	bool cacheSuccess = false;
 	unsigned cacheIndex = 1;
 	int letter = numCharInAlphabet(text[0]);
@@ -144,7 +145,7 @@ void Font::write(string text, int x, int y, float depth, bool useCache, float ro
 	}
 }
 
-SDL_Surface * Font::writeToSurface(string text, float r, float g, float b, bool hq) {
+SDL_Surface * Font::writeToSurface(const string & text, float r, float g, float b, bool hq) {
 	SDL_Color color;
 	color.r = r*255;
 	color.g = g*255;
@@ -155,19 +156,19 @@ SDL_Surface * Font::writeToSurface(string text, float r, float g, float b, bool 
 	return returnedSurface;
 }
 
-int Font::width(string text) {
+int Font::width(const string & text) {
 	int newWidth, newHeight;
 	TTF_SizeText(font, text.c_str(), &newWidth, &newHeight);
 	return newWidth;
 }
 
-int Font::height(string text) {
+int Font::height(const string & text) {
 	int newWidth, newHeight;
 	TTF_SizeText(font, text.c_str(), &newWidth, &newHeight);
 	return newHeight;
 }
 
-void Font::cache(string text) {
+void Font::cache(const string & text) {
 	int letter = numCharInAlphabet(text[0]);
 	fontCacheRecord newRecord;
 	newRecord.text = text;
@@ -212,7 +213,7 @@ void Font::cache(string text) {
 	fontCache[letter].push_back(newRecord);
 }
 
-void Font::removeFromCache(string text) {
+void Font::removeFromCache(const string & text) {
 	int letter = numCharInAlphabet(text[0]);
 	if (fontCache[letter].size() > 0) {
 		for (unsigned int i = 0; i < fontCache[letter].size(); i++) {
@@ -241,7 +242,7 @@ void bindFontShader(Shader * newFontShader) {
 	fontShader = newFontShader;
 }
 
-Font * font(string searchName) {
+Font * font(const string & searchName) {
 	int letter = numCharInAlphabet(searchName[0]);
 	Font * returnFont = NULL;
 	if (allFonts[letter].size() > 0) {
@@ -252,14 +253,14 @@ Font * font(string searchName) {
 	return returnFont;
 }
 
-Font * addFont(string newName, string fileName, int newSize) {
+Font * addFont(const string & newName, const string & fileName, int newSize) {
 	int letter = numCharInAlphabet(newName[0]);
 	Font * newFont = new Font(newName, fileName, newSize);
 	allFonts[letter].push_back(newFont);
 	return newFont;
 }
 
-void destroyFont(string searchName) {
+void destroyFont(const string & searchName) {
 	int letter = numCharInAlphabet(searchName[0]);
 	if (allFonts[letter].size() > 0) {
 		for (unsigned int i = 0; i < allFonts[letter].size(); i++) {

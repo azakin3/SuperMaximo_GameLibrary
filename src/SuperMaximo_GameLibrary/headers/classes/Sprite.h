@@ -38,14 +38,17 @@ class Sprite {
 	GLuint vao, vbo;
 	Shader * boundShader_;
 	customDrawFunctionType customDrawFunction;
+
 	void initBuffer();
+
 public:
 	friend class Object;
-	Sprite(std::string newName, std::string fileName, int imageX, int imageY, int imageWidth, int imageHeight,
-			int aniFrames = 1, unsigned framerate = 1, int newOriginX = -1, int newOriginY = -1,
+
+	Sprite(const std::string & newName, const std::string & fileName, int imageX, int imageY, int imageWidth,
+			int imageHeight, int aniFrames = 1, unsigned framerate = 1, int newOriginX = -1, int newOriginY = -1,
 			void (*customBufferFunction)(GLuint*, Sprite*, void*) = NULL, void * customData = NULL);
 
-	Sprite(std::string newName, SDL_Surface * surface, int imageX, int imageY, int imageWidth, int imageHeight,
+	Sprite(const std::string & newName, SDL_Surface * surface, int imageX, int imageY, int imageWidth, int imageHeight,
 			int aniFrames = 1, unsigned framerate = 1, int newOriginX = -1, int newOriginY = -1,
 			void (*customBufferFunction)(GLuint*, Sprite*, void*) = NULL, void * customData = NULL);
 	~Sprite();
@@ -83,17 +86,17 @@ public:
 	customDrawFunctionType boundCustomDrawFunction();
 };
 
-Sprite * sprite(std::string searchName);
+Sprite * sprite(const std::string & searchName);
 
-Sprite * addSprite(std::string newName, std::string fileName, int imageX, int imageY, int imageWidth,
+Sprite * addSprite(const std::string & newName, const std::string & fileName, int imageX, int imageY, int imageWidth,
 		int imageHeight, int aniFrames = 1, unsigned framerate = 1, int newOriginX = 1, int newOriginY = 1,
 		void (*customBufferFunction)(GLuint*, Sprite*, void*) = NULL, void * customData = NULL);
 
-Sprite * addSprite(std::string newName, SDL_Surface * surface, int imageX, int imageY, int imageWidth,
+Sprite * addSprite(const std::string & newName, SDL_Surface * surface, int imageX, int imageY, int imageWidth,
 		int imageHeight, int aniFrames = 1, unsigned framerate = 1, int newOriginX = 1, int newOriginY = 1,
 		void (*customBufferFunction)(GLuint*, Sprite*, void*) = NULL, void * customData = NULL);
 
-void destroySprite(std::string searchName);
+void destroySprite(const std::string & searchName);
 
 void destroyAllSprites();
 

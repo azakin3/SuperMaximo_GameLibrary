@@ -21,16 +21,17 @@ class Font {
 	unsigned size;
 	std::string name_;
 public:
-	Font(std::string newName, std::string fileName, unsigned newSize);
+	Font(const std::string & newName, const std::string & fileName, unsigned newSize);
 	~Font();
 	std::string name();
-	void write(std::string text, int x, int y, float depth, bool useCache = true, float rotation = 0.0f,
+	void write(const std::string & text, int x, int y, float depth, bool useCache = true, float rotation = 0.0f,
 			float xScale = 1.0f, float yScale = 1.0f);
-	SDL_Surface * writeToSurface(std::string text, float r = 1.0f, float g = 1.0f, float b = 1.0f, bool hq = true);
-	int width(std::string text);
-	int height(std::string text);
-	void cache(std::string text);
-	void removeFromCache(std::string text);
+	SDL_Surface * writeToSurface(const std::string & text, float r = 1.0f, float g = 1.0f, float b = 1.0f,
+			bool hq = true);
+	int width(const std::string & text);
+	int height(const std::string & text);
+	void cache(const std::string & text);
+	void removeFromCache(const std::string & text);
 };
 
 class Shader;
@@ -39,9 +40,9 @@ void initFont(Shader * newFontShader);
 void quitFont();
 void bindFontShader(Shader * newFontShader);
 
-Font * font(std::string searchName);
-Font * addFont(std::string newName, std::string fileName, int newSize);
-void destroyFont(std::string searchName);
+Font * font(const std::string & searchName);
+Font * addFont(const std::string & newName, const std::string & fileName, int newSize);
+void destroyFont(const std::string & searchName);
 void destroyAllFonts();
 
 void clearFontCache();

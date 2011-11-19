@@ -31,22 +31,6 @@ struct vertexNormalAssoication {
 vector<Model*> allModels[27];
 
 namespace SuperMaximo {
-/*
-void keyFrame::set(Model * model) {
-	for (unsigned i = 0; i < boneData.size(); i++) {
-		model->bones_[boneData[i].boneId]->xRot = boneData[i].xRot;
-		model->bones_[boneData[i].boneId]->yRot = boneData[i].yRot;
-		model->bones_[boneData[i].boneId]->zRot = boneData[i].zRot;
-	}
-}
-
-Model::normal Model::normal::operator- (normal const & other) {
-	normal returnNormal;
-	returnNormal.x = x-other.x;
-	returnNormal.y = y-other.y;
-	returnNormal.z = z-other.z;
-	return returnNormal;
-}*/
 
 Model::vertex Model::vertex::operator- (vertex const & other) {
 	vertex returnVertex;
@@ -71,13 +55,9 @@ vec3 Model::triangle::surfaceNormal() {
 
 	return normal_;
 }
-/*
-void bone::box::init() {
-	x = y = z = l = w = h = xRot = yRot = zRot = 0.0f;
-}*/
 
-Model::Model(string newName, string path, string fileName, unsigned framerate, bufferUsageEnum bufferUsage,
-		void (*customBufferFunction)(GLuint*, Model*, void*), void * customData) {
+Model::Model(const string & newName, const string & path, const string & fileName, unsigned framerate,
+		bufferUsageEnum bufferUsage, void (*customBufferFunction)(GLuint*, Model*, void*), void * customData) {
 	name_ = newName;
 	boundShader_ = NULL;
 	framerate_ = framerate;
@@ -97,7 +77,7 @@ Model::~Model() {
 	if (vertexArrayObjectSupported()) glDeleteVertexArrays(1, &vao);
 }
 
-void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage,
+void Model::loadObj(const string & path, const string & fileName, bufferUsageEnum bufferUsage,
 		void (*customBufferFunction)(GLuint*, Model*, void*), void * customData) {
 	vector<string> objText, mtlText;
 	vector<vertex> vertices, texCoord;
@@ -158,7 +138,6 @@ void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage,
 			material newMaterial;
 			newMaterial.name = rightStr(mtlText[i], mtlText[i].size()-7);
 			newMaterial.hasTexture = false;
-			//newMaterial.texture = 0;
 
 			string kStr = "";
 			for (unsigned j = i+1; j < mtlText.size(); j++) {
@@ -465,7 +444,7 @@ void Model::loadObj(string path, string fileName, bufferUsageEnum bufferUsage,
 	for (char i = 0; i < 16; i++) glDisableVertexAttribArray(i);
 }
 
-void Model::loadSmm(string path, string fileName, bufferUsageEnum bufferUsage) {
+void Model::loadSmm(const string & path, const string & fileName, bufferUsageEnum bufferUsage) {
 	vector<string> text;
 	ifstream file;
 	file.open((path+fileName).c_str());
@@ -582,110 +561,9 @@ void Model::loadSmm(string path, string fileName, bufferUsageEnum bufferUsage) {
 		}
 		materials_.push_back((material){"", text[arraySize+2+i]});
 	}
-
-	/*vector<string> text;
-	ifstream file;
-	file.open(fileName.c_str());
-	if (file.is_open()) {
-		while (!file.eof()) {
-			string tempStr;
-			getline(file, tempStr);
-			if (rightStr(tempStr, 1) == "\n") leftStr(&tempStr, tempStr.size()-1);
-			text.push_back(tempStr);
-		}
-		file.close();
-	} else return;
-	if (text.back() == "") text.pop_back();
-	triangles_.clear();
-	unsigned totalTriangles = atoi(text.front().c_str());
-	for (unsigned i = 0; i < totalTriangles; i++) {
-		triangle newTriangle;
-		for (short j = 0; j < 3; j++) {
-			newTriangle.coords[j].x = strtof(text[(i*32)+(j*6)+1].c_str(), NULL);
-			newTriangle.coords[j].y = strtof(text[(i*32)+(j*6)+2].c_str(), NULL);
-			newTriangle.coords[j].z = strtof(text[(i*32)+(j*6)+3].c_str(), NULL);
-			newTriangle.coords[j].normal_.x = strtof(text[(i*32)+(j*6)+4].c_str(), NULL);
-			newTriangle.coords[j].normal_.y = strtof(text[(i*32)+(j*6)+5].c_str(), NULL);
-			newTriangle.coords[j].normal_.z = strtof(text[(i*32)+(j*6)+6].c_str(), NULL);
-		}
-		for (short j = 0; j < 3; j++) {
-			newTriangle.texCoords[j].x = strtof(text[(i*32)+(j*3)+19].c_str(), NULL);
-			newTriangle.texCoords[j].y = strtof(text[(i*32)+(j*3)+20].c_str(), NULL);
-			newTriangle.texCoords[j].z = strtof(text[(i*32)+(j*3)+21].c_str(), NULL);
-		}
-		newTriangle.mtlNum = atoi(text[(i*32)+28].c_str());
-		//for (short j = 0; j < 3; j++) newTriangle.sharedCoord[j] = atoi(text[(i*32)+j+29].c_str());
-		//if (atoi(text[(i*32)+32].c_str()) < 0) newTriangle.pBone = NULL;
-			 else newTriangle.pBone = bones_[atoi(text[(i*32)+32].c_str())];
-		triangles_.push_back(newTriangle);
-	}
-	for (unsigned i = 0; i < materials_.size(); i++) {
-		if (materials_[i].hasTexture) glDeleteTextures(1, &materials_[i].texture);
-	}
-	materials_.clear();
-	totalTriangles *= 32;
-	unsigned totalMaterials = atoi(text[totalTriangles+1].c_str());
-	bool initialised = false;
-	for (unsigned i = 0; i < totalMaterials; i++) {
-		material newMaterial;
-		newMaterial.name = text[totalTriangles+(i*14)+2];
-		newMaterial.fileName = text[totalTriangles+(i*14)+3];
-		newMaterial.ambientColor.r = strtof(text[totalTriangles+(i*14)+4].c_str(), NULL);
-		newMaterial.ambientColor.g = strtof(text[totalTriangles+(i*14)+5].c_str(), NULL);
-		newMaterial.ambientColor.b = strtof(text[totalTriangles+(i*14)+6].c_str(), NULL);
-		newMaterial.diffuseColor.r = strtof(text[totalTriangles+(i*14)+7].c_str(), NULL);
-		newMaterial.diffuseColor.g = strtof(text[totalTriangles+(i*14)+8].c_str(), NULL);
-		newMaterial.diffuseColor.b = strtof(text[totalTriangles+(i*14)+9].c_str(), NULL);
-		newMaterial.specularColor.r = strtof(text[totalTriangles+(i*14)+10].c_str(), NULL);
-		newMaterial.specularColor.g = strtof(text[totalTriangles+(i*14)+11].c_str(), NULL);
-		newMaterial.specularColor.b = strtof(text[totalTriangles+(i*14)+12].c_str(), NULL);
-		newMaterial.shininess = strtof(text[totalTriangles+(i*14)+13].c_str(), NULL);
-		newMaterial.alpha = strtof(text[totalTriangles+(i*14)+14].c_str(), NULL);
-		newMaterial.hasTexture = atoi(text[totalTriangles+(i*14)+15].c_str());
-		newMaterial.textureId = -1;
-		if (newMaterial.hasTexture) {
-			SDL_Surface * image = IMG_Load((newMaterial.fileName).c_str());
-			GLenum textureFormat;
-			if (image == NULL) cout << "Could not load texture " << newMaterial.fileName << endl; else {
-				if (image->format->BytesPerPixel == 4) {
-					if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGBA; else textureFormat = GL_BGRA;
-				} else {
-					if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGB; else textureFormat = GL_BGR;
-				}
-				if (!initialised) {
-					initialised = true;
-					glGenTextures(1, &texture);
-					glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
-					glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-					glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-					glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_GENERATE_MIPMAP, GL_TRUE);
-					glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h,
-					totalMaterials, 0, textureFormat, GL_UNSIGNED_BYTE, NULL);
-				}
-				//glGenTextures(1, &newMaterial.texture);
-				//glBindTexture(GL_TEXTURE_2D, newMaterial.texture);
-				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-				//glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
-				//TODO check for opengl version and use glGenerateMipmap(GL_TEXTURE_2D) after glTexImage2D instead of
-				 * GL_GENERATE_MIPMAP if >= OpenGL 3
-				//glTexImage2D(GL_TEXTURE_2D, 0, image->format->BytesPerPixel, image->w, image->h, 0, textureFormat,
-				 * GL_UNSIGNED_BYTE, image->pixels);
-				glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, image->w, image->h, 1, textureFormat,
-				GL_UNSIGNED_BYTE, image->pixels);
-				SDL_FreeSurface(image);
-				newMaterial.textureId = i;
-			}
-		}
-		materials_.push_back(newMaterial);
-	}
-	glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
-	for (unsigned i = 0; i < triangles_.size(); i++) {
-		//if (triangles_[i].pBone != NULL) triangles_[i].pBone->triangles.push_back(&(triangles_[i]));
-	}*/
 }
 
-void Model::loadSms(string fileName) {
+void Model::loadSms(const string & fileName) {
 	vector<string> text;
 	ifstream file;
 	file.open(fileName.c_str());
@@ -747,76 +625,9 @@ void Model::loadSms(string fileName) {
 
 		bones_.push_back(newBone);
 	}
-
-	/*vector<string> text;
-	ifstream file;
-	file.open(fileName.c_str());
-	if (file.is_open()) {
-		while (!file.eof()) {
-			string tempStr;
-			getline(file, tempStr);
-			if (rightStr(tempStr, 1) == "\n") leftStr(&tempStr, tempStr.size()-1);
-			text.push_back(tempStr);
-		}
-		file.close();
-	} else return;
-	if (text.back() == "") text.pop_back();
-	for (unsigned i = 0; i < triangles_.size(); i++) {
-		triangles_[i].boneId = -1;
-		for (unsigned j = 0; j < bones_.size(); j++) {
-			if (triangles_[i].pBone == bones_[j]) {
-				triangles_[i].boneId = j;
-				break;
-			}
-		}
-	}
-
-	for (unsigned i = 0; i < triangles_.size(); i++) triangles_[i].pBone = NULL;
-	for (unsigned i = 0; i < bones_.size(); i++) delete bones_[i];
-	bones_.clear();
-	unsigned totalBones = atoi(text[0].c_str());
-	for (unsigned i = 0; i < totalBones; i++) {
-		bones_.push_back(NULL);
-		bones_[i] = new bone;
-		bone * b = bones_[i];
-		//b->triangles.clear();
-		b->id = atoi(text[(i*17)+1].c_str());
-		b->x = strtof(text[(i*17)+2].c_str(), NULL);
-		b->y = strtof(text[(i*17)+3].c_str(), NULL);
-		b->z = strtof(text[(i*17)+4].c_str(), NULL);
-		b->endX = strtof(text[(i*17)+5].c_str(), NULL);
-		b->endY = strtof(text[(i*17)+6].c_str(), NULL);
-		b->endZ = strtof(text[(i*17)+7].c_str(), NULL);
-		if (atoi(text[(i*17)+8].c_str()) > -1) b->parent = bones_[atoi(text[(i*17)+8].c_str())]; else b->parent = NULL;
-
-		b->hitbox.init();
-		b->hitbox.x = strtof(text[(i*17)+9].c_str(), NULL);
-		b->hitbox.y = strtof(text[(i*17)+10].c_str(), NULL);
-		b->hitbox.z = strtof(text[(i*17)+11].c_str(), NULL);
-		b->hitbox.l = strtof(text[(i*17)+12].c_str(), NULL);
-		b->hitbox.w = strtof(text[(i*17)+13].c_str(), NULL);
-		b->hitbox.h = strtof(text[(i*17)+14].c_str(), NULL);
-		b->hitbox.xRot = strtof(text[(i*17)+15].c_str(), NULL);
-		b->hitbox.yRot = strtof(text[(i*17)+16].c_str(), NULL);
-		b->hitbox.zRot = strtof(text[(i*17)+17].c_str(), NULL);
-		b->hitbox.rl = b->hitbox.l;
-		b->hitbox.rw = b->hitbox.w;
-		b->hitbox.rh = b->hitbox.h;
-	}
-
-	for (unsigned i = 0; i < bones_.size(); i++) {
-		for (unsigned j = 0; j < bones_.size(); j++) {
-			if (bones_[i] == bones_[j]->parent) bones_[i]->child.push_back(bones_[j]);
-		}
-	}
-
-	for (unsigned i = 0; i < triangles_.size(); i++) {
-		if (triangles_[i].boneId > -1) triangles_[i].pBone = bones_[triangles_[i].boneId];
-		else triangles_[i].pBone = NULL;
-	}*/
 }
 
-void Model::loadSma(string fileName) {
+void Model::loadSma(const string & fileName) {
 	vector<string> text;
 	ifstream file;
 	file.open(fileName.c_str());
@@ -863,49 +674,9 @@ void Model::loadSma(string fileName) {
 		}
 		bones_[boneId]->animations.push_back(newAnimation);
 	}
-
-	/*vector<string> text;
-	ifstream file;
-	file.open(fileName.c_str());
-	if (file.is_open()) {
-		while (!file.eof()) {
-			string tempStr;
-			getline(file, tempStr);
-			if (rightStr(tempStr, 1) == "\n") leftStr(&tempStr, tempStr.size()-1);
-			text.push_back(tempStr);
-		}
-		file.close();
-	} else return;
-	if (text.back() == "") text.pop_back();
-	animation newAnimation;
-	newAnimation.name = text[0];
-	newAnimation.frames.clear();
-	unsigned totalFrames = atoi(text[1].c_str());
-	unsigned line = 2;
-	for (unsigned i = 0; i < totalFrames; i++) {
-		keyFrame newFrame;
-		newFrame.step = atoi(text[line].c_str());
-		line++;
-		unsigned totalBoneData = atoi(text[line].c_str());
-		line++;
-		for (unsigned j = 0; j < totalBoneData; j++) {
-			keyFrame::keyFrameData newBoneData;
-			newBoneData.boneId = atoi(text[line].c_str());
-			line++;
-			newBoneData.xRot = strtof(text[line].c_str(), NULL);
-			line++;
-			newBoneData.yRot = strtof(text[line].c_str(), NULL);
-			line++;
-			newBoneData.zRot = strtof(text[line].c_str(), NULL);
-			line++;
-			newFrame.boneData.push_back(newBoneData);
-		}
-		newAnimation.frames.push_back(newFrame);
-	}
-	animations.push_back(newAnimation);*/
 }
 
-void Model::loadSmo(string path, string fileName, bufferUsageEnum bufferUsage) {
+void Model::loadSmo(const string & path, const string & fileName, bufferUsageEnum bufferUsage) {
 	vector<string> text;
 	ifstream file;
 	file.open((path+fileName).c_str());
@@ -927,12 +698,6 @@ void Model::loadSmo(string path, string fileName, bufferUsageEnum bufferUsage) {
 	loadSms(path+text[1]);
 	loadSmm(path, text[0], bufferUsage);
 	for (unsigned i = 2; i < text.size(); i++) loadSma(path+text[i]);
-
-	//glGenVertexArrays(1, &vao);
-	//glBindVertexArray(vao);
-	//if (customBufferFunction == NULL) initBufferSmo(); else (*customBufferFunction)(&vbo, this, customData);
-	//glBindVertexArray(0);
-	//for (char i = 0; i < 16; i++) glDisableVertexAttribArray(i);
 }
 
 void Model::initBufferObj(bufferUsageEnum bufferUsage) {
@@ -1036,236 +801,6 @@ void Model::initBufferObj(bufferUsageEnum bufferUsage) {
 
 	delete[] vertexArray;
 }
-
-/*void Model::initBufferSmo() {
-	unsigned verticeCount = 0;
-	for (unsigned i = 0; i < bones_.size(); i++) verticeCount += bones_[i]->triangles.size()*3;
-
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*verticeCount*23, NULL, GL_STATIC_DRAW);
-
-	unsigned offset = 0;
-
-	for (unsigned i = 0; i < bones_.size(); i++) {
-		GLfloat vertexArray[bones_[i]->triangles.size()*3*23];
-		bones_[i]->offset = offset;
-		unsigned count = 0;
-		for (unsigned j = 0; j < bones_[i]->triangles.size(); j++) {
-			for (short k = 0; k < 3; k++) {
-				vertexArray[count] = bones_[i]->triangles[j]->coords[k].x;
-				count++;
-				vertexArray[count] = bones_[i]->triangles[j]->coords[k].y;
-				count++;
-				vertexArray[count] = bones_[i]->triangles[j]->coords[k].z;
-				count++;
-				if (bones_[i]->triangles[j]->sharedCoord[k]) vertexArray[count] = 1.0f; else vertexArray[count] = 0.0f;
-				count++;
-				vertexArray[count] = bones_[i]->triangles[j]->coords[k].normal_.x;
-				count++;
-				vertexArray[count] = bones_[i]->triangles[j]->coords[k].normal_.y;
-				count++;
-				vertexArray[count] = bones_[i]->triangles[j]->coords[k].normal_.z;
-				count++;
-				vertexArray[count] = materials_[bones_[i]->triangles[j]->mtlNum].ambientColor.r;
-				count++;
-				vertexArray[count] = materials_[bones_[i]->triangles[j]->mtlNum].ambientColor.g;
-				count++;
-				vertexArray[count] = materials_[bones_[i]->triangles[j]->mtlNum].ambientColor.b;
-				count++;
-				vertexArray[count] = materials_[bones_[i]->triangles[j]->mtlNum].diffuseColor.r;
-				count++;
-				vertexArray[count] = materials_[bones_[i]->triangles[j]->mtlNum].diffuseColor.g;
-				count++;
-				vertexArray[count] = materials_[bones_[i]->triangles[j]->mtlNum].diffuseColor.b;
-				count++;
-				vertexArray[count] = materials_[bones_[i]->triangles[j]->mtlNum].specularColor.r;
-				count++;
-				vertexArray[count] = materials_[bones_[i]->triangles[j]->mtlNum].specularColor.g;
-				count++;
-				vertexArray[count] = materials_[bones_[i]->triangles[j]->mtlNum].specularColor.b;
-				count++;
-				vertexArray[count] = bones_[i]->triangles[j]->texCoords[k].x;
-				count++;
-				vertexArray[count] = bones_[i]->triangles[j]->texCoords[k].y;
-				count++;
-				vertexArray[count] = bones_[i]->triangles[j]->texCoords[k].z;
-				count++;
-				vertexArray[count] = bones_[i]->triangles[j]->mtlNum;
-				count++;
-				vertexArray[count] = materials_[bones_[i]->triangles[j]->mtlNum].hasTexture;
-				count++;
-				vertexArray[count] = materials_[bones_[i]->triangles[j]->mtlNum].shininess;
-				count++;
-				vertexArray[count] = materials_[bones_[i]->triangles[j]->mtlNum].alpha;
-				count++;
-			}
-		}
-		glBufferSubData(GL_ARRAY_BUFFER, sizeof(GLfloat)*offset*23, sizeof(vertexArray), vertexArray);
-		offset += bones_[i]->triangles.size()*3;
-	}
-
-	glVertexAttribPointer(VERTEX_ATTRIBUTE, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23, 0);
-	glVertexAttribPointer(NORMAL_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23,
-	(const GLvoid*)(sizeof(GLfloat)*4));
-	glVertexAttribPointer(COLOR0_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23,
-	(const GLvoid*)(sizeof(GLfloat)*7));
-	glVertexAttribPointer(COLOR1_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23,
-	(const GLvoid*)(sizeof(GLfloat)*10));
-	glVertexAttribPointer(COLOR2_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23,
-	(const GLvoid*)(sizeof(GLfloat)*13));
-	glVertexAttribPointer(TEXTURE0_ATTRIBUTE, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23,
-	(const GLvoid*)(sizeof(GLfloat)*16));
-	glVertexAttribPointer(EXTRA0_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23,
-	(const GLvoid*)(sizeof(GLfloat)*19));
-	glVertexAttribPointer(EXTRA1_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23,
-	(const GLvoid*)(sizeof(GLfloat)*20));
-	glVertexAttribPointer(EXTRA2_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23,
-	(const GLvoid*)(sizeof(GLfloat)*21));
-	glVertexAttribPointer(EXTRA3_ATTRIBUTE, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*23,
-	(const GLvoid*)(sizeof(GLfloat)*22));
-
-	glEnableVertexAttribArray(VERTEX_ATTRIBUTE);
-	glEnableVertexAttribArray(NORMAL_ATTRIBUTE);
-	glEnableVertexAttribArray(COLOR0_ATTRIBUTE);
-	glEnableVertexAttribArray(COLOR1_ATTRIBUTE);
-	glEnableVertexAttribArray(COLOR2_ATTRIBUTE);
-	glEnableVertexAttribArray(TEXTURE0_ATTRIBUTE);
-	glEnableVertexAttribArray(EXTRA0_ATTRIBUTE);
-	glEnableVertexAttribArray(EXTRA1_ATTRIBUTE);
-	glEnableVertexAttribArray(EXTRA2_ATTRIBUTE);
-	glEnableVertexAttribArray(EXTRA3_ATTRIBUTE);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void Model::drawObj(Shader * shaderToUse) {
-	shaderToUse->setUniform16(MODELVIEW_LOCATION, getMatrix(MODELVIEW_MATRIX));
-	shaderToUse->setUniform16(PROJECTION_LOCATION, getMatrix(PROJECTION_MATRIX));
-
-	glDrawArrays(GL_TRIANGLES, 0, triangles_.size()*3);
-}*/
-/*
-vec3 Model::calculatePoints(float nx, float ny, float nz, mat4 matrix) {
-	vec3 returnNormal;
-	returnNormal.x = (nx*matrix[0])+(ny*matrix[4])+(nz*matrix[8])+matrix[12];
-	returnNormal.y = (nx*matrix[1])+(ny*matrix[5])+(nz*matrix[9])+matrix[13];
-	returnNormal.z = (nx*matrix[2])+(ny*matrix[6])+(nz*matrix[10])+matrix[14];
-	return returnNormal;
-}
-
-void Model::calculateHitbox(bone * pBone, mat4 matrix) {
-	float nx, ny, nz;
-	vec3 point[8];
-
-	nx = 0.0f;
-	ny = -pBone->hitbox.h/2.0f;
-	nz = pBone->hitbox.w/2.0f;
-	point[0] = calculatePoints(nx, ny, nz, matrix);
-
-	nx = 0.0f;
-	ny = pBone->hitbox.h/2.0f;
-	nz = pBone->hitbox.w/2.0f;
-	point[1] = calculatePoints(nx, ny, nz, matrix);
-
-	nx = 0.0f;
-	ny = pBone->hitbox.h/2.0f;
-	nz = -pBone->hitbox.w/2.0f;
-	point[2] = calculatePoints(nx, ny, nz, matrix);
-
-	nx = 0.0f;
-	ny = -pBone->hitbox.h/2.0f;
-	nz = -pBone->hitbox.w/2.0f;
-	point[3] = calculatePoints(nx, ny, nz, matrix);
-
-	nx = pBone->hitbox.l;
-	ny = -pBone->hitbox.h/2.0f;
-	nz = pBone->hitbox.w/2.0f;
-	point[4] = calculatePoints(nx, ny, nz, matrix);
-
-	nx = pBone->hitbox.l;
-	ny = pBone->hitbox.h/2.0f;
-	nz = pBone->hitbox.w/2.0f;
-	point[5] = calculatePoints(nx, ny, nz, matrix);
-
-	nx = pBone->hitbox.l;
-	ny = pBone->hitbox.h/2.0f;
-	nz = -pBone->hitbox.w/2.0f;
-	point[6] = calculatePoints(nx, ny, nz, matrix);
-
-	nx = pBone->hitbox.l;
-	ny = -pBone->hitbox.h/2.0f;
-	nz = -pBone->hitbox.w/2.0f;
-	point[7] = calculatePoints(nx, ny, nz, matrix);
-
-	float lLowerBound = point[0].x, lUpperBound = point[0].x, wLowerBound = point[0].z,
-		wUpperBound = point[0].z, hLowerBound = point[0].y, hUpperBound = point[0].y;
-	for (short i = 0; i < 8; i++) {
-		if (point[i].x < lLowerBound) lLowerBound = point[i].x;
-		else if (point[i].x > lUpperBound) lUpperBound = point[i].x;
-		if (point[i].z < wLowerBound) wLowerBound = point[i].z;
-		else if (point[i].z > wUpperBound)	wUpperBound = point[i].z;
-		if (point[i].y < hLowerBound) hLowerBound = point[i].y;
-		else if (point[i].y > hUpperBound) hUpperBound = point[i].y;
-	}
-	pBone->hitbox.rl = lUpperBound-lLowerBound;
-	pBone->hitbox.rw = wUpperBound-wLowerBound;
-	pBone->hitbox.rh = hUpperBound-hLowerBound;
-}
-*/
-/*void Model::drawBone(bone * pBone, Shader * shaderToUse, bool skipHitboxes) {
-	pushMatrix();
-		mat4 modelMatrix, modelNormMatrix;
-		pushMatrix();
-			copyMatrix(IDENTITY_MATRIX, MODELVIEW_MATRIX);
-			if (!skipHitboxes) {
-				pushMatrix();
-					rotateMatrix(pBone->xRot, 1.0f, 0.0f, 0.0f);
-					rotateMatrix(pBone->yRot, 0.0f, 1.0f, 0.0f);
-					rotateMatrix(pBone->zRot, 0.0f, 0.0f, 1.0f);
-					modelNormMatrix = getMatrix(MODELVIEW_MATRIX);
-				popMatrix();
-			}
-			translateMatrix(pBone->x, pBone->y, pBone->z);
-			rotateMatrix(pBone->xRot, 1.0f, 0.0f, 0.0f);
-			rotateMatrix(pBone->yRot, 0.0f, 1.0f, 0.0f);
-			rotateMatrix(pBone->zRot, 0.0f, 0.0f, 1.0f);
-			translateMatrix(-pBone->x, -pBone->y, -pBone->z);
-			modelMatrix = getMatrix(MODELVIEW_MATRIX);
-		popMatrix();
-
-		shaderToUse->setUniform16(EXTRA0_LOCATION, getMatrix(MODELVIEW_MATRIX));
-
-		copyMatrix(getMatrix(MODELVIEW_MATRIX)*modelMatrix, MODELVIEW_MATRIX);
-
-		shaderToUse->setUniform16(MODELVIEW_LOCATION, getMatrix(MODELVIEW_MATRIX));
-		shaderToUse->setUniform16(PROJECTION_LOCATION, getMatrix(PROJECTION_MATRIX));
-
-		//glDrawArrays(GL_TRIANGLES, pBone->offset, pBone->triangles.size()*3);
-
-		if (!skipHitboxes) {
-			if (pBone->parent == NULL) {
-				pBone->hitbox.x = 0.0f;
-				pBone->hitbox.y = 0.0f;
-				pBone->hitbox.z = 0.0f;
-			} else {
-				pBone->hitbox.x = pBone->parent->hitbox.x+pBone->parent->endX;
-				pBone->hitbox.y = pBone->parent->hitbox.y+pBone->parent->endY;
-				pBone->hitbox.z = pBone->parent->hitbox.z+pBone->parent->endZ;
-			}
-			float nx = pBone->endX;
-			float ny = pBone->endY;
-			float nz = pBone->endZ;
-			pBone->endX = (nx*modelNormMatrix[0])+(ny*modelNormMatrix[4])+(nz*modelNormMatrix[8])+modelNormMatrix[12];
-			pBone->endY = (nx*modelNormMatrix[1])+(ny*modelNormMatrix[5])+(nz*modelNormMatrix[9])+modelNormMatrix[13];
-			pBone->endZ = (nx*modelNormMatrix[2])+(ny*modelNormMatrix[6])+(nz*modelNormMatrix[10])+modelNormMatrix[14];
-			calculateHitbox(pBone, modelNormMatrix);
-		}
-
-		if (pBone->child.size() > 0) {
-			for (unsigned i = 0; i < pBone->child.size(); i++) drawBone(pBone->child[i], shaderToUse, skipHitboxes);
-		}
-	popMatrix();
-}*/
 
 void Model::getBoneModelviewMatrices(mat4 * matrixArray, bone * pBone) {
 	pushMatrix();
@@ -1399,58 +934,6 @@ void Model::draw(float x, float y, float z, float xRotation, float yRotation, fl
 			}
 			glDrawArrays(GL_TRIANGLES, 0, vertexCount_);
 			if (vertexArrayObjectSupported()) glBindVertexArray(0); else glBindBuffer(GL_ARRAY_BUFFER, 0);
-			/*glBindVertexArray(vao);
-			if (loadedFromObj) drawObj(shaderToUse); else {
-				if (!skipAnimation) {
-					if (animations.size() > 0) {
-						if (animations[currentAnimationId].frames.size() > 1) {
-							keyFrame * nextKeyFrame, * thisKeyFrame;
-
-							unsigned currentKeyFrame = 0;
-							while (frame > animations[currentAnimationId].frames.back().step)
-								frame -= animations[currentAnimationId].frames.back().step;
-							while (frame > (int)animations[currentAnimationId].frames[currentKeyFrame+1].step) {
-								currentKeyFrame++;
-								if (currentKeyFrame >= animations[currentAnimationId].frames.size()) {
-									currentKeyFrame = 0;
-									frame -= animations[currentAnimationId].frames.back().step;
-									break;
-								}
-							}
-
-							thisKeyFrame = &animations[currentAnimationId].frames[currentKeyFrame];
-							if (currentKeyFrame+1 < animations[currentAnimationId].frames.size())
-								nextKeyFrame = &animations[currentAnimationId].frames[currentKeyFrame+1]; else
-									nextKeyFrame = &animations[currentAnimationId].frames.front();
-
-							float tempFrame = frame-(float)thisKeyFrame->step;
-							int stepDiff = nextKeyFrame->step-thisKeyFrame->step;
-
-							for (unsigned i = 0; i < bones_.size(); i++) {
-								float diff, diff1 = nextKeyFrame->boneData[i].xRot-thisKeyFrame->boneData[i].xRot,
-								diff2 = 360-nextKeyFrame->boneData[i].xRot;
-								if (abs(diff1) < abs(diff2)) diff = diff1; else diff = diff2;
-								bones_[thisKeyFrame->boneData[i].boneId]->xRot
-									= thisKeyFrame->boneData[i].xRot+((diff/(float)stepDiff)*(float)tempFrame);
-
-								diff1 = nextKeyFrame->boneData[i].yRot-thisKeyFrame->boneData[i].yRot,
-								diff2 = 360-nextKeyFrame->boneData[i].yRot;
-								if (abs(diff1) < abs(diff2)) diff = diff1; else diff = diff2;
-								bones_[thisKeyFrame->boneData[i].boneId]->yRot
-									= thisKeyFrame->boneData[i].yRot+((diff/(float)stepDiff)*(float)tempFrame);
-
-								diff1 = nextKeyFrame->boneData[i].zRot-thisKeyFrame->boneData[i].zRot,
-								diff2 = 360-nextKeyFrame->boneData[i].zRot;
-								if (abs(diff1) < abs(diff2)) diff = diff1; else diff = diff2;
-								bones_[thisKeyFrame->boneData[i].boneId]->zRot
-									= thisKeyFrame->boneData[i].zRot+((diff/(float)stepDiff)*(float)tempFrame);
-							}
-						}
-					}
-				}
-				drawBone(bones_[0], shaderToUse, skipHitboxes);
-				glBindVertexArray(0);
-			}*/
 		popMatrix();
 	}
 	if (::boundShader() != NULL) glUseProgram(::boundShader()->program_); else glUseProgram(0);
@@ -1507,7 +990,7 @@ Shader * Model::boundShader() {
 	return boundShader_;
 }
 
-int Model::boneId(string boneName) {
+int Model::boneId(const string & boneName) {
 	for (unsigned i = 0; i < bones_.size(); i++) if (bones_[i]->name == boneName) return i;
 	return -1;
 }
@@ -1517,7 +1000,7 @@ string Model::boneName(unsigned boneId) {
 	return bones_[boneId]->name;
 }
 
-int Model::animationId(string searchName) {
+int Model::animationId(const string & searchName) {
 	if (bones_.size() > 0) {
 		for (unsigned i = 0; i < bones_.front()->animations.size(); i++)
 			if (bones_.front()->animations[i].name == searchName) return i;
@@ -1562,7 +1045,7 @@ int bone::animation::frameIndex(float step) {
 	return -1;
 }
 
-Model * model(string searchName) {
+Model * model(const string & searchName) {
 	int letter = numCharInAlphabet(searchName[0]);
 	Model * returnModel = NULL;
 	if (allModels[letter].size() > 0) {
@@ -1573,15 +1056,15 @@ Model * model(string searchName) {
 	return returnModel;
 }
 
-Model * addModel(string newName, string path, string fileName, unsigned framerate, bufferUsageEnum bufferUsage,
-		void (*customBufferFunction)(GLuint*, Model*, void*), void * customData) {
+Model * addModel(const string & newName, const string & path, const string & fileName, unsigned framerate,
+		bufferUsageEnum bufferUsage, void (*customBufferFunction)(GLuint*, Model*, void*), void * customData) {
 	int letter = numCharInAlphabet(newName[0]);
 	Model * newModel = new Model(newName, path, fileName, framerate, bufferUsage, customBufferFunction, customData);
 	allModels[letter].push_back(newModel);
 	return newModel;
 }
 
-void destroyModel(string searchName) {
+void destroyModel(const string & searchName) {
 	int letter = numCharInAlphabet(searchName[0]);
 	if (allModels[letter].size() > 0) {
 		for (unsigned i = 0; i < allModels[letter].size(); i++) {

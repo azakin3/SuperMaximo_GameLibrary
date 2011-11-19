@@ -26,7 +26,7 @@ Shader::operator GLuint() {
 	return program_;
 }
 
-Shader::Shader(string newName, string vertexShaderFile, string fragmentShaderFile, ...) {
+Shader::Shader(const string & newName, const string & vertexShaderFile, const string & fragmentShaderFile, ...) {
 	name_ = newName;
 	program_ = (GLuint)NULL;
 	for (int i = 0; i <= EXTRA9_LOCATION; i++) {
@@ -124,8 +124,8 @@ Shader::Shader(string newName, string vertexShaderFile, string fragmentShaderFil
 	}
 }
 
-Shader::Shader(string newName, string vertexShaderFile, string fragmentShaderFile, vector<int> enums,
-		vector<char *>attributeNames) {
+Shader::Shader(const string & newName, const string & vertexShaderFile, const string & fragmentShaderFile,
+		const vector<int> & enums, const vector<char *> & attributeNames) {
 	name_ = newName;
 	program_ = (GLuint)NULL;
 	for (short i = 0; i <= EXTRA9_LOCATION; i++) uniformLocation_[i] = -1;
@@ -213,8 +213,8 @@ Shader::Shader(string newName, string vertexShaderFile, string fragmentShaderFil
 	}
 }
 
-Shader::Shader(string newName, string vertexShaderFile, string fragmentShaderFile, unsigned count,
-		int * enums, const char ** attributeNames) {
+Shader::Shader(const string & newName, const string & vertexShaderFile, const string & fragmentShaderFile,
+		unsigned count, int * enums, const char ** attributeNames) {
 	name_ = newName;
 	program_ = (GLuint)NULL;
 	for (short i = 0; i <= EXTRA9_LOCATION; i++) uniformLocation_[i] = -1;
@@ -318,7 +318,7 @@ void Shader::use() {
 	glUseProgram(program_);
 }
 
-GLint Shader::setUniformLocation(shaderLocationEnum dstLocation, string locationName) {
+GLint Shader::setUniformLocation(shaderLocationEnum dstLocation, const string & locationName) {
 	uniformLocation_[dstLocation] = glGetUniformLocation(program_, locationName.c_str());
 	return uniformLocation_[dstLocation];
 }
@@ -411,7 +411,7 @@ void Shader::setUniform4(shaderLocationEnum location, vec4 data) {
 	glUniform4f(uniformLocation_[location], data.x, data.y, data.z, data.w);
 }
 
-Shader * shader(string searchName) {
+Shader * shader(const string & searchName) {
 	int letter = numCharInAlphabet(searchName[0]);
 	Shader * returnShader = NULL;
 	if (allShaders[letter].size() > 0) {
@@ -425,7 +425,7 @@ Shader * shader(string searchName) {
 	return returnShader;
 }
 
-Shader * addShader(string newName, string vertexShaderFile, string fragmentShaderFile, ...) {
+Shader * addShader(const string & newName, const string & vertexShaderFile, const string & fragmentShaderFile, ...) {
 	int letter = numCharInAlphabet(newName[0]);
 	vector<int> enums;
 	vector<char *>attributeNames;
@@ -444,7 +444,7 @@ Shader * addShader(string newName, string vertexShaderFile, string fragmentShade
 	return newShader;
 }
 
-void destroyShader(string searchName) {
+void destroyShader(const string & searchName) {
 	int letter = numCharInAlphabet(searchName[0]);
 	if (allShaders[letter].size() > 0) {
 		for (unsigned int i = 0; i < allShaders[letter].size(); i++) {
