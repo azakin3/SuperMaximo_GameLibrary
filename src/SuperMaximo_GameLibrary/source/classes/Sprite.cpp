@@ -50,6 +50,8 @@ Sprite::Sprite(const string & newName, const string & fileName, int imageX, int 
 		} else {
 			if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGB; else textureFormat = GL_BGR;
 		}
+		if (rect.w < 1) rect.w = image->w;
+		if (rect.h < 1) rect.h = image->h;
 		SDL_Surface * tempSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, rect.w, rect.h,
 				int(image->format->BitsPerPixel), image->format->Rmask, image->format->Gmask, image->format->Bmask,
 				image->format->Amask);
@@ -66,8 +68,8 @@ Sprite::Sprite(const string & newName, const string & fileName, int imageX, int 
 					frame -= numFrames;
 				}
 			}
-			tempRect.x = frame*rect.w;
-			tempRect.y = row*rect.h;
+			tempRect.x = rect.x+(frame*rect.w);
+			tempRect.y = rect.y+(row*rect.h);
 			SDL_BlitSurface(image, &tempRect, tempSurface, NULL);
 			glBindTexture(textureType, texture_[i]);
 			glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -109,6 +111,8 @@ Sprite::Sprite(const string & newName, SDL_Surface * surface, int imageX, int im
 	} else {
 		if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGB; else textureFormat = GL_BGR;
 	}
+	if (rect.w < 1) rect.w = image->w;
+	if (rect.h < 1) rect.h = image->h;
 	SDL_Surface * tempSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, rect.w, rect.h, 32, 0, 0, 0, 0);
 	SDL_Rect tempRect = rect;
 
@@ -124,8 +128,8 @@ Sprite::Sprite(const string & newName, SDL_Surface * surface, int imageX, int im
 				frame -= numFrames;
 			}
 		}
-		tempRect.x = frame*rect.w;
-		tempRect.y = row*rect.h;
+		tempRect.x = rect.x+(frame*rect.w);
+		tempRect.y = rect.y+(row*rect.h);
 		SDL_BlitSurface(image, &tempRect, tempSurface, NULL);
 		glBindTexture(textureType, texture_[i]);
 		glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

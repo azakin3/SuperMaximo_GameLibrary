@@ -44,12 +44,12 @@ class Sprite {
 public:
 	friend class Object;
 
-	Sprite(const std::string & newName, const std::string & fileName, int imageX, int imageY, int imageWidth,
-			int imageHeight, int aniFrames = 1, unsigned framerate = 1, int newOriginX = -1, int newOriginY = -1,
+	Sprite(const std::string & newName, const std::string & fileName, int imageX = 0, int imageY = 0, int imageWidth = 0,
+			int imageHeight = 0, int aniFrames = 1, unsigned framerate = 1, int newOriginX = 0, int newOriginY = 0,
 			void (*customBufferFunction)(GLuint*, Sprite*, void*) = NULL, void * customData = NULL);
 
-	Sprite(const std::string & newName, SDL_Surface * surface, int imageX, int imageY, int imageWidth, int imageHeight,
-			int aniFrames = 1, unsigned framerate = 1, int newOriginX = -1, int newOriginY = -1,
+	Sprite(const std::string & newName, SDL_Surface * surface, int imageX = 0, int imageY = 0, int imageWidth = 0,
+			int imageHeight = 0, int aniFrames = 1, unsigned framerate = 1, int newOriginX = 0, int newOriginY = 0,
 			void (*customBufferFunction)(GLuint*, Sprite*, void*) = NULL, void * customData = NULL);
 	~Sprite();
 
