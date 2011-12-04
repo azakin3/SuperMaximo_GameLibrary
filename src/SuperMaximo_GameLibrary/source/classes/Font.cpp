@@ -73,8 +73,8 @@ void Font::write(const string & text, int x, int y, float depth, bool useCache, 
 		}
 	}
 
-	int w, h;
-	SDL_Surface * textSurface;
+	int w = 0, h = 0;
+	SDL_Surface * textSurface = NULL;
 	if (!cacheSuccess) {
 		SDL_Color color;
 		color.r = 255;

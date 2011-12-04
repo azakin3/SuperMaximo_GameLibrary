@@ -274,7 +274,7 @@ void Model::loadObj(const string & path, const string & fileName, bufferUsageEnu
 		}
 	}
 
-	int mtlNum;
+	int mtlNum = 0;
 	for (unsigned i = 0; i < objText.size(); i++) {
 		if (lowerCase(leftStr(objText[i], 1)) == "v") {
 			if (lowerCase(leftStr(objText[i], 2)) == "vt") {
@@ -394,8 +394,8 @@ void Model::loadObj(const string & path, const string & fileName, bufferUsageEnu
 
 		vertexNormalAssociations.reserve(vertices.size());
 		for (unsigned i = 0; i < vertices.size(); i++) {
-			vertexNormalAssociations.push_back((vertexNormalAssoication){
-				(vec3){{vertices[i].x}, {vertices[i].y}, {vertices[i].z}}});
+			vertexNormalAssociations.push_back(vertexNormalAssoication());
+			vertexNormalAssociations.back().vertex = vec3(vertices[i].x, vertices[i].y, vertices[i].z);
 		}
 
 		for (unsigned i = 0; i < triangles_.size(); i++) {
@@ -559,7 +559,9 @@ void Model::loadSmm(const string & path, const string & fileName, bufferUsageEnu
 					GL_UNSIGNED_BYTE, image->pixels);
 			SDL_FreeSurface(image);
 		}
-		materials_.push_back((material){"", text[arraySize+2+i]});
+		materials_.push_back(material());
+		materials_.back().name = "";
+		materials_.back().fileName = text[arraySize+2+i];
 	}
 }
 
@@ -923,7 +925,8 @@ void Model::draw(float x, float y, float z, float xRotation, float yRotation, fl
 			if (!skipAnimation && (bones_.size() > 0)) {
 				for (unsigned i = 0; i < bones_.size(); i++)
 					setBoneRotationsFromAnimation(currentAnimationId, frame, bones_[i]);
-				mat4 matrixArray[bones_.size()];
+				const int arraySize = 64;
+				mat4 matrixArray[arraySize];
 				getBoneModelviewMatrices(matrixArray, bones_.front());
 				shaderToUse->setUniform16(EXTRA0_LOCATION, (float*)matrixArray, bones_.size());
 			}
@@ -939,7 +942,7 @@ void Model::draw(float x, float y, float z, float xRotation, float yRotation, fl
 	if (::boundShader() != NULL) glUseProgram(::boundShader()->program_); else glUseProgram(0);
 }
 
-void Model::draw(Object * object, bool skipAnimation) {//, bool skipHitboxes) {
+void Model::draw(Object * object, bool skipAnimation) {
 	Shader * shaderToUse;
 	if (object->boundShader_ != NULL) shaderToUse = object->boundShader_;
 		else if (boundShader_ != NULL) shaderToUse = boundShader_; else shaderToUse = ::boundShader();
@@ -966,7 +969,8 @@ void Model::draw(Object * object, bool skipAnimation) {//, bool skipHitboxes) {
 			if (!skipAnimation && (bones_.size() > 0)) {
 				for (unsigned i = 0; i < bones_.size(); i++)
 					setBoneRotationsFromAnimation(object->currentAnimationId[i], object->frame_[i], bones_[i]);
-				mat4 matrixArray[bones_.size()];
+				const int arraySize = 64;
+				mat4 matrixArray[arraySize];
 				getBoneModelviewMatrices(matrixArray, bones_.front());
 				shaderToUse->setUniform16(EXTRA0_LOCATION, (float*)matrixArray, bones_.size());
 			}

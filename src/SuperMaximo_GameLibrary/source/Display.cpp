@@ -34,7 +34,7 @@ customDrawFunctionType customDrawFunction = NULL;
 textureUnitEnum boundTexureUnit_ = TEXTURE0;
 Uint32 ticks = 0, lastTicks = 0;
 float compensation_ = 1.0f;
-vec4 clearColor = {{0.0f}, {0.0f}, {0.0f}, {0.0f}};
+vec4 clearColor;
 
 namespace SuperMaximo {
 
@@ -160,12 +160,14 @@ void mat4::initIdentity() {
 	component[15] = 1.0f;
 }
 
+vec2::vec2(float x, float y) : x(x), y(y) {}
+
 vec2 vec2::operator+(const vec2 & otherVector) {
-	return (vec2){{x+otherVector.x}, {y+otherVector.y}};
+	return vec2(x+otherVector.x, y+otherVector.y);
 }
 
 vec2 vec2::operator-(const vec2 & otherVector) {
-	return (vec2){{x-otherVector.x}, {y-otherVector.y}};
+	return vec2(x-otherVector.x, y-otherVector.y);
 }
 
 void vec2::operator+=(const vec2 & otherVector) {
@@ -179,9 +181,9 @@ void vec2::operator-=(const vec2 & otherVector) {
 }
 
 vec2 vec2::operator*(const mat2 & matrix) {
-	return (vec2){
-		{(x*matrix.component[0])+(y*matrix.component[2])},
-		{(x*matrix.component[1])+(y*matrix.component[3])}};
+	return vec2(
+		(x*matrix.component[0])+(y*matrix.component[2]),
+		(x*matrix.component[1])+(y*matrix.component[3]));
 }
 
 void vec2::operator*=(const mat2 & matrix) {
@@ -189,7 +191,7 @@ void vec2::operator*=(const mat2 & matrix) {
 }
 
 vec2 vec2::operator*(float num) {
-	return (vec2){{x*num}, {y*num}};
+	return vec2(x*num, y*num);
 }
 
 void vec2::operator*=(float num) {
@@ -197,7 +199,7 @@ void vec2::operator*=(float num) {
 }
 
 vec2 vec2::operator/(float num) {
-	return (vec2){{x/num}, {y/num}};
+	return vec2(x/num, y/num);
 }
 
 void vec2::operator/=(float num) {
@@ -205,7 +207,7 @@ void vec2::operator/=(float num) {
 }
 
 vec2 vec2::perpendicular() {
-	return (vec2){{-y}, {x}};
+	return vec2(-y, x);
 }
 
 float vec2::dotProduct(const vec2 & otherVector) {
@@ -213,9 +215,12 @@ float vec2::dotProduct(const vec2 & otherVector) {
 }
 
 bool vec2::polygonCollision(unsigned vertexCount, ...) {
+	const unsigned maxVertices = 100;
+	if (vertexCount > maxVertices) vertexCount = maxVertices;
+
 	va_list vertexArgs;
 	va_start(vertexArgs, vertexCount);
-	vec2 vertices[vertexCount];
+	vec2 vertices[maxVertices];
 	for (unsigned i = 0; i < vertexCount; i++) {
 		vertices[i] = va_arg(vertexArgs, vec2);
 	}
@@ -251,19 +256,21 @@ bool vec2::polygonCollision(unsigned vertexCount, std::vector<vec2> vertices) {
 }
 
 vec2::operator SuperMaximo::vec3() {
-	return (vec3){{x}, {y}, {0.0f}};
+	return vec3(x, y, 0.0f);
 }
 
 vec2::operator SuperMaximo::vec4() {
-	return (vec4){{x}, {y}, {0.0f}, {0.0f}};
+	return vec4(x, y, 0.0f, 0.0f);
 }
 
+vec3::vec3(float x, float y, float z) : x(x), y(y), z(z) {}
+
 vec3 vec3::operator+(const vec3 & otherVector) {
-	return (vec3){{x+otherVector.x}, {y+otherVector.y}, {z+otherVector.z}};
+	return vec3(x+otherVector.x, y+otherVector.y, z+otherVector.z);
 }
 
 vec3 vec3::operator-(const vec3 & otherVector) {
-	return (vec3){{x-otherVector.x}, {y-otherVector.y}, {z-otherVector.z}};
+	return vec3(x-otherVector.x, y-otherVector.y, z-otherVector.z);
 }
 
 void vec3::operator+=(const vec3 & otherVector) {
@@ -279,7 +286,7 @@ void vec3::operator-=(const vec3 & otherVector) {
 }
 
 vec3 vec3::operator*(float num) {
-	return (vec3){{x*num}, {y*num}, {z*num}};
+	return vec3(x*num, y*num, z*num);
 }
 
 void vec3::operator*=(float num) {
@@ -287,7 +294,7 @@ void vec3::operator*=(float num) {
 }
 
 vec3 vec3::operator/(float num) {
-	return (vec3){{x/num}, {y/num}, {z/num}};
+	return vec3(x/num, y/num, z/num);
 }
 
 void vec3::operator/=(float num) {
@@ -299,19 +306,21 @@ float vec3::dotProduct(const vec3 & otherVector) {
 }
 
 vec3::operator SuperMaximo::vec2() {
-	return (vec2){{x}, {y}};
+	return vec2(x, y);
 }
 
 vec3::operator SuperMaximo::vec4() {
-	return (vec4){{x}, {y}, {z}, {0.0f}};
+	return vec4(x, y, z, 0.0f);
 }
 
+vec4::vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
+
 vec4 vec4::operator+(const vec4 & otherVector) {
-	return (vec4){{x+otherVector.x}, {y+otherVector.y}, {z+otherVector.z}, {w+otherVector.w}};
+	return vec4(x+otherVector.x, y+otherVector.y, z+otherVector.z, w+otherVector.w);
 }
 
 vec4 vec4::operator-(const vec4 & otherVector) {
-	return (vec4){{x-otherVector.x}, {y-otherVector.y}, {z-otherVector.z}, {w-otherVector.w}};
+	return vec4(x-otherVector.x, y-otherVector.y, z-otherVector.z, w-otherVector.w);
 }
 
 void vec4::operator+=(const vec4 & otherVector) {
@@ -340,7 +349,7 @@ vec4 vec4::operator*(const mat4 & matrix) {
 }
 
 vec4 vec4::operator*(float num) {
-	return (vec4){{x*num}, {y*num}, {z*num}, {w*num}};
+	return vec4(x*num, y*num, z*num, w*num);
 }
 
 void vec4::operator*=(float num) {
@@ -348,7 +357,7 @@ void vec4::operator*=(float num) {
 }
 
 vec4 vec4::operator/(float num) {
-	return (vec4){{x/num}, {y/num}, {z/num}, {w/num}};
+	return vec4(x/num, y/num, z/num, w/num);
 }
 
 void vec4::operator/=(float num) {
@@ -360,11 +369,11 @@ float vec4::dotProduct(const vec4 & otherVector) {
 }
 
 vec4::operator SuperMaximo::vec2() {
-	return (vec2){{x}, {y}};
+	return vec2(x, y);
 }
 
 vec4::operator SuperMaximo::vec3() {
-	return (vec3){{x}, {y}, {z}};
+	return vec3(x, y, z);
 }
 
 bool initDisplay(unsigned width, unsigned height, unsigned depth, unsigned maxFramerate, bool fullScreen,
@@ -442,7 +451,7 @@ bool resizeScreen(unsigned width, unsigned height, bool fullScreen) {
 }
 
 void setClearColor(float r, float g, float b, float a) {
-	clearColor = (vec4){{r}, {g}, {b}, {a}};
+	clearColor = vec4(r, g, b, a);
 	glClearColor(r, g, b, a);
 }
 

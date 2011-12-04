@@ -388,7 +388,9 @@ bool NetworkService::sendStrTcp(const string & data, int id, bool isServer, int 
 		sendStrBuffer = data;
 		if (sock != NULL) {
 			if (!SDLNet_SocketReady((SDLNet_GenericSocket)sock)) {
-				char buffer[size];
+				const int maxBufferSize = 256;
+				if (size > maxBufferSize) size = maxBufferSize;
+				char buffer[maxBufferSize];
 				for (int i = 0; i < size; i++) buffer[i] = 0;
 				for (unsigned int i = 0; i < sendStrBuffer.size(); i++) buffer[i] = sendStrBuffer[i];
 				if (SDLNet_TCP_Send(sock, &buffer, size) < size) return false;

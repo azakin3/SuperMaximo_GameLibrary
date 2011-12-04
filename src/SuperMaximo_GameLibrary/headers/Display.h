@@ -112,6 +112,9 @@ struct vec2 {
 		float g;
 		float t;
 	};
+
+	vec2(float x = 0.0f, float y = 0.0f);
+
 	vec2 operator+(const vec2 & otherVector);
 	vec2 operator-(const vec2 & otherVector);
 	void operator+=(const vec2 & otherVector);
@@ -147,6 +150,9 @@ struct vec3 {
 		float b;
 		float p;
 	};
+
+	vec3(float x = 0.0f, float y = 0.0f, float z = 0.0f);
+
 	vec3 operator+(const vec3 & otherVector);
 	vec3 operator-(const vec3 & otherVector);
 	void operator+=(const vec3 & otherVector);
@@ -181,6 +187,9 @@ struct vec4 {
 		float a;
 		float q;
 	};
+
+	vec4(float x = 0.0f, float y = 0.0f, float z = 0.0f, float w = 0.0f);
+
 	vec4 operator+(const vec4 & otherVector);
 	vec4 operator-(const vec4 & otherVector);
 	void operator+=(const vec4 & otherVector);

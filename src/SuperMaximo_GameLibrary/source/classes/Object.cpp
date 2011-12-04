@@ -350,13 +350,17 @@ void Object::draw(bool skipAnimation) {
 
 bool Object::mouseOverBox() {
 	if (!hasModel_) {
-		vec2 vertex[4] = {(vec2){{x_-originX}, {y_-originY}}, (vec2){{x_-originX}, {y_-originY+height_}},
-				(vec2){{x_-originX+width_}, {y_-originY+height_}}, (vec2){{x_-originX+width_}, {y_-originY}}};
+		vec2 vertex[4] = {
+				vec2(x_-originX, y_-originY),
+				vec2(x_-originX, y_-originY+height_),
+				vec2(x_-originX+width_, y_-originY+height_),
+				vec2(x_-originX+width_, y_-originY)
+		};
 
 		if ((zRotation_ != 0.0f) && (zRotation_ != 180.0f))
 			for (short i = 0; i < 4; i++) vertex[i] *= get2dRotationMatrix(zRotation_);
 
-		return (vec2){{mouseX()}, {mouseY()}}.polygonCollision(4, vertex);
+		return vec2(mouseX(), mouseY()).polygonCollision(4, vertex);
 	}
 	return false;
 }
@@ -384,13 +388,19 @@ bool Object::mouseOverCircle() {
 
 bool Object::boxCollision(Object * other, bool allStages) {
 	if (!hasModel_ && !other->hasModel_) {
-		vec2 box[4] = {(vec2){{x_-originX}, {y_-originY}}, (vec2){{x_-originX}, {y_-originY+height_}},
-				(vec2){{x_-originX+width_}, {y_-originY+height_}}, (vec2){{x_-originX+width_}, {y_-originY}}};
+		vec2 box[4] = {
+				vec2(x_-originX, y_-originY),
+				vec2(x_-originX, y_-originY+height_),
+				vec2(x_-originX+width_, y_-originY+height_),
+				vec2(x_-originX+width_, y_-originY)
+		};
 
-		vec2 otherBox[4] = {(vec2){{other->x_-other->originX}, {other->y_-other->originY}},
-				(vec2){{other->x_-other->originX}, {other->y_-other->originY+other->height_}},
-				(vec2){{other->x_-other->originX+other->width_}, {other->y_-other->originY+other->height_}},
-				(vec2){{other->x_-other->originX+other->width_}, {other->y_-other->originY}}};
+		vec2 otherBox[4] = {
+				vec2(other->x_-other->originX, other->y_-other->originY),
+				vec2(other->x_-other->originX, other->y_-other->originY+other->height_),
+				vec2(other->x_-other->originX+other->width_, other->y_-other->originY+other->height_),
+				vec2(other->x_-other->originX+other->width_, other->y_-other->originY)
+		};
 
 		if ((zRotation_ != 0.0f) && (zRotation_ != 180.0f))
 			for (short i = 0; i < 4; i++) box[i] *= get2dRotationMatrix(zRotation_);
