@@ -10,9 +10,11 @@
 #include <iostream>
 #include <cmath>
 using namespace std;
+
 #include "../headers/GameHelpers.h"
 #include "../headers/Display.h"
 #include "../headers/Input.h"
+#include "../headers/Utils.h"
 using namespace SuperMaximo;
 
 float rotX = 0, rotY = 0, rotZ = 0;
@@ -44,8 +46,8 @@ void firstPersonMouseControlView(float sensitivity) {
 	float yRotAddition = float(mouseX()-lastMouseX)/sensitivity;
 	rotY += yRotAddition;
 	lastMouseX = mouseX();
-	rotX += cos((yRot*M_PI)/180.0f)*(float(mouseY()-lastMouseY)/sensitivity);
-	rotZ += sin((yRot*M_PI)/180.0f)*(float(mouseY()-lastMouseY)/sensitivity);
+	rotX += cos(degToRad(yRot))*(float(mouseY()-lastMouseY)/sensitivity);
+	rotZ += sin(degToRad(yRot))*(float(mouseY()-lastMouseY)/sensitivity);
 	lastMouseY = mouseY();
 
 	setMatrix(MODELVIEW_MATRIX);

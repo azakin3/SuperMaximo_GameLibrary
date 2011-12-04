@@ -489,7 +489,7 @@ mat4 getPerspectiveMatrix(float left, float right, float bottom, float top, floa
 }
 
 mat4 getPerspectiveMatrix(float angle, float aspectRatio, float front, float back) {
-	float tangent = tan((angle/2.0f)*(M_PI/180.0f));
+	float tangent = tan((angle/2.0f)*(pi/180.0f));
 	float height = front*tangent;
 	float width = height*aspectRatio;
 
@@ -522,7 +522,7 @@ mat4 getOrthographicMatrix(float left, float right, float bottom, float top, flo
 }
 
 mat2 get2dRotationMatrix(float angle) {
-	angle = (angle*M_PI)/180.0f;
+	angle = (angle*pi)/180.0f;
 
 	mat2 returnMatrix;
 
@@ -601,7 +601,7 @@ void translateMatrix(float x, float y, float z) {
 }
 
 void rotateMatrix(float angle, float x, float y, float z) {
-	angle = (angle*M_PI)/180.0f;
+	angle = (angle*pi)/180.0f;
 	float len = sqrt((x*x)+(y*y)+(z*z));
 	x /= len;
 	y /= len;
@@ -722,7 +722,7 @@ float openGlVersion() {
 	static float version = 0.0f;
 	if (version == 0.0f) {
 		string str = reinterpret_cast<char const *>(glGetString(GL_VERSION));
-		version = strtof(leftStr(str, 3).c_str(), NULL);
+		version = strtod(leftStr(str, 3).c_str(), NULL);
 	}
 	return version;
 }
@@ -731,7 +731,7 @@ float glSlVersion() {
 	static float version = 0.0f;
 	if (version == 0.0f) {
 		string str = reinterpret_cast<char const *>(glGetString(GL_SHADING_LANGUAGE_VERSION));
-		version = strtof(leftStr(str, 3).c_str(), NULL);
+		version = strtod(leftStr(str, 3).c_str(), NULL);
 	}
 	return version;
 }

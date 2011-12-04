@@ -182,7 +182,7 @@ void Object::calcZRotatedDimensions() {
 		pointX[3] = -originX+width_;
 		pointY[3] = -originY;
 
-		float zRotToRad = (zRotation_*M_PI)/180.0f;
+		float zRotToRad = (zRotation_*pi)/180.0f;
 		for (short i = 0; i < 4; i++) {
 			float pointDistSquared = (pointX[i]*pointX[i])+(pointY[i]*pointY[i]);
 			float angle = atan2(pointY[i], pointX[i]);

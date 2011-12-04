@@ -148,14 +148,14 @@ void Model::loadObj(const string & path, const string & fileName, bufferUsageEnu
 			}
 			if (kStr == "") kStr = "0.0000 0.0000 0.0000";
 			int j = kStr.find(" ");
-			newMaterial.ambientColor.r = strtof(leftStr(kStr, j).c_str(), NULL);
+			newMaterial.ambientColor.r = strtod(leftStr(kStr, j).c_str(), NULL);
 			rightStr(&kStr, kStr.size()-(j+1));
 
 			j = kStr.find(" ");
-			newMaterial.ambientColor.g = strtof(leftStr(kStr, j).c_str(), NULL);
+			newMaterial.ambientColor.g = strtod(leftStr(kStr, j).c_str(), NULL);
 			rightStr(&kStr, kStr.size()-(j+1));
 
-			newMaterial.ambientColor.b = strtof(kStr.c_str(), NULL);
+			newMaterial.ambientColor.b = strtod(kStr.c_str(), NULL);
 
 
 			kStr = "";
@@ -167,14 +167,14 @@ void Model::loadObj(const string & path, const string & fileName, bufferUsageEnu
 			}
 			if (kStr == "") kStr = "0.0000 0.0000 0.0000";
 			j = kStr.find(" ");
-			newMaterial.diffuseColor.r = strtof(leftStr(kStr, j).c_str(), NULL);
+			newMaterial.diffuseColor.r = strtod(leftStr(kStr, j).c_str(), NULL);
 			rightStr(&kStr, kStr.size()-(j+1));
 
 			j = kStr.find(" ");
-			newMaterial.diffuseColor.g = strtof(leftStr(kStr, j).c_str(), NULL);
+			newMaterial.diffuseColor.g = strtod(leftStr(kStr, j).c_str(), NULL);
 			rightStr(&kStr, kStr.size()-(j+1));
 
-			newMaterial.diffuseColor.b = strtof(kStr.c_str(), NULL);
+			newMaterial.diffuseColor.b = strtod(kStr.c_str(), NULL);
 
 
 			kStr = "";
@@ -186,14 +186,14 @@ void Model::loadObj(const string & path, const string & fileName, bufferUsageEnu
 			}
 			if (kStr == "") kStr = "0.0000 0.0000 0.0000";
 			j = kStr.find(" ");
-			newMaterial.specularColor.r = strtof(leftStr(kStr, j).c_str(), NULL);
+			newMaterial.specularColor.r = strtod(leftStr(kStr, j).c_str(), NULL);
 			rightStr(&kStr, kStr.size()-(j+1));
 
 			j = kStr.find(" ");
-			newMaterial.specularColor.g = strtof(leftStr(kStr, j).c_str(), NULL);
+			newMaterial.specularColor.g = strtod(leftStr(kStr, j).c_str(), NULL);
 			rightStr(&kStr, kStr.size()-(j+1));
 
-			newMaterial.specularColor.b = strtof(kStr.c_str(), NULL);
+			newMaterial.specularColor.b = strtod(kStr.c_str(), NULL);
 
 
 			kStr = "";
@@ -204,7 +204,7 @@ void Model::loadObj(const string & path, const string & fileName, bufferUsageEnu
 				}
 			}
 			if (kStr == "") kStr = "1.0000";
-			newMaterial.alpha = strtof(kStr.c_str(), NULL);
+			newMaterial.alpha = strtod(kStr.c_str(), NULL);
 
 			kStr = "";
 			for (unsigned j = i+1; j < mtlText.size(); j++) {
@@ -214,7 +214,7 @@ void Model::loadObj(const string & path, const string & fileName, bufferUsageEnu
 				}
 			}
 			if (kStr == "") kStr = "0.0000";
-			newMaterial.shininess = strtof(kStr.c_str(), NULL);
+			newMaterial.shininess = strtod(kStr.c_str(), NULL);
 
 			bool texPresent = false;
 			newMaterial.fileName = "NOFILENAME";
@@ -284,14 +284,14 @@ void Model::loadObj(const string & path, const string & fileName, bufferUsageEnu
 					rightStr(&vertStr, vertStr.size()-1);
 
 				int j = vertStr.find(" ");
-				coord.x  = strtof(leftStr(vertStr, j).c_str(), NULL);
+				coord.x  = strtod(leftStr(vertStr, j).c_str(), NULL);
 				rightStr(&vertStr, vertStr.size()-(j+1));
 				while ((leftStr(vertStr, 1) == " ") || (leftStr(vertStr, 1)) == "\t")
 					rightStr(&vertStr, vertStr.size()-1);
 
 				j = vertStr.find(" ");
-				if (j == -1) coord.y = strtof(vertStr.c_str(), NULL);
-				else coord.y = strtof(leftStr(vertStr, j).c_str(), NULL);
+				if (j == -1) coord.y = strtod(vertStr.c_str(), NULL);
+				else coord.y = strtod(leftStr(vertStr, j).c_str(), NULL);
 				texCoord.push_back(coord);
 			} else if (lowerCase(leftStr(objText[i], 2)) == "v ") {
 				vertex coord;
@@ -300,18 +300,18 @@ void Model::loadObj(const string & path, const string & fileName, bufferUsageEnu
 					rightStr(&vertStr, vertStr.size()-1);
 
 				int j = vertStr.find(" ");
-				coord.x = strtof(leftStr(vertStr, j).c_str(), NULL);
+				coord.x = strtod(leftStr(vertStr, j).c_str(), NULL);
 				rightStr(&vertStr, vertStr.size()-(j+1));
 				while ((leftStr(vertStr, 1) == " ") || (leftStr(vertStr, 1)) == "\t")
 					rightStr(&vertStr, vertStr.size()-1);
 
 				j = vertStr.find(" ");
-				coord.y = strtof(leftStr(vertStr, j).c_str(), NULL);
+				coord.y = strtod(leftStr(vertStr, j).c_str(), NULL);
 				rightStr(&vertStr, vertStr.size()-(j+1));
 				while ((leftStr(vertStr, 1) == " ") || (leftStr(vertStr, 1)) == "\t")
 					rightStr(&vertStr, vertStr.size()-1);
 
-				coord.z = strtof(vertStr.c_str(), NULL);
+				coord.z = strtod(vertStr.c_str(), NULL);
 				vertices.push_back(coord);
 			}
 		} else {
@@ -471,7 +471,7 @@ void Model::loadSmm(const string & path, const string & fileName, bufferUsageEnu
 		cout << "Could not allocate memory for buffering the model" << endl;
 		return;
 	}
-	for (unsigned i = 0; i < arraySize; i++) data[i] = strtof(text[i+1].c_str(), NULL);
+	for (unsigned i = 0; i < arraySize; i++) data[i] = strtod(text[i+1].c_str(), NULL);
 
 	if (vertexArrayObjectSupported()) {
 		glGenVertexArrays(1, &vao);
@@ -594,17 +594,17 @@ void Model::loadSms(const string & fileName) {
 		line++;
 		newBone->name = text[line];
 		line++;
-		newBone->x = strtof(text[line].c_str(), NULL);
+		newBone->x = strtod(text[line].c_str(), NULL);
 		line++;
-		newBone->y = strtof(text[line].c_str(), NULL);
+		newBone->y = strtod(text[line].c_str(), NULL);
 		line++;
-		newBone->z = strtof(text[line].c_str(), NULL);
+		newBone->z = strtod(text[line].c_str(), NULL);
 		line++;
-		newBone->endX = strtof(text[line].c_str(), NULL);
+		newBone->endX = strtod(text[line].c_str(), NULL);
 		line++;
-		newBone->endY = strtof(text[line].c_str(), NULL);
+		newBone->endY = strtod(text[line].c_str(), NULL);
 		line++;
-		newBone->endZ = strtof(text[line].c_str(), NULL);
+		newBone->endZ = strtod(text[line].c_str(), NULL);
 		line++;
 		int boneParentId = atoi(text[line].c_str());
 		if (boneParentId < 0) newBone->parent = NULL; else {
@@ -612,17 +612,17 @@ void Model::loadSms(const string & fileName) {
 			bones_[boneParentId]->child.push_back(newBone);
 		}
 		line++;
-		newBone->rotationUpperLimit.x = strtof(text[line].c_str(), NULL);
+		newBone->rotationUpperLimit.x = strtod(text[line].c_str(), NULL);
 		line++;
-		newBone->rotationUpperLimit.y = strtof(text[line].c_str(), NULL);
+		newBone->rotationUpperLimit.y = strtod(text[line].c_str(), NULL);
 		line++;
-		newBone->rotationUpperLimit.z = strtof(text[line].c_str(), NULL);
+		newBone->rotationUpperLimit.z = strtod(text[line].c_str(), NULL);
 		line++;
-		newBone->rotationLowerLimit.x = strtof(text[line].c_str(), NULL);
+		newBone->rotationLowerLimit.x = strtod(text[line].c_str(), NULL);
 		line++;
-		newBone->rotationLowerLimit.y = strtof(text[line].c_str(), NULL);
+		newBone->rotationLowerLimit.y = strtod(text[line].c_str(), NULL);
 		line++;
-		newBone->rotationLowerLimit.z = strtof(text[line].c_str(), NULL);
+		newBone->rotationLowerLimit.z = strtod(text[line].c_str(), NULL);
 		line++;
 
 		bones_.push_back(newBone);
@@ -664,11 +664,11 @@ void Model::loadSma(const string & fileName) {
 		line++;
 		for (unsigned j = 0; j < frameCount; j++) {
 			bone::keyFrame newFrame;
-			newFrame.xRot = strtof(text[line].c_str(), NULL);
+			newFrame.xRot = strtod(text[line].c_str(), NULL);
 			line++;
-			newFrame.yRot = strtof(text[line].c_str(), NULL);
+			newFrame.yRot = strtod(text[line].c_str(), NULL);
 			line++;
-			newFrame.zRot = strtof(text[line].c_str(), NULL);
+			newFrame.zRot = strtod(text[line].c_str(), NULL);
 			line++;
 			newFrame.step = atoi(text[line].c_str());
 			line++;

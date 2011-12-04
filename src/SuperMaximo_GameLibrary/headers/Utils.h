@@ -17,6 +17,8 @@
 
 namespace SuperMaximo {
 
+const double pi = 3.14159265358979323846;
+
 int numCharInAlphabet(int letter);
 
 std::string leftStr(const std::string & str, int amount);
@@ -40,12 +42,12 @@ std::string toString(const variableType & variable) {
 
 template<typename number>
 number degToRad(number angle) {
-	return (angle*M_PI)/number(180.0);
+	return (angle*pi)/number(180.0);
 }
 
 template<typename number>
 number radToDeg(number angle) {
-	return (angle*number(180.0))/M_PI;
+	return (angle*number(180.0))/pi;
 }
 
 }
