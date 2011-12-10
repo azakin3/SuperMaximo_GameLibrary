@@ -9,9 +9,11 @@
 
 #include <vector>
 using namespace std;
+
 #include <SDL/SDL.h>
 #include <SDL/SDL_events.h>
-#include "../headers/Input.h"
+
+#include <SuperMaximo_GameLibrary/Input.h>
 using namespace SuperMaximo;
 
 struct joystick {
@@ -30,11 +32,10 @@ struct joystick {
 	}
 };
 
-SDL_Event event;
-bool keys[320], mouseLeft_ = false, mouseRight_ = false, mouseMiddle_ = false, mouseOther_ = false,
+static bool keys[320], mouseLeft_ = false, mouseRight_ = false, mouseMiddle_ = false, mouseOther_ = false,
 		mouseWheelUp_ = false, mouseWheelDown_ = false, closeClicked_ = false, eventsRefreshed = false;
-int mouseX_, mouseY_, joystickCount_;
-vector <joystick> joysticks;
+static int mouseX_, mouseY_, joystickCount_;
+static vector <joystick> joysticks;
 
 namespace SuperMaximo {
 
@@ -55,6 +56,8 @@ void quitInput() {
 }
 
 void refreshEvents() {
+	static SDL_Event event;
+
 	mouseWheelUp_ = false;
 	mouseWheelDown_ = false;
 	while (SDL_PollEvent(&event)) {

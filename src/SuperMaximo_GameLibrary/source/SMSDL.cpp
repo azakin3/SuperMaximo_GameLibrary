@@ -9,7 +9,8 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_stdinc.h>
-#include "../headers/SMSDL.h"
+
+#include <SuperMaximo_GameLibrary/SMSDL.h>
 
 namespace SuperMaximo {
 
