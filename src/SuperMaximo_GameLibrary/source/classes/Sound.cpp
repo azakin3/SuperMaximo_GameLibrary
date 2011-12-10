@@ -29,14 +29,14 @@ const string & Sound::name() const {
 	return name_;
 }
 
+int Sound::volume() const{
+	return volume_;
+}
+
 int Sound::setVolume(int percentage, bool relative) {
 	if (relative) volume_ += percentage; else volume_ = percentage;
 	if (volume_ > 100) volume_ = 100; else if (volume_ < 0) volume_ = 0;
 	if (currentChannel > -1) Mix_Volume(currentChannel, (MIX_MAX_VOLUME/100)*volume_);
-	return volume_;
-}
-
-int Sound::volume() const{
 	return volume_;
 }
 

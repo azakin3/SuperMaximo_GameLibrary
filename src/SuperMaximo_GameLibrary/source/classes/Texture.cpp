@@ -10,21 +10,21 @@
 #include <iostream>
 #include <vector>
 using namespace std;
+
 #include <GL/glew.h>
 #include <SDL/SDL_image.h>
-#include "../../headers/classes/Texture.h"
-#include "../../headers/Utils.h"
-#include "../../headers/Display.h"
+
+#include <SuperMaximo_GameLibrary/Display.h>
+#include <SuperMaximo_GameLibrary/classes/Texture.h>
 using namespace SuperMaximo;
 
 namespace SuperMaximo {
 
-Texture::operator GLuint() {
+Texture::operator GLuint() const {
 	return texture;
 }
 
-Texture::Texture(const string & newName, textureTypeEnum textureType, const string & fileName, ...) {
-	name_ = newName;
+Texture::Texture(const string & name, textureTypeEnum textureType, const string & fileName, ...) : name_(name) {
 	vector<string> fileNames;
 	fileNames.push_back(fileName);
 	va_list files;
@@ -36,8 +36,7 @@ Texture::Texture(const string & newName, textureTypeEnum textureType, const stri
 	reload(textureType, fileNames);
 }
 
-Texture::Texture(const string & newName, textureTypeEnum textureType, unsigned numLayers, ...) {
-	name_ = newName;
+Texture::Texture(const string & name, textureTypeEnum textureType, unsigned numLayers, ...) : name_(name) {
 	vector<string> fileNames;
 	va_list files;
 	va_start(files, numLayers);
@@ -48,13 +47,11 @@ Texture::Texture(const string & newName, textureTypeEnum textureType, unsigned n
 	reload(textureType, fileNames);
 }
 
-Texture::Texture(const string & newName, textureTypeEnum textureType, const vector<string> & fileNames) {
-	name_ = newName;
+Texture::Texture(const string & name, textureTypeEnum textureType, const vector<string> & fileNames) : name_(name) {
 	reload(textureType, fileNames);
 }
 
-Texture::Texture(const string & newName, textureTypeEnum textureType, unsigned numLayers, string * fileNames) {
-	name_ = newName;
+Texture::Texture(const string & name, textureTypeEnum textureType, unsigned numLayers, string * fileNames) : name_(name) {
 	reload(textureType, numLayers, fileNames);
 }
 
@@ -327,19 +324,19 @@ void Texture::reload(textureTypeEnum textureType, unsigned numLayers, string * f
 	}
 }
 
-string Texture::name() {
+const string & Texture::name() const {
 	return name_;
 }
 
-textureTypeEnum Texture::type() {
+textureTypeEnum Texture::type() const {
 	return type_;
 }
 
-int Texture::width() {
+int Texture::width() const {
 	return width_;
 }
 
-int Texture::height() {
+int Texture::height() const {
 	return height_;
 }
 

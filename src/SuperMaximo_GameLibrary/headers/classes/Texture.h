@@ -12,7 +12,8 @@
 
 #include <iostream>
 #include <vector>
-#include <GL/glew.h>
+
+typedef unsigned int	GLuint;
 
 namespace SuperMaximo {
 
@@ -31,12 +32,12 @@ class Texture {
 	int width_, height_;
 
 public:
-	operator GLuint();
+	operator GLuint() const;
 
-	Texture(const std::string & newName, textureTypeEnum textureType, const std::string & fileName, ...);
-	Texture(const std::string & newName, textureTypeEnum textureType, unsigned numLayers, ...);
-	Texture(const std::string & newName, textureTypeEnum textureType, const std::vector<std::string> & fileNames);
-	Texture(const std::string & newName, textureTypeEnum textureType, unsigned numLayers, std::string * fileNames);
+	Texture(const std::string & name, textureTypeEnum textureType, const std::string & fileName, ...);
+	Texture(const std::string & name, textureTypeEnum textureType, unsigned numLayers, ...);
+	Texture(const std::string & name, textureTypeEnum textureType, const std::vector<std::string> & fileNames);
+	Texture(const std::string & name, textureTypeEnum textureType, unsigned numLayers, std::string * fileNames);
 	~Texture();
 
 	void reload(textureTypeEnum textureType, const std::string & fileName, ...);
@@ -44,9 +45,9 @@ public:
 	void reload(textureTypeEnum textureType, const std::vector<std::string> & fileNames);
 	void reload(textureTypeEnum textureType, unsigned numLayers, std::string * fileNames);
 
-	std::string name();
-	textureTypeEnum type();
-	int width(), height();
+	const std::string & name() const;
+	textureTypeEnum type() const;
+	int width() const, height() const;
 };
 
 }
