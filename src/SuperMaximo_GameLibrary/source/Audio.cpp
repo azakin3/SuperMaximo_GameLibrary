@@ -8,46 +8,19 @@
 //============================================================================
 
 #include <SDL/SDL_mixer.h>
-#include "../headers/Audio.h"
-#include "../headers/classes/Sound.h"
+
+#include <SuperMaximo_GameLibrary/Audio.h>
+#include <SuperMaximo_GameLibrary/classes/Sound.h>
 
 namespace SuperMaximo {
 
-void initAudio(unsigned channels) {
+void initAudio(unsigned channelCount) {
 	 Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
-	 allocateSoundChannels(channels);
+	 Sound::allocateChannels(channelCount);
 }
 
 void quitAudio() {
 	Mix_CloseAudio();
-}
-
-void soundPosition(int channel, int angle, int distance) {
-	Mix_SetPosition(channel, angle, distance);
-}
-
-void musicVolume(int percentage) {
-	Mix_VolumeMusic((MIX_MAX_VOLUME/100)*percentage);
-}
-
-void pauseMusic() {
-	Mix_PauseMusic();
-}
-
-void resumeMusic() {
-	Mix_ResumeMusic();
-}
-
-void restartMusic() {
-	Mix_RewindMusic();
-}
-
-void stopMusic() {
-	Mix_HaltMusic();
-}
-
-void fadeMusic(int time) {
-	Mix_FadeOutMusic(time);
 }
 
 }

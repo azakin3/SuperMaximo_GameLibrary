@@ -8,73 +8,65 @@
 //============================================================================
 
 #include <iostream>
-#include <vector>
 using namespace std;
-#include <SDL/SDL_mixer.h>
-#include "../../headers/classes/Sound.h"
-#include "../../headers/Utils.h"
-using namespace SuperMaximo;
 
-vector<Sound*> channels;
+#include <SDL/SDL_mixer.h>
+
+#include <SuperMaximo_GameLibrary/classes/Sound.h>
 
 namespace SuperMaximo {
 
-void allocateSoundChannels(unsigned channels) {
-	Mix_AllocateChannels(channels);
-	unsigned i = ::channels.size();
-	::channels.reserve(channels);
-	while (i > channels) {
-		::channels.pop_back();
-		i--;
-	}
-	while (i < channels) {
-		::channels.push_back(NULL);
-		i++;
-	}
-}
+vector<Sound*> Sound::channels;
 
-Sound::Sound(const string & newName, const string & fileName) {
-	name_ = newName, chunk = Mix_LoadWAV(fileName.c_str()), volume_ = 100, currentChannel = -1;
-}
+Sound::Sound(const string & name, const string & fileName) :
+		name_(name), chunk(Mix_LoadWAV(fileName.c_str())), volume_(100), currentChannel(-1) {}
 
 Sound::~Sound() {
 	Mix_FreeChunk(chunk);
 }
 
-string Sound::name() {
+const string & Sound::name() const {
 	return name_;
 }
 
-void Sound::setVolume(int percentage, bool relative) {
+int Sound::setVolume(int percentage, bool relative) {
 	if (relative) volume_ += percentage; else volume_ = percentage;
 	if (volume_ > 100) volume_ = 100; else if (volume_ < 0) volume_ = 0;
 	if (currentChannel > -1) Mix_Volume(currentChannel, (MIX_MAX_VOLUME/100)*volume_);
-}
-
-int Sound::volume() {
 	return volume_;
 }
 
-int Sound::play(int newVolume, int channel) {
+int Sound::volume() const{
+	return volume_;
+}
+
+int Sound::play(int volume, int channel) {
 	if (channel >= (int)channels.size()) return -1;
+
 	currentChannel = Mix_PlayChannel(channel, chunk, 0);
 	if (currentChannel > -1) {
 		channels[currentChannel] = this;
-		if (newVolume > -1) volume_ = newVolume;
+		if (volume > -1) volume_ = volume;
 		Mix_Volume(currentChannel, (MIX_MAX_VOLUME/100)*volume_);
 	}
 	return currentChannel;
 }
 
-void Sound::stop() {
+void Sound::stop() const {
 	if (Mix_GetChunk(currentChannel) == chunk) Mix_HaltChannel(currentChannel);
 }
 
-void Sound::setSoundPosition(int angle, int distance) {
+void Sound::setPosition(int angle, int distance) const {
 	if (Mix_GetChunk(currentChannel) == chunk) Mix_SetPosition(currentChannel, angle, distance);
 }
 
-Sound * findSoundByChannel(int channel) {
+void Sound::allocateChannels(unsigned count) {
+	Mix_AllocateChannels(count);
+	channels.resize(count, NULL);
+}
+
+Sound * Sound::findByChannel(unsigned channel) {
+	if (channel >= channels.size()) return NULL;
 	return channels[channel];
 }
 

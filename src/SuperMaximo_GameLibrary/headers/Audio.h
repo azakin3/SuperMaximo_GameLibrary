@@ -12,18 +12,8 @@
 
 namespace SuperMaximo {
 
-void initAudio(unsigned channels = 16);
+void initAudio(unsigned channelCount = 16);
 void quitAudio();
-
-void soundPosition(int channel, int angle = 90, int distance = 0);
-
-void musicVolume(int percentage);
-
-void pauseMusic();
-void resumeMusic();
-void restartMusic();
-void stopMusic();
-void fadeMusic(int time);
 
 }
 

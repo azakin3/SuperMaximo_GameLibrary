@@ -11,27 +11,33 @@
 #define SOUND_H_
 
 #include <iostream>
-#include <SDL/SDL_mixer.h>
+#include <vector>
+
+struct Mix_Chunk;
 
 namespace SuperMaximo {
 
 class Sound {
+	static std::vector<Sound*> channels;
+
+	std::string name_;
 	Mix_Chunk * chunk;
 	int volume_, currentChannel;
-	std::string name_;
-public:
-	Sound(const std::string & newName, const std::string & fileName);
-	~Sound();
-	std::string name();
-	void setVolume(int percentage, bool relative = false);
-	int volume();
-	int play(int newVolume = -1, int channel = -1);
-	void stop();
-	void setSoundPosition(int angle = 90, int distance = 0);
-};
 
-void allocateSoundChannels(unsigned channels);
-Sound * findSoundByChannel(int channel);
+public:
+	Sound(const std::string & name, const std::string & fileName);
+	~Sound();
+
+	const std::string & name() const;
+	int volume() const;
+	int setVolume(int percentage, bool relative = false);
+	int play(int volume = -1, int channel = -1);
+	void stop() const;
+	void setPosition(int angle = 90, int distance = 0) const;
+
+	static void allocateChannels(unsigned count);
+	static Sound * findByChannel(unsigned channel);
+};
 
 }
 

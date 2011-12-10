@@ -11,18 +11,32 @@
 #define MUSIC_H_
 
 #include <iostream>
-#include <SDL/SDL_mixer.h>
+
+struct _Mix_Music;
 
 namespace SuperMaximo {
 
 class Music {
-	Mix_Music * mixMusic;
+	static int volume_;
+
 	std::string name_;
+	_Mix_Music * mixMusic;
+
 public:
 	Music(const std::string & newName, const std::string & fileName);
 	~Music();
-	std::string name();
-	void play();
+
+	const std::string & name() const;
+	void play() const;
+
+	static int volume();
+	static int setVolume(int percentage, bool relative = false);
+
+	static void pause();
+	static void resume();
+	static void restart();
+	static void stop();
+	static void fadeOut(unsigned time);
 };
 
 }
