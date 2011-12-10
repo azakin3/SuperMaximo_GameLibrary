@@ -13,7 +13,6 @@
 #include <iostream>
 #include <sstream>
 #include <math.h>
-#include "Display.h"
 
 namespace SuperMaximo {
 
@@ -21,33 +20,37 @@ const double pi = 3.14159265358979323846;
 
 int numCharInAlphabet(int letter);
 
-std::string leftStr(const std::string & str, int amount);
+std::string leftStr(const std::string & str, unsigned amount);
 
-void leftStr(std::string * str, int amount);
+std::string & leftStr(std::string * str, unsigned amount);
 
-std::string rightStr(const std::string & str, int amount);
+std::string rightStr(const std::string & str, unsigned amount);
 
-void rightStr(std::string * str, int amount);
+std::string & rightStr(std::string * str, unsigned amount);
 
 std::string lowerCase(const std::string & str);
 
+std::string & lowerCase(std::string * str);
+
 std::string upperCase(const std::string & str);
 
-template <typename variableType>
-std::string toString(const variableType & variable) {
+std::string & upperCase(std::string * str);
+
+template <typename type>
+std::string toString(const type & variable) {
 	std::stringstream stream;
 	stream << variable;
 	return stream.str();
 }
 
-template<typename number>
-number degToRad(number angle) {
-	return (angle*pi)/number(180.0);
+template<typename type>
+type degToRad(type angle) {
+	return (angle*pi)/type(180.0);
 }
 
-template<typename number>
-number radToDeg(number angle) {
-	return (angle*number(180.0))/pi;
+template<typename type>
+type radToDeg(type angle) {
+	return (angle*type(180.0))/pi;
 }
 
 }

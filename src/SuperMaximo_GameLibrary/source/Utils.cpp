@@ -13,7 +13,8 @@
 #include <sstream>
 #include <cstdarg>
 using namespace std;
-#include "../headers/Utils.h"
+
+#include <SuperMaximo_GameLibrary/Utils.h>
 
 namespace SuperMaximo {
 
@@ -24,28 +25,38 @@ int numCharInAlphabet(int letter) {
 	return letter;
 }
 
-string leftStr(const string & str, int amount) {
+string leftStr(const string & str, unsigned amount) {
 	string returnStr = "";
-	for (int i = 0; i < amount; i++) returnStr += str[i];
+	if (amount > str.size()) amount = str.size();
+	returnStr.reserve(amount);
+	for (unsigned i = 0; i < amount; i++) returnStr += str[i];
 	return returnStr;
 }
 
-void leftStr(string * str, int amount) {
+string & leftStr(string * str, unsigned amount) {
 	string tempStr = "";
-	for (int i = 0; i < amount; i++) tempStr += (*str)[i];
+	if (amount > str->size()) amount = str->size();
+	tempStr.reserve(amount);
+	for (unsigned i = 0; i < amount; i++) tempStr += (*str)[i];
 	*str = tempStr;
+	return *str;
 }
 
-string rightStr(const string & str, int amount) {
+string rightStr(const string & str, unsigned amount) {
 	string returnStr = "";
-	for (int i = 0; i < amount; i++) returnStr += str[(str.size()-amount)+i];
+	if (amount > str.size()) amount = str.size();
+	returnStr.reserve(amount);
+	for (unsigned i = 0; i < amount; i++) returnStr += str[(str.size()-amount)+i];
 	return returnStr;
 }
 
-void rightStr(string * str, int amount) {
+string & rightStr(string * str, unsigned amount) {
 	string tempStr = "";
-	for (int i = 0; i < amount; i++) tempStr += (*str)[((*str).size()-amount)+i];
+	if (amount > str->size()) amount = str->size();
+	tempStr.reserve(amount);
+	for (unsigned i = 0; i < amount; i++) tempStr += (*str)[((*str).size()-amount)+i];
 	*str = tempStr;
+	return *str;
 }
 
 string lowerCase(const string & str) {
@@ -54,10 +65,20 @@ string lowerCase(const string & str) {
 	return returnStr;
 }
 
+string & lowerCase(string * str) {
+	transform(str->begin(), str->end(), str->begin(), ::tolower);
+	return *str;
+}
+
 string upperCase(const string & str) {
 	string returnStr = str;
 	transform(returnStr.begin(), returnStr.end(), returnStr.begin(), ::toupper);
 	return returnStr;
+}
+
+string & upperCase(string * str) {
+	transform(str->begin(), str->end(), str->begin(), ::toupper);
+	return *str;
 }
 
 }

@@ -56,7 +56,7 @@ int Sound::volume() {
 }
 
 int Sound::play(int newVolume, int channel) {
-	if (channel >= channels.size()) return -1;
+	if (channel >= (int)channels.size()) return -1;
 	currentChannel = Mix_PlayChannel(channel, chunk, 0);
 	if (currentChannel > -1) {
 		channels[currentChannel] = this;
