@@ -12,20 +12,21 @@
 
 #include <iostream>
 #include <vector>
+
 #include <SDL/SDL_net.h>
 
 namespace SuperMaximo {
 
-#define STR_BUFFER_SIZE 128
-#define STR_SIZE 32
-#define INT_SIZE 8
-#define WAIT_TIME 10
+const int STR_BUFFER_SIZE = 128;
+const int STR_SIZE = 32;
+const int INT_SIZE = 8;
+const int WAIT_TIME = 10;
 
 bool initNetworking();
 void quitNetworking();
 
 class NetworkService {
-	bool serverStart, clientStart;
+	bool serverStarted_, clientStarted_;
 	IPaddress serverIp, clientIp, localResolveIp;
 	std::string clientAddress, localHostName, name_;
 	SDLNet_SocketSet serverTcpSocketSet, serverUdpSocketSet, clientTcpSocketSet, clientUdpSocketSet;
@@ -39,29 +40,29 @@ class NetworkService {
 	Uint32 localAddress_;
 
 public:
-	NetworkService(const std::string & newName);
+	NetworkService(const std::string & name);
 	~NetworkService();
 
-	std::string name();
+	const std::string & name() const;
 
-	bool serverStarted();
-	bool clientStarted();
+	bool serverStarted() const;
+	bool clientStarted() const;
 
-	bool startServer(int newMaxSockets, int newPort);
+	bool startServer(int maxSockets, int port);
 	void closeServer();
 	bool restartServer();
 	Uint32 newLocalAddress();
 	Uint32 localAddress();
 	int checkForNewClient(bool useUdp = true);
-	bool clientExists(int id);
-	int totalClients();
+	bool clientExists(int id) const;
+	int totalClients() const;
 	void kickClient(int id);
 
-	bool startClient(const std::string & newAddress, int newPort);
+	bool startClient(const std::string & address, int port);
 	void closeClient();
 	bool restartClient();
 	bool connectToServer(bool useUdp = true);
-	int clientNumber();
+	int clientNumber() const;
 
 	bool sendStrTcp(const std::string & data, int id = 0, bool isServer = false, int size = 0);
 	std::string recvStrTcp(int id = 0, bool isServer = false, int size = 0);
