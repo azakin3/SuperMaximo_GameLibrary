@@ -28,8 +28,6 @@ struct vertexNormalAssoication {
 	vector<vec3> surfaceNormals;
 };
 
-vector<Model*> allModels[27];
-
 namespace SuperMaximo {
 
 Model::vertex Model::vertex::operator- (vertex const & other) {
@@ -1047,47 +1045,6 @@ int bone::animation::frameIndex(float step) {
 		}
 	}
 	return -1;
-}
-
-Model * model(const string & searchName) {
-	int letter = numCharInAlphabet(searchName[0]);
-	Model * returnModel = NULL;
-	if (allModels[letter].size() > 0) {
-		for (unsigned i = 0; i < allModels[letter].size(); i++) {
-			if (allModels[letter][i]->name() == searchName) returnModel = allModels[letter][i];
-		}
-	}
-	return returnModel;
-}
-
-Model * addModel(const string & newName, const string & path, const string & fileName, unsigned framerate,
-		bufferUsageEnum bufferUsage, void (*customBufferFunction)(GLuint*, Model*, void*), void * customData) {
-	int letter = numCharInAlphabet(newName[0]);
-	Model * newModel = new Model(newName, path, fileName, framerate, bufferUsage, customBufferFunction, customData);
-	allModels[letter].push_back(newModel);
-	return newModel;
-}
-
-void destroyModel(const string & searchName) {
-	int letter = numCharInAlphabet(searchName[0]);
-	if (allModels[letter].size() > 0) {
-		for (unsigned i = 0; i < allModels[letter].size(); i++) {
-			if (allModels[letter][i]->name() == searchName) {
-				delete allModels[letter][i];
-				allModels[letter].erase(allModels[letter].begin()+i);
-				break;
-			}
-		}
-	}
-}
-
-void destroyAllModels() {
-	for (int i = 0; i < 27; i++) {
-		if (allModels[i].size() > 0) {
-			for (unsigned j = 0; j < allModels[i].size(); j++) delete allModels[i][j];
-			allModels[i].clear();
-		}
-	}
 }
 
 }

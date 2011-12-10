@@ -15,8 +15,6 @@ using namespace std;
 #include "../../headers/Utils.h"
 using namespace SuperMaximo;
 
-vector<Music*> allMusic[27];
-
 namespace SuperMaximo {
 
 Music::Music(const string & newName, const string & fileName) {
@@ -33,46 +31,6 @@ string Music::name() {
 
 void Music::play() {
 	Mix_PlayMusic(mixMusic, -1);
-}
-
-Music * music(const string & searchName) {
-	int letter = numCharInAlphabet(searchName[0]);
-	Music * returnMusic = NULL;
-	if (allMusic[letter].size() > 0) {
-		for (unsigned int i = 0; i < allMusic[letter].size(); i++) {
-			if (allMusic[letter][i]->name() == searchName) returnMusic = allMusic[letter][i];
-		}
-	}
-	return returnMusic;
-}
-
-Music * addMusic(const string & newName, const string & fileName) {
-	int letter = numCharInAlphabet(newName[0]);
-	Music * newMusic = new Music(newName, fileName);
-	allMusic[letter].push_back(newMusic);
-	return newMusic;
-}
-
-void destroyMusic(const string & searchName) {
-	int letter = numCharInAlphabet(searchName[0]);
-	if (allMusic[letter].size() > 0) {
-		for (unsigned int i = 0; i < allMusic[letter].size(); i++) {
-			if (allMusic[letter][i]->name() == searchName) {
-				delete allMusic[letter][i];
-				allMusic[letter].erase(allMusic[letter].begin()+i);
-				break;
-			}
-		}
-	}
-}
-
-void destroyAllMusic() {
-	for (int i = 0; i < 27; i++) {
-		if (allMusic[i].size() > 0) {
-			for (unsigned int j = 0; j < allMusic[i].size(); j++) delete allMusic[i][j];
-			allMusic[i].clear();
-		}
-	}
 }
 
 }

@@ -49,12 +49,6 @@ public:
 	int width(), height();
 };
 
-Texture * texture(const std::string & searchName);
-Texture * addTexture(const std::string & newName, textureTypeEnum textureType, const std::string & fileName, ...);
-Texture * addTexture(const std::string & newName, textureTypeEnum textureType, unsigned numLayers, ...);
-void destroyTexture(const std::string & searchName);
-void destroyAllTextures();
-
 }
 
 #endif /* TEXTURE_H_ */

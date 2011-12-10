@@ -15,20 +15,20 @@ using namespace std;
 #include "../../headers/Utils.h"
 using namespace SuperMaximo;
 
-vector<Sound*> allSounds[27];
-vector<Sound*> allChannels;
+vector<Sound*> channels;
 
 namespace SuperMaximo {
 
 void allocateSoundChannels(unsigned channels) {
 	Mix_AllocateChannels(channels);
-	unsigned i = allChannels.size();
+	unsigned i = ::channels.size();
+	::channels.reserve(channels);
 	while (i > channels) {
-		allChannels.pop_back();
+		::channels.pop_back();
 		i--;
 	}
 	while (i < channels) {
-		allChannels.push_back(NULL);
+		::channels.push_back(NULL);
 		i++;
 	}
 }
@@ -56,9 +56,10 @@ int Sound::volume() {
 }
 
 int Sound::play(int newVolume, int channel) {
+	if (channel >= channels.size()) return -1;
 	currentChannel = Mix_PlayChannel(channel, chunk, 0);
 	if (currentChannel > -1) {
-		allChannels[currentChannel] = this;
+		channels[currentChannel] = this;
 		if (newVolume > -1) volume_ = newVolume;
 		Mix_Volume(currentChannel, (MIX_MAX_VOLUME/100)*volume_);
 	}
@@ -73,65 +74,8 @@ void Sound::setSoundPosition(int angle, int distance) {
 	if (Mix_GetChunk(currentChannel) == chunk) Mix_SetPosition(currentChannel, angle, distance);
 }
 
-Sound * sound(const string & searchName) {
-	int letter = numCharInAlphabet(searchName[0]);
-	Sound * returnSound = NULL;
-	if (allSounds[letter].size() > 0) {
-		for (unsigned int i = 0; i < allSounds[letter].size(); i++) {
-			if (allSounds[letter][i]->name() == searchName) returnSound = allSounds[letter][i];
-		}
-	}
-	return returnSound;
-}
-
-Sound * sound(int channel) {
-	return allChannels[channel];
-}
-
-Sound * addSound(const string & newName, const string & fileName) {
-	int letter = numCharInAlphabet(newName[0]);
-	Sound * newSound = new Sound(newName, fileName);
-	allSounds[letter].push_back(newSound);
-	return newSound;
-}
-
-void destroySound(const string & searchName) {
-	int letter = numCharInAlphabet(searchName[0]);
-	if (allSounds[letter].size() > 0) {
-		for (unsigned int i = 0; i < allSounds[letter].size(); i++) {
-			if (allSounds[letter][i]->name() == searchName) {
-				delete allSounds[letter][i];
-				allSounds[letter].erase(allSounds[letter].begin()+i);
-				break;
-			}
-		}
-	}
-}
-
-void destroySound(int channel) {
-	if (allChannels[channel] != NULL) {
-		int letter = numCharInAlphabet(allChannels[channel]->name()[0]);
-		if (allSounds[letter].size() > 0) {
-			for (unsigned int i = 0; i < allSounds[letter].size(); i++) {
-				if (allSounds[letter][i]->name() == allChannels[channel]->name()) {
-					delete allSounds[letter][i];
-					allSounds[letter].erase(allSounds[letter].begin()+i);
-					allChannels[channel] = NULL;
-					break;
-				}
-			}
-		}
-	}
-}
-
-void destroyAllSounds() {
-	for (int i = 0; i < 27; i++) {
-		if (allSounds[i].size() > 0) {
-			for (unsigned int j = 0; j < allSounds[i].size(); j++) delete allSounds[i][j];
-			allSounds[i].clear();
-		}
-	}
-	for (unsigned i = 0; i < allChannels.size(); i++) allChannels[i] = NULL;
+Sound * findSoundByChannel(int channel) {
+	return channels[channel];
 }
 
 }

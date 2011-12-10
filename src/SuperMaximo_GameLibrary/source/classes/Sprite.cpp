@@ -20,8 +20,6 @@ using namespace std;
 #include "../../headers/Utils.h"
 using namespace SuperMaximo;
 
-vector<Sprite*> allSprites[27];
-
 namespace SuperMaximo {
 
 Sprite::Sprite(const string & newName, const string & fileName, int imageX, int imageY, int imageWidth,
@@ -333,64 +331,6 @@ void Sprite::bindCustomDrawFunction(customDrawFunctionType newCustomDrawFunction
 
 customDrawFunctionType Sprite::boundCustomDrawFunction() {
 	return customDrawFunction;
-}
-
-Sprite * sprite(const string & searchName) {
-	int letter = numCharInAlphabet(searchName[0]);
-	Sprite * returnSprite = NULL;
-	if (allSprites[letter].size() > 0) {
-		for (unsigned int i = 0; i < allSprites[letter].size(); i++) {
-			if (allSprites[letter][i]->name() == searchName) {
-				returnSprite = allSprites[letter][i];
-				break;
-			}
-		}
-	}
-	return returnSprite;
-}
-
-Sprite * addSprite(const string & newName, const string & fileName, int imageX, int imageY, int imageWidth,
-		int imageHeight, int aniFrames, unsigned framerate, int newOriginX, int newOriginY,
-		void (*customBufferFunction)(GLuint*, Sprite*, void*), void * customData) {
-
-	int letter = numCharInAlphabet(newName[0]);
-	Sprite * newSprite = new Sprite(newName, fileName, imageX, imageY, imageWidth, imageHeight, aniFrames, framerate,
-			newOriginX, newOriginY, customBufferFunction, customData);
-	allSprites[letter].push_back(newSprite);
-	return newSprite;
-}
-
-Sprite * addSprite(const string & newName, SDL_Surface * surface, int imageX, int imageY, int imageWidth,
-		int imageHeight, int aniFrames, unsigned framerate, int newOriginX, int newOriginY,
-		void (*customBufferFunction)(GLuint*, Sprite*, void*), void * customData) {
-
-	int letter = numCharInAlphabet(newName[0]);
-	Sprite * newSprite = new Sprite(newName, surface, imageX, imageY, imageWidth, imageHeight, aniFrames, framerate,
-			newOriginX, newOriginY, customBufferFunction, customData);
-	allSprites[letter].push_back(newSprite);
-	return newSprite;
-}
-
-void destroySprite(const string & searchName) {
-	int letter = numCharInAlphabet(searchName[0]);
-	if (allSprites[letter].size() > 0) {
-		for (unsigned int i = 0; i < allSprites[letter].size(); i++) {
-			if (allSprites[letter][i]->name() == searchName) {
-				delete allSprites[letter][i];
-				allSprites[letter].erase(allSprites[letter].begin()+i);
-				break;
-			}
-		}
-	}
-}
-
-void destroyAllSprites() {
-	for (int i = 0; i < 27; i++) {
-		if (allSprites[i].size() > 0) {
-			for (unsigned int j = 0; j < allSprites[i].size(); j++) delete allSprites[i][j];
-			allSprites[i].clear();
-		}
-	}
 }
 
 }

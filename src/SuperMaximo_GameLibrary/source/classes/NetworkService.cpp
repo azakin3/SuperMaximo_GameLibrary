@@ -16,8 +16,6 @@ using namespace std;
 #include "../../headers/Utils.h"
 using namespace SuperMaximo;
 
-vector<NetworkService *> allNetworkServices[27];
-
 namespace SuperMaximo {
 
 bool initNetworking() {
@@ -664,49 +662,6 @@ int NetworkService::recvIntUdpId(int * intBuffer, bool isServer) {
 		} else return -1;
 	}
 	return i;
-}
-
-NetworkService * networkService(const string & searchName) {
-	int letter = numCharInAlphabet(searchName[0]);
-	NetworkService * returnNetworkService = NULL;
-	if (allNetworkServices[letter].size() > 0) {
-		for (unsigned int i = 0; i < allNetworkServices[letter].size(); i++) {
-			if (allNetworkServices[letter][i]->name() == searchName) {
-				returnNetworkService = allNetworkServices[letter][i];
-				break;
-			}
-		}
-	}
-	return returnNetworkService;
-}
-
-NetworkService * addNetworkService(const string & newName) {
-	int letter = numCharInAlphabet(newName[0]);
-	NetworkService * newNetworkService = new NetworkService(newName);
-	allNetworkServices[letter].push_back(newNetworkService);
-	return newNetworkService;
-}
-
-void destroyNetworkService(const string & searchName) {
-	int letter = numCharInAlphabet(searchName[0]);
-	if (allNetworkServices[letter].size() > 0) {
-		for (unsigned int i = 0; i < allNetworkServices[letter].size(); i++) {
-			if (allNetworkServices[letter][i]->name() == searchName) {
-				delete allNetworkServices[letter][i];
-				allNetworkServices[letter].erase(allNetworkServices[letter].begin()+i);
-				break;
-			}
-		}
-	}
-}
-
-void destroyAllNetworkServices() {
-	for (int i = 0; i < 27; i++) {
-		if (allNetworkServices[i].size() > 0) {
-			for (unsigned int j = 0; j < allNetworkServices[i].size(); j++) delete allNetworkServices[i][j];
-			allNetworkServices[i].clear();
-		}
-	}
 }
 
 }

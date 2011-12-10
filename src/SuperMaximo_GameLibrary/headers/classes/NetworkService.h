@@ -78,14 +78,6 @@ public:
 	int recvIntUdpId(int * intBuffer, bool isServer = false);
 };
 
-NetworkService * networkService(const std::string & searchName);
-
-NetworkService * addNetworkService(const std::string & newName);
-
-void destroyNetworkService(const std::string & searchName);
-
-void destroyAllNetworkServices();
-
 }
 
 #endif /* NETWORKSERVICE_H_ */

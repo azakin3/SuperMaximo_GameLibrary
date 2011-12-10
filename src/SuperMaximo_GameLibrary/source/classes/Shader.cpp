@@ -18,8 +18,6 @@ using namespace std;
 #include "../../headers/Utils.h"
 using namespace SuperMaximo;
 
-vector<Shader *> allShaders[27];
-
 namespace SuperMaximo {
 
 Shader::operator GLuint() {
@@ -409,61 +407,6 @@ void Shader::setUniform3(shaderLocationEnum location, vec3 data) {
 
 void Shader::setUniform4(shaderLocationEnum location, vec4 data) {
 	glUniform4f(uniformLocation_[location], data.x, data.y, data.z, data.w);
-}
-
-Shader * shader(const string & searchName) {
-	int letter = numCharInAlphabet(searchName[0]);
-	Shader * returnShader = NULL;
-	if (allShaders[letter].size() > 0) {
-		for (unsigned int i = 0; i < allShaders[letter].size(); i++) {
-			if (allShaders[letter][i]->name() == searchName) {
-				returnShader = allShaders[letter][i];
-				break;
-			}
-		}
-	}
-	return returnShader;
-}
-
-Shader * addShader(const string & newName, const string & vertexShaderFile, const string & fragmentShaderFile, ...) {
-	int letter = numCharInAlphabet(newName[0]);
-	vector<int> enums;
-	vector<char *>attributeNames;
-	va_list attributes;
-	va_start(attributes, fragmentShaderFile);
-	int count = va_arg(attributes, int);
-	for (int i = 0; i < count; i++) {
-		int index = va_arg(attributes, int);
-		enums.push_back(index);
-		char * attr = va_arg(attributes, char *);
-		attributeNames.push_back(attr);
-	}
-	va_end(attributes);
-	Shader * newShader = new Shader(newName, vertexShaderFile, fragmentShaderFile, enums, attributeNames);
-	allShaders[letter].push_back(newShader);
-	return newShader;
-}
-
-void destroyShader(const string & searchName) {
-	int letter = numCharInAlphabet(searchName[0]);
-	if (allShaders[letter].size() > 0) {
-		for (unsigned int i = 0; i < allShaders[letter].size(); i++) {
-			if (allShaders[letter][i]->name() == searchName) {
-				delete allShaders[letter][i];
-				allShaders[letter].erase(allShaders[letter].begin()+i);
-				break;
-			}
-		}
-	}
-}
-
-void destroyAllShaders() {
-	for (int i = 0; i < 27; i++) {
-		if (allShaders[i].size() > 0) {
-			for (unsigned int j = 0; j < allShaders[i].size(); j++) delete allShaders[i][j];
-			allShaders[i].clear();
-		}
-	}
 }
 
 }

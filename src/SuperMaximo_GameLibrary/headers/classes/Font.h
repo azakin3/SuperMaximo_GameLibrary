@@ -40,11 +40,6 @@ void initFont(Shader * newFontShader);
 void quitFont();
 void bindFontShader(Shader * newFontShader);
 
-Font * font(const std::string & searchName);
-Font * addFont(const std::string & newName, const std::string & fileName, int newSize);
-void destroyFont(const std::string & searchName);
-void destroyAllFonts();
-
 void clearFontCache();
 
 }

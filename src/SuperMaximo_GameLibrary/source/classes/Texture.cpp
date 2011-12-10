@@ -17,8 +17,6 @@ using namespace std;
 #include "../../headers/Display.h"
 using namespace SuperMaximo;
 
-vector<Texture*> allTextures[27];
-
 namespace SuperMaximo {
 
 Texture::operator GLuint() {
@@ -343,68 +341,6 @@ int Texture::width() {
 
 int Texture::height() {
 	return height_;
-}
-
-Texture * texture(const string & searchName) {
-	int letter = numCharInAlphabet(searchName[0]);
-	Texture * returnTexture = NULL;
-	if (allTextures[letter].size() > 0) {
-		for (unsigned int i = 0; i < allTextures[letter].size(); i++) {
-			if (allTextures[letter][i]->name() == searchName) returnTexture = allTextures[letter][i];
-		}
-	}
-	return returnTexture;
-}
-
-Texture * addTexture(const string & newName, textureTypeEnum textureType, std::string fileName, ...) {
-	int letter = numCharInAlphabet(newName[0]);
-	vector<string> fileNames;
-	fileNames.push_back(fileName);
-	va_list files;
-	va_start(files, fileName);
-	for (short i = 0; i < 4; i++) {
-		char * file = va_arg(files, char *);
-		fileNames.push_back(file);
-	}
-	Texture * newTexture = new Texture(newName, textureType, fileNames);
-	allTextures[letter].push_back(newTexture);
-	return newTexture;
-}
-
-Texture * addTexture(const string & newName, textureTypeEnum textureType, unsigned numLayers, ...) {
-	int letter = numCharInAlphabet(newName[0]);
-	vector<string> fileNames;
-	va_list files;
-	va_start(files, numLayers);
-	for (unsigned i = 0; i < numLayers; i++) {
-		char * file = va_arg(files, char *);
-		fileNames.push_back(file);
-	}
-	Texture * newTexture = new Texture(newName, textureType, fileNames);
-	allTextures[letter].push_back(newTexture);
-	return newTexture;
-}
-
-void destroyTexture(const string & searchName) {
-	int letter = numCharInAlphabet(searchName[0]);
-	if (allTextures[letter].size() > 0) {
-		for (unsigned int i = 0; i < allTextures[letter].size(); i++) {
-			if (allTextures[letter][i]->name() == searchName) {
-				delete allTextures[letter][i];
-				allTextures[letter].erase(allTextures[letter].begin()+i);
-				break;
-			}
-		}
-	}
-}
-
-void destroyAllTextures() {
-	for (int i = 0; i < 27; i++) {
-		if (allTextures[i].size() > 0) {
-			for (unsigned int j = 0; j < allTextures[i].size(); j++) delete allTextures[i][j];
-			allTextures[i].clear();
-		}
-	}
 }
 
 }

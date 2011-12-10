@@ -108,12 +108,6 @@ public:
 	void setUniform4(shaderLocationEnum location, vec4 data);
 };
 
-Shader * shader(const std::string & searchName);
-Shader * addShader(const std::string & newName, const std::string & vertexShaderFile,
-		const std::string & fragmentShaderFile, ...);
-void destroyShader(const std::string & searchName);
-void destroyAllShaders();
-
 }
 
 #endif /* SHADER_H_ */

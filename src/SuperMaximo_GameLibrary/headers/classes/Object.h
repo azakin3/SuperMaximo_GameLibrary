@@ -107,12 +107,6 @@ public:
 	bool circleCollision(Object * other);
 };
 
-Object * object(const std::string & searchName);
-Object * addObject(const std::string & newName, float destX, float destY, float destZ, Sprite * newSprite = NULL);
-Object * addObject(const std::string & newName, float destX, float destY, float destZ, Model * newModel = NULL);
-void destroyObject(const std::string & searchName);
-void destroyAllObjects();
-
 }
 
 #endif /* OBJECT_H_ */

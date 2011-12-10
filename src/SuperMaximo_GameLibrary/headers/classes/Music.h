@@ -25,11 +25,6 @@ public:
 	void play();
 };
 
-Music * music(const std::string & searchName);
-Music * addMusic(const std::string & newName, const std::string & fileName);
-void destroyMusic(const std::string & searchName);
-void destroyAllMusic();
-
 }
 
 #endif /* MUSIC_H_ */

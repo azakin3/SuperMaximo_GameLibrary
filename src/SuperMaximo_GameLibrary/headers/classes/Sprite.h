@@ -86,20 +86,6 @@ public:
 	customDrawFunctionType boundCustomDrawFunction();
 };
 
-Sprite * sprite(const std::string & searchName);
-
-Sprite * addSprite(const std::string & newName, const std::string & fileName, int imageX, int imageY, int imageWidth,
-		int imageHeight, int aniFrames = 1, unsigned framerate = 1, int newOriginX = 1, int newOriginY = 1,
-		void (*customBufferFunction)(GLuint*, Sprite*, void*) = NULL, void * customData = NULL);
-
-Sprite * addSprite(const std::string & newName, SDL_Surface * surface, int imageX, int imageY, int imageWidth,
-		int imageHeight, int aniFrames = 1, unsigned framerate = 1, int newOriginX = 1, int newOriginY = 1,
-		void (*customBufferFunction)(GLuint*, Sprite*, void*) = NULL, void * customData = NULL);
-
-void destroySprite(const std::string & searchName);
-
-void destroyAllSprites();
-
 }
 
 #endif /* SPRITE_H_ */

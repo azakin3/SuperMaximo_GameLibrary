@@ -31,13 +31,7 @@ public:
 };
 
 void allocateSoundChannels(unsigned channels);
-
-Sound * sound(const std::string & searchName);
-Sound * sound(int channel);
-Sound * addSound(const std::string & newName, const std::string & fileName);
-void destroySound(const std::string & searchName);
-void destroySound(int channel);
-void destroyAllSounds();
+Sound * findSoundByChannel(int channel);
 
 }
 

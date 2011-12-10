@@ -111,28 +111,17 @@ public:
 
 struct bone {
 	int id;
-	//unsigned offset;
 	std::string name;
 	float x, y, z, endX, endY, endZ, xRot, yRot, zRot;
 	bone * parent;
 	vec3 rotationUpperLimit, rotationLowerLimit;
 	std::vector<bone *> child;
-	//vector<Model::triangle *> triangles;
-	//vector<Model::vertex *> vertices;
-	/*struct box {
-		float x, y, z, l, w, h, xRot, yRot, zRot, rl, rw, rh;
-		void init();
-	} hitbox;*/
+
 	struct keyFrame {
-		/*struct keyFrameData {
-			int boneId;
-			float xRot, yRot, zRot;
-		};
-		vector<keyFrameData> boneData;*/
 		float xRot, yRot, zRot;
 		unsigned step;
-		//void set(Model * model);
 	};
+
 	struct animation {
 		std::string name;
 		unsigned length;
@@ -141,14 +130,6 @@ struct bone {
 	};
 	std::vector<animation> animations;
 };
-
-
-Model * model(const std::string & searchName);
-Model * addModel(const std::string & newName, const std::string & path, const std::string & fileName,
-		bufferUsageEnum bufferUsage = STATIC_DRAW, unsigned framerate = 60,
-		void (*customBufferFunction)(GLuint*, Model*, void*) = NULL, void * customData = NULL);
-void destroyModel(const std::string & searchName);
-void destroyAllModels();
 
 }
 

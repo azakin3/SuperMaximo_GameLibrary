@@ -21,8 +21,6 @@ using namespace std;
 #include "../../headers/Input.h"
 using namespace SuperMaximo;
 
-vector<Object*> allObjects[27];
-
 namespace SuperMaximo {
 
 Object::Object(const string & newName, float destX, float destY, float destZ, Sprite * newSprite) {
@@ -435,56 +433,6 @@ bool Object::circleCollision(Object * other) {
 		if (dist <= (radius+otherRadius)*(radius+otherRadius)) return true;
 	}
 	return false;
-}
-
-Object * object(const string & searchName) {
-	int letter = numCharInAlphabet(searchName[0]);
-	Object * returnObject = NULL;
-	if (allObjects[letter].size() > 0) {
-		for (unsigned int i = 0; i < allObjects[letter].size(); i++) {
-			if (allObjects[letter][i]->name() == searchName) {
-				returnObject = allObjects[letter][i];
-				break;
-			}
-		}
-	}
-	return returnObject;
-}
-
-Object * addObject(const string & newName, float destX, float destY, float destZ, Sprite * newSprite) {
-	int letter = numCharInAlphabet(newName[0]);
-	Object * newObject = new Object(newName, destX, destY, destZ, newSprite);
-	allObjects[letter].push_back(newObject);
-	return newObject;
-}
-
-Object * addObject(const string & newName, float destX, float destY, float destZ, Model * newModel) {
-	int letter = numCharInAlphabet(newName[0]);
-	Object * newObject = new Object(newName, destX, destY, destZ, newModel);
-	allObjects[letter].push_back(newObject);
-	return newObject;
-}
-
-void destroyObject(const string & searchName) {
-	int letter = numCharInAlphabet(searchName[0]);
-	if (allObjects[letter].size() > 0) {
-		for (unsigned int i = 0; i < allObjects[letter].size(); i++) {
-			if (allObjects[letter][i]->name() == searchName) {
-				delete allObjects[letter][i];
-				allObjects[letter].erase(allObjects[letter].begin()+i);
-				break;
-			}
-		}
-	}
-}
-
-void destroyAllObjects() {
-	for (int i = 0; i < 27; i++) {
-		if (allObjects[i].size() > 0) {
-			for (unsigned int j = 0; j < allObjects[i].size(); j++) delete allObjects[i][j];
-			allObjects[i].clear();
-		}
-	}
 }
 
 }

@@ -25,7 +25,6 @@ struct fontCacheRecord {
 	GLuint vbo;
 };
 
-vector<Font*> allFonts[27];
 vector<fontCacheRecord> fontCache[27];
 Shader * fontShader = NULL;
 GLuint vbo = 0;
@@ -240,46 +239,6 @@ void quitFont() {
 
 void bindFontShader(Shader * newFontShader) {
 	fontShader = newFontShader;
-}
-
-Font * font(const string & searchName) {
-	int letter = numCharInAlphabet(searchName[0]);
-	Font * returnFont = NULL;
-	if (allFonts[letter].size() > 0) {
-		for (unsigned int i = 0; i < allFonts[letter].size(); i++) {
-			if (allFonts[letter][i]->name() == searchName) returnFont = allFonts[letter][i];
-		}
-	}
-	return returnFont;
-}
-
-Font * addFont(const string & newName, const string & fileName, int newSize) {
-	int letter = numCharInAlphabet(newName[0]);
-	Font * newFont = new Font(newName, fileName, newSize);
-	allFonts[letter].push_back(newFont);
-	return newFont;
-}
-
-void destroyFont(const string & searchName) {
-	int letter = numCharInAlphabet(searchName[0]);
-	if (allFonts[letter].size() > 0) {
-		for (unsigned int i = 0; i < allFonts[letter].size(); i++) {
-			if (allFonts[letter][i]->name() == searchName) {
-				delete allFonts[letter][i];
-				allFonts[letter].erase(allFonts[letter].begin()+i);
-				break;
-			}
-		}
-	}
-}
-
-void destroyAllFonts() {
-	for (int i = 0; i < 27; i++) {
-		if (allFonts[i].size() > 0) {
-			for (unsigned int j = 0; j < allFonts[i].size(); j++) delete allFonts[i][j];
-			allFonts[i].clear();
-		}
-	}
 }
 
 void clearFontCache() {
