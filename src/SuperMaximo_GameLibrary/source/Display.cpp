@@ -653,10 +653,12 @@ void refreshScreen() {
 	tickDifference = ticks-lastTicks;
 	if (tickDifference == 0) tickDifference = 1;
 	framerate = 1000.0f/tickDifference;
-	int delay = 0;
-	if (maximumFramerate > 0) delay = (1000/maximumFramerate)-tickDifference;
-	if (delay >= 0) SDL_Delay(delay);
-	compensation_ = float(getTickDifference())/(1000.0f/float(getIdealFramerate()));
+	int delay = maximumFramerate > 0 ? (1000/maximumFramerate)-tickDifference : 0;
+	if (delay > 0) {
+		Uint32 time = ticks+delay;
+		while (SDL_GetTicks() < time);
+	}
+	compensation_ = float(tickDifference*idealFramerate)/1000.0f;
 }
 
 unsigned getFramerate() {
