@@ -10,11 +10,10 @@
 #ifndef SHADER_H_
 #define SHADER_H_
 
-#include <GL/glew.h>
 #include <iostream>
 #include <vector>
 
-#include "../Display.h"
+typedef unsigned GLuint;
 
 namespace SuperMaximo {
 
@@ -53,6 +52,9 @@ enum shaderLocationEnum {
 class Sprite;
 class Model;
 class Font;
+struct vec2;
+struct vec3;
+struct vec4;
 
 class Shader {
 	GLuint program_;
@@ -64,48 +66,48 @@ public:
 	friend class Model;
 	friend class Font;
 
-	operator GLuint();
+	operator GLuint() const;
 
-	Shader(const std::string & newName, const std::string & vertexShaderFile, const std::string & fragmentShaderFile,
+	Shader(const std::string & name, const std::string & vertexShaderFile, const std::string & fragmentShaderFile,
 			...);
-	Shader(const std::string & newName, const std::string & vertexShaderFile, const std::string & fragmentShaderFile,
+	Shader(const std::string & name, const std::string & vertexShaderFile, const std::string & fragmentShaderFile,
 			const std::vector<int> & enums, const std::vector<char *> & attributeNames);
-	Shader(const std::string & newName, const std::string & vertexShaderFile, const std::string & fragmentShaderFile,
+	Shader(const std::string & name, const std::string & vertexShaderFile, const std::string & fragmentShaderFile,
 			unsigned count, int * enums, const char ** attributeNames);
 	~Shader();
 
-	std::string name();
+	const std::string & name() const;
 	void bind();
-	void use();
+	void use() const;
 	GLint setUniformLocation(shaderLocationEnum dstLocation, const std::string & locationName);
-	GLint uniformLocation(shaderLocationEnum location);
+	GLint uniformLocation(shaderLocationEnum location) const;
 
-	void setUniform1(shaderLocationEnum location, GLfloat * data, unsigned count = 1);
-	void setUniform2(shaderLocationEnum location, GLfloat * data, unsigned count = 1);
-	void setUniform3(shaderLocationEnum location, GLfloat * data, unsigned count = 1);
-	void setUniform4(shaderLocationEnum location, GLfloat * data, unsigned count = 1);
+	void setUniform1(shaderLocationEnum location, GLfloat * data, unsigned count = 1) const;
+	void setUniform2(shaderLocationEnum location, GLfloat * data, unsigned count = 1) const;
+	void setUniform3(shaderLocationEnum location, GLfloat * data, unsigned count = 1) const;
+	void setUniform4(shaderLocationEnum location, GLfloat * data, unsigned count = 1) const;
 
-	void setUniform9(shaderLocationEnum location, GLfloat * data, unsigned count = 1);
-	void setUniform16(shaderLocationEnum location, GLfloat * data, unsigned count = 1);
+	void setUniform9(shaderLocationEnum location, GLfloat * data, unsigned count = 1) const;
+	void setUniform16(shaderLocationEnum location, GLfloat * data, unsigned count = 1) const;
 
-	void setUniform1(shaderLocationEnum location, int * data, unsigned count = 1);
-	void setUniform2(shaderLocationEnum location, int * data, unsigned count = 1);
-	void setUniform3(shaderLocationEnum location, int * data, unsigned count = 1);
-	void setUniform4(shaderLocationEnum location, int * data, unsigned count = 1);
+	void setUniform1(shaderLocationEnum location, int * data, unsigned count = 1) const;
+	void setUniform2(shaderLocationEnum location, int * data, unsigned count = 1) const;
+	void setUniform3(shaderLocationEnum location, int * data, unsigned count = 1) const;
+	void setUniform4(shaderLocationEnum location, int * data, unsigned count = 1) const;
 
-	void setUniform1(shaderLocationEnum location, GLfloat data);
-	void setUniform2(shaderLocationEnum location, GLfloat data1, GLfloat data2);
-	void setUniform3(shaderLocationEnum location, GLfloat data1, GLfloat data2, GLfloat data3);
-	void setUniform4(shaderLocationEnum location, GLfloat data1, GLfloat data2, GLfloat data3, GLfloat data4);
+	void setUniform1(shaderLocationEnum location, GLfloat data) const;
+	void setUniform2(shaderLocationEnum location, GLfloat data1, GLfloat data2) const;
+	void setUniform3(shaderLocationEnum location, GLfloat data1, GLfloat data2, GLfloat data3) const;
+	void setUniform4(shaderLocationEnum location, GLfloat data1, GLfloat data2, GLfloat data3, GLfloat data4) const;
 
-	void setUniform1(shaderLocationEnum location, int data);
-	void setUniform2(shaderLocationEnum location, int data1, int data2);
-	void setUniform3(shaderLocationEnum location, int data1, int data2, int data3);
-	void setUniform4(shaderLocationEnum location, int data1, int data2, int data3, int data4);
+	void setUniform1(shaderLocationEnum location, int data) const;
+	void setUniform2(shaderLocationEnum location, int data1, int data2) const;
+	void setUniform3(shaderLocationEnum location, int data1, int data2, int data3) const;
+	void setUniform4(shaderLocationEnum location, int data1, int data2, int data3, int data4) const;
 
-	void setUniform2(shaderLocationEnum location, vec2 data);
-	void setUniform3(shaderLocationEnum location, vec3 data);
-	void setUniform4(shaderLocationEnum location, vec4 data);
+	void setUniform2(shaderLocationEnum location, const vec2 & data) const;
+	void setUniform3(shaderLocationEnum location, const vec3 & data) const;
+	void setUniform4(shaderLocationEnum location, const vec4 & data) const;
 };
 
 }

@@ -12,21 +12,21 @@
 #include <fstream>
 #include <cstdarg>
 using namespace std;
+
 #include <GL/glew.h>
-#include "../../headers/classes/Shader.h"
-#include "../../headers/Display.h"
-#include "../../headers/Utils.h"
-using namespace SuperMaximo;
+
+#include <SuperMaximo_GameLibrary/Display.h>
+#include <SuperMaximo_GameLibrary/classes/Shader.h>
 
 namespace SuperMaximo {
 
-Shader::operator GLuint() {
+Shader::operator GLuint() const {
 	return program_;
 }
 
-Shader::Shader(const string & newName, const string & vertexShaderFile, const string & fragmentShaderFile, ...) {
-	name_ = newName;
-	program_ = (GLuint)NULL;
+Shader::Shader(const string & name, const string & vertexShaderFile, const string & fragmentShaderFile, ...) :
+		name_(name) {
+	program_ = 0;
 	for (int i = 0; i <= EXTRA9_LOCATION; i++) {
 		uniformLocation_[i] = -1;
 	}
@@ -122,10 +122,9 @@ Shader::Shader(const string & newName, const string & vertexShaderFile, const st
 	}
 }
 
-Shader::Shader(const string & newName, const string & vertexShaderFile, const string & fragmentShaderFile,
-		const vector<int> & enums, const vector<char *> & attributeNames) {
-	name_ = newName;
-	program_ = (GLuint)NULL;
+Shader::Shader(const string & name, const string & vertexShaderFile, const string & fragmentShaderFile,
+		const vector<int> & enums, const vector<char *> & attributeNames) : name_(name) {
+	program_ = 0;
 	for (short i = 0; i <= EXTRA9_LOCATION; i++) uniformLocation_[i] = -1;
 	string text = "";
 	ifstream file;
@@ -211,10 +210,9 @@ Shader::Shader(const string & newName, const string & vertexShaderFile, const st
 	}
 }
 
-Shader::Shader(const string & newName, const string & vertexShaderFile, const string & fragmentShaderFile,
-		unsigned count, int * enums, const char ** attributeNames) {
-	name_ = newName;
-	program_ = (GLuint)NULL;
+Shader::Shader(const string & name, const string & vertexShaderFile, const string & fragmentShaderFile,
+		unsigned count, int * enums, const char ** attributeNames) : name_(name) {
+	program_ = 0;
 	for (short i = 0; i <= EXTRA9_LOCATION; i++) uniformLocation_[i] = -1;
 	string text = "";
 	ifstream file;
@@ -304,7 +302,7 @@ Shader::~Shader() {
 	glDeleteProgram(program_);
 }
 
-string Shader::name() {
+const string & Shader::name() const {
 	return name_;
 }
 
@@ -312,7 +310,7 @@ void Shader::bind() {
 	bindShader(this);
 }
 
-void Shader::use() {
+void Shader::use() const {
 	glUseProgram(program_);
 }
 
@@ -321,91 +319,91 @@ GLint Shader::setUniformLocation(shaderLocationEnum dstLocation, const string & 
 	return uniformLocation_[dstLocation];
 }
 
-GLint Shader::uniformLocation(shaderLocationEnum location) {
+GLint Shader::uniformLocation(shaderLocationEnum location) const {
 	return uniformLocation_[location];
 }
 
-void Shader::setUniform1(shaderLocationEnum location, GLfloat * data, unsigned count) {
+void Shader::setUniform1(shaderLocationEnum location, GLfloat * data, unsigned count) const {
 	glUniform1fv(uniformLocation_[location], count, data);
 }
 
-void Shader::setUniform2(shaderLocationEnum location, GLfloat * data, unsigned count) {
+void Shader::setUniform2(shaderLocationEnum location, GLfloat * data, unsigned count) const {
 	glUniform2fv(uniformLocation_[location], count, data);
 }
 
-void Shader::setUniform3(shaderLocationEnum location, GLfloat * data, unsigned count) {
+void Shader::setUniform3(shaderLocationEnum location, GLfloat * data, unsigned count) const {
 	glUniform3fv(uniformLocation_[location], count, data);
 }
 
-void Shader::setUniform4(shaderLocationEnum location, GLfloat * data, unsigned count) {
+void Shader::setUniform4(shaderLocationEnum location, GLfloat * data, unsigned count) const {
 	glUniform4fv(uniformLocation_[location], count, data);
 }
 
-void Shader::setUniform9(shaderLocationEnum location, GLfloat * data, unsigned count) {
+void Shader::setUniform9(shaderLocationEnum location, GLfloat * data, unsigned count) const {
 	glUniformMatrix3fv(uniformLocation_[location], count, GL_FALSE, data);
 }
 
-void Shader::setUniform16(shaderLocationEnum location, GLfloat * data, unsigned count) {
+void Shader::setUniform16(shaderLocationEnum location, GLfloat * data, unsigned count) const {
 	glUniformMatrix4fv(uniformLocation_[location], count, GL_FALSE, data);
 }
 
-void Shader::setUniform1(shaderLocationEnum location, int * data, unsigned count) {
+void Shader::setUniform1(shaderLocationEnum location, int * data, unsigned count) const {
 	glUniform1iv(uniformLocation_[location], count, data);
 }
 
-void Shader::setUniform2(shaderLocationEnum location, int * data, unsigned count) {
+void Shader::setUniform2(shaderLocationEnum location, int * data, unsigned count) const {
 	glUniform2iv(uniformLocation_[location], count, data);
 }
 
-void Shader::setUniform3(shaderLocationEnum location, int * data, unsigned count) {
+void Shader::setUniform3(shaderLocationEnum location, int * data, unsigned count) const {
 	glUniform3iv(uniformLocation_[location], count, data);
 }
 
-void Shader::setUniform4(shaderLocationEnum location, int * data, unsigned count) {
+void Shader::setUniform4(shaderLocationEnum location, int * data, unsigned count) const {
 	glUniform4iv(uniformLocation_[location], count, data);
 }
 
-void Shader::setUniform1(shaderLocationEnum location, GLfloat data) {
+void Shader::setUniform1(shaderLocationEnum location, GLfloat data) const {
 	glUniform1f(uniformLocation_[location], data);
 }
 
-void Shader::setUniform2(shaderLocationEnum location, GLfloat data1, GLfloat data2) {
+void Shader::setUniform2(shaderLocationEnum location, GLfloat data1, GLfloat data2) const {
 	glUniform2f(uniformLocation_[location], data1, data2);
 }
 
-void Shader::setUniform3(shaderLocationEnum location, GLfloat data1, GLfloat data2, GLfloat data3) {
+void Shader::setUniform3(shaderLocationEnum location, GLfloat data1, GLfloat data2, GLfloat data3) const {
 	glUniform3f(uniformLocation_[location], data1, data2, data3);
 }
 
-void Shader::setUniform4(shaderLocationEnum location, GLfloat data1, GLfloat data2, GLfloat data3, GLfloat data4) {
+void Shader::setUniform4(shaderLocationEnum location, GLfloat data1, GLfloat data2, GLfloat data3, GLfloat data4) const {
 	glUniform4f(uniformLocation_[location], data1, data2, data3, data4);
 }
 
-void Shader::setUniform1(shaderLocationEnum location, int data) {
+void Shader::setUniform1(shaderLocationEnum location, int data) const {
 	glUniform1i(uniformLocation_[location], data);
 }
 
-void Shader::setUniform2(shaderLocationEnum location, int data1, int data2) {
+void Shader::setUniform2(shaderLocationEnum location, int data1, int data2) const {
 	glUniform2i(uniformLocation_[location], data1, data2);
 }
 
-void Shader::setUniform3(shaderLocationEnum location, int data1, int data2, int data3) {
+void Shader::setUniform3(shaderLocationEnum location, int data1, int data2, int data3) const {
 	glUniform3i(uniformLocation_[location], data1, data2, data3);
 }
 
-void Shader::setUniform4(shaderLocationEnum location, int data1, int data2, int data3, int data4) {
+void Shader::setUniform4(shaderLocationEnum location, int data1, int data2, int data3, int data4) const {
 	glUniform4i(uniformLocation_[location], data1, data2, data3, data4);
 }
 
-void Shader::setUniform2(shaderLocationEnum location, vec2 data) {
+void Shader::setUniform2(shaderLocationEnum location, const vec2 & data) const {
 	glUniform2f(uniformLocation_[location], data.x, data.y);
 }
 
-void Shader::setUniform3(shaderLocationEnum location, vec3 data) {
+void Shader::setUniform3(shaderLocationEnum location, const vec3 & data) const {
 	glUniform3f(uniformLocation_[location], data.x, data.y, data.z);
 }
 
-void Shader::setUniform4(shaderLocationEnum location, vec4 data) {
+void Shader::setUniform4(shaderLocationEnum location, const vec4 & data) const {
 	glUniform4f(uniformLocation_[location], data.x, data.y, data.z, data.w);
 }
 

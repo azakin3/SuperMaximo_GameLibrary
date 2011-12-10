@@ -13,7 +13,7 @@
 #include <iostream>
 #include <vector>
 
-typedef unsigned int	GLuint;
+typedef unsigned GLuint;
 
 namespace SuperMaximo {
 
