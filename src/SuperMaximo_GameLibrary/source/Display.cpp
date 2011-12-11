@@ -11,14 +11,16 @@
 #include <vector>
 #include <cmath>
 using namespace std;
+
 #include <GL/glew.h>
 #include <SDL/SDL_framerate.h>
 #include <SDL/SDL_video.h>
 #include <SDL/SDL_image.h>
-#include "../headers/Display.h"
-#include "../headers/classes/Shader.h"
-#include "../headers/Input.h"
-#include "../headers/Utils.h"
+
+#include <SuperMaximo_GameLibrary/classes/Shader.h>
+#include <SuperMaximo_GameLibrary/Input.h>
+#include <SuperMaximo_GameLibrary/Utils.h>
+#include <SuperMaximo_GameLibrary/Display.h>
 using namespace SuperMaximo;
 
 SDL_Surface * screen;
@@ -30,7 +32,6 @@ vector<mat4> matrixStack[IDENTITY_MATRIX]; //We don't want a stack for the ident
 bool blendingEnabled_ = false, depthTestingEnabled_ = true, texture2dArrayDisabled_ = false,
 		textureRectangleDisabled_ = false;
 Shader * boundShader_ = NULL;
-customDrawFunctionType customDrawFunction = NULL;
 textureUnitEnum boundTexureUnit_ = TEXTURE0;
 Uint32 ticks = 0, lastTicks = 0;
 float compensation_ = 1.0f;
@@ -541,14 +542,6 @@ void bindShader(Shader * shader) {
 
 Shader * boundShader() {
 	return boundShader_;
-}
-
-void bindCustomDrawFunction(customDrawFunctionType newCustomDrawFunction) {
-	customDrawFunction = newCustomDrawFunction;
-}
-
-customDrawFunctionType boundCustomDrawFunction() {
-	return customDrawFunction;
 }
 
 void bindTextureUnit(textureUnitEnum textureUnit) {

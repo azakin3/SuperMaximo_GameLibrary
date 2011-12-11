@@ -12,78 +12,51 @@
 
 #include <iostream>
 #include <vector>
-#include <SDL/SDL_image.h>
-#include <GL/glew.h>
+
+typedef unsigned GLuint;
 
 namespace SuperMaximo {
 
 class Object;
 class Shader;
 
-typedef void (*customDrawFunctionType)(void*, Shader*, void*);
-
-struct spriteDrawParams {
-	int x, y;
-	unsigned frame;
-	float depth, rotation, xScale, yScale, alpha;
-};
-
 class Sprite {
-	SDL_Surface * image;
-	std::vector<GLuint> texture_;
-	unsigned frames, vertices_, framerate_;
-	int originX_, originY_;
 	std::string name_;
-	SDL_Rect rect;
+	std::vector<GLuint> texture_;
+	unsigned frames, framerate_;
+	struct spriteRect {
+		int x, y;
+		unsigned w, h;
+		spriteRect(int x, int y, unsigned w, unsigned h) : x(x), y(y), w(w), h(h) {};
+	} rect;
+	int originX_, originY_;
 	GLuint vao, vbo;
 	Shader * boundShader_;
-	customDrawFunctionType customDrawFunction;
-
-	void initBuffer();
 
 public:
 	friend class Object;
 
-	Sprite(const std::string & newName, const std::string & fileName, int imageX = 0, int imageY = 0, int imageWidth = 0,
-			int imageHeight = 0, int aniFrames = 1, unsigned framerate = 1, int newOriginX = 0, int newOriginY = 0,
-			void (*customBufferFunction)(GLuint*, Sprite*, void*) = NULL, void * customData = NULL);
-
-	Sprite(const std::string & newName, SDL_Surface * surface, int imageX = 0, int imageY = 0, int imageWidth = 0,
-			int imageHeight = 0, int aniFrames = 1, unsigned framerate = 1, int newOriginX = 0, int newOriginY = 0,
-			void (*customBufferFunction)(GLuint*, Sprite*, void*) = NULL, void * customData = NULL);
+	Sprite(const std::string & name, const std::string & fileName, int x = 0, int y = 0, int width = 0,
+			int height = 0, int frames = 1, unsigned framerate = 1, int originX = 0, int originY = 0);
 	~Sprite();
 
-	std::string name();
+	const std::string & name();
 
 	unsigned frameCount();
 	void setFramerate(unsigned newFramerate);
 	unsigned framerate();
 
 	void draw(int x, int y, float depth, float rotation = 0.0f, float xScale = 1.0f, float yScale = 1.0f,
-			float alpha = 1.0f, unsigned frame = 1, Shader * shaderOverride = NULL,
-			customDrawFunctionType customDrawFunctionOverride = NULL);
+			float alpha = 1.0f, unsigned frame = 1, Shader * shaderOverride = NULL);
 
-	void draw(Object * object);
-	void defaultDraw(Shader * shaderToUse, spriteDrawParams * params);
+	void draw(Object & object);
 
-	SDL_Surface * drawToSurface(float rotation = 0.0f, float xScale = 1.0f, float yScale = 1.0f,
-			float alpha = 1.0f, unsigned frame = 1);
+	int width(), height(), originX(), originY();
 
-	int width();
-	int height();
-	int originX();
-	int originY();
-
-	SDL_Surface * surface();
 	GLuint texture(unsigned frame);
-
-	unsigned vertices();
 
 	void bindShader(Shader * shader);
 	Shader * boundShader();
-
-	void bindCustomDrawFunction(customDrawFunctionType newCustomDrawFunction);
-	customDrawFunctionType boundCustomDrawFunction();
 };
 
 }

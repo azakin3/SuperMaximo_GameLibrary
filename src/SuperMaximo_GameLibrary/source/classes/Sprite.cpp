@@ -10,33 +10,23 @@
 #include <iostream>
 #include <vector>
 using namespace std;
+
 #include <GL/glew.h>
 #include <SDL/SDL_image.h>
-#include <SDL/SDL_rotozoom.h>
-#include "../../headers/classes/Sprite.h"
-#include "../../headers/classes/Object.h"
-#include "../../headers/classes/Shader.h"
-#include "../../headers/Display.h"
-#include "../../headers/Utils.h"
-using namespace SuperMaximo;
+
+#include <SuperMaximo_GameLibrary/Display.h>
+#include <SuperMaximo_GameLibrary/classes/Shader.h>
+#include <SuperMaximo_GameLibrary/classes/Object.h>
+#include <SuperMaximo_GameLibrary/classes/Sprite.h>
 
 namespace SuperMaximo {
 
-Sprite::Sprite(const string & newName, const string & fileName, int imageX, int imageY, int imageWidth,
-		int imageHeight, int aniFrames, unsigned framerate, int newOriginX, int newOriginY,
-		void (*customBufferFunction)(GLuint*, Sprite*, void*), void * customData) {
-	name_ = newName;
-	frames = aniFrames;
-	framerate_ = framerate;
-	rect.x = imageX;
-	rect.y = imageY;
-	rect.w = imageWidth;
-	rect.h = imageHeight;
-	originX_ = newOriginX;
-	originY_ = newOriginY;
-	customDrawFunction = NULL;
-	image = IMG_Load(fileName.c_str());
+Sprite::Sprite(const string & name, const string & fileName, int x, int y, int width,
+		int height, int newFrames, unsigned framerate, int originX, int originY) :
+		name_(name), frames(newFrames), framerate_(framerate), rect(x, y, width, height), originX_(originX),
+		originY_(originY) {
 
+	SDL_Surface * image = IMG_Load(fileName.c_str());
 	GLenum textureType;
 	if (textureRectangleDisabled()) textureType = GL_TEXTURE_2D; else textureType = GL_TEXTURE_RECTANGLE;
 
@@ -54,7 +44,8 @@ Sprite::Sprite(const string & newName, const string & fileName, int imageX, int 
 				int(image->format->BitsPerPixel), image->format->Rmask, image->format->Gmask, image->format->Bmask,
 				image->format->Amask);
 
-		SDL_Rect tempRect = rect;
+		SDL_Rect tempRect;
+		tempRect.w = rect.w, tempRect.h = rect.h;
 		for (unsigned i = 0; i < frames; i++) {
 			texture_.push_back(0);
 			glGenTextures(1, &(texture_[i]));
@@ -78,87 +69,11 @@ Sprite::Sprite(const string & newName, const string & fileName, int imageX, int 
 		SDL_FreeSurface(tempSurface);
 	}
 	boundShader_ = NULL;
-	vertices_ = 6;
 	if (vertexArrayObjectSupported()) {
 		glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
 	}
-	if (customBufferFunction == NULL) initBuffer(); else (*customBufferFunction)(&vbo, this, customData);
-	if (vertexArrayObjectSupported()) glBindVertexArray(0);
-	for (char i = 0; i < 16; i++) glDisableVertexAttribArray(i);
-	glBindTexture(textureType, 0);
-}
 
-Sprite::Sprite(const string & newName, SDL_Surface * surface, int imageX, int imageY, int imageWidth, int imageHeight,
-		int aniFrames, unsigned framerate, int newOriginX, int newOriginY,
-		void (*customBufferFunction)(GLuint*, Sprite*, void*), void * customData) {
-	name_ = newName;
-	frames = aniFrames;
-	framerate_ = framerate;
-	rect.x = imageX;
-	rect.y = imageY;
-	rect.w = imageWidth;
-	rect.h = imageHeight;
-	originX_ = newOriginX;
-	originY_ = newOriginY;
-	customDrawFunction = NULL;
-	image = surface;
-	GLenum textureFormat;
-	if (image->format->BytesPerPixel == 4) {
-		if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGBA; else textureFormat = GL_BGRA;
-	} else {
-		if (image->format->Rmask == 0x000000ff) textureFormat = GL_RGB; else textureFormat = GL_BGR;
-	}
-	if (rect.w < 1) rect.w = image->w;
-	if (rect.h < 1) rect.h = image->h;
-	SDL_Surface * tempSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, rect.w, rect.h, 32, 0, 0, 0, 0);
-	SDL_Rect tempRect = rect;
-
-	GLenum textureType;
-	if (textureRectangleDisabled()) textureType = GL_TEXTURE_2D; else textureType = GL_TEXTURE_RECTANGLE;
-
-	for (unsigned i = 0; i < frames; i++) {
-		int frame = i, row = 0;
-		int numFrames = div(image->w, rect.w).quot;
-		if (numFrames > 0) {
-			while (frame-(row*numFrames) >= numFrames) {
-				row++;
-				frame -= numFrames;
-			}
-		}
-		tempRect.x = rect.x+(frame*rect.w);
-		tempRect.y = rect.y+(row*rect.h);
-		SDL_BlitSurface(image, &tempRect, tempSurface, NULL);
-		glBindTexture(textureType, texture_[i]);
-		glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexImage2D(textureType, 0, image->format->BytesPerPixel, rect.w, rect.h, 0, textureFormat, GL_UNSIGNED_BYTE,
-				tempSurface->pixels);
-	}
-	SDL_FreeSurface(tempSurface);
-	boundShader_ = NULL;
-	vertices_ = 6;
-
-	if (vertexArrayObjectSupported()) {
-		glGenVertexArrays(1, &vao);
-		glBindVertexArray(vao);
-	}
-	if (customBufferFunction == NULL) initBuffer(); else (*customBufferFunction)(&vbo, this, customData);
-	if (vertexArrayObjectSupported()) glBindVertexArray(0);
-	for (char i = 0; i < 16; i++) glDisableVertexAttribArray(i);
-	glBindTexture(textureType, 0);
-}
-
-Sprite::~Sprite() {
-	if (image != NULL) {
-		SDL_FreeSurface(image);
-		for (unsigned i = 0; i < frames; i++) glDeleteTextures(1, &(texture_[i]));
-	}
-	glDeleteBuffers(1, &vbo);
-	if (vertexArrayObjectSupported()) glDeleteVertexArrays(1, &vao);
-}
-
-void Sprite::initBuffer() {
 	GLfloat vertexArray[] = {
 		0.0f, rect.h, 0.0f, 1.0f,
 		0.0f, 0.0f, 0.0f, 1.0f,
@@ -174,9 +89,19 @@ void Sprite::initBuffer() {
 	glVertexAttribPointer(VERTEX_ATTRIBUTE, 4, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(VERTEX_ATTRIBUTE);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	if (vertexArrayObjectSupported()) glBindVertexArray(0);
+	for (char i = 0; i < 16; i++) glDisableVertexAttribArray(i);
+	glBindTexture(textureType, 0);
 }
 
-string Sprite::name() {
+Sprite::~Sprite() {
+	for (unsigned i = 0; i < frames; i++) glDeleteTextures(1, &(texture_[i]));
+	glDeleteBuffers(1, &vbo);
+	if (vertexArrayObjectSupported()) glDeleteVertexArrays(1, &vao);
+}
+
+const string & Sprite::name() {
 	return name_;
 }
 
@@ -194,55 +119,27 @@ unsigned Sprite::framerate() {
 }
 
 void Sprite::draw(int x, int y, float depth, float rotation, float xScale, float yScale, float alpha,
-		unsigned frame, Shader * shaderOverride, customDrawFunctionType customDrawFunctionOverride) {
+		unsigned frame, Shader * shaderOverride) {
 	Shader * shaderToUse;
 	if (shaderOverride != NULL) shaderToUse = shaderOverride;
-		else if (boundShader_ != NULL) shaderToUse = boundShader_;
-			else shaderToUse = ::boundShader();
+	else if (boundShader_ != NULL) shaderToUse = boundShader_;
+	else shaderToUse = SuperMaximo::boundShader();
 
-	customDrawFunctionType drawFunctionToUse;
-	if (customDrawFunctionOverride != NULL) drawFunctionToUse = customDrawFunctionOverride;
-		else if (customDrawFunction != NULL) drawFunctionToUse = customDrawFunction;
-			else drawFunctionToUse = ::boundCustomDrawFunction();
-
-	spriteDrawParams params;
-	params.x = x;
-	params.y = y;
-	params.depth = depth;
-	params.rotation = rotation;
-	params.xScale = xScale;
-	params.yScale = yScale;
-	params.alpha = alpha;
-	params.frame = frame;
-
-	if (drawFunctionToUse != NULL) drawFunctionToUse(this, shaderToUse, &params);
-		else defaultDraw(shaderToUse, &params);
-
-	if (::boundShader() != NULL) glUseProgram(::boundShader()->program_); else glUseProgram(0);
-}
-
-void Sprite::draw(Object * object) {
-	draw(object->x_, object->y_, object->z_, object->zRotation_, object->xScale_, object->yScale_, object->alpha_,
-			object->frame_.front(), object->boundShader_, object->customDrawFunction);
-}
-
-void Sprite::defaultDraw(Shader * shaderToUse, spriteDrawParams * params) {
 	if (shaderToUse != NULL) {
-		while (params->frame >= frames) params->frame--;
+		while (frame >= frames) frame--;
 		glActiveTexture(GL_TEXTURE0);
 
-		if (textureRectangleDisabled()) glBindTexture(GL_TEXTURE_2D, texture_[params->frame]);
-		else glBindTexture(GL_TEXTURE_RECTANGLE, texture_[params->frame]);
+		if (textureRectangleDisabled()) glBindTexture(GL_TEXTURE_2D, texture_[frame]);
+		else glBindTexture(GL_TEXTURE_RECTANGLE, texture_[frame]);
 
 		pushMatrix();
-			translateMatrix(params->x-originX_, params->y-originY_, params->depth);
+			translateMatrix(x-originX_, y-originY_, depth);
 			translateMatrix(originX_, originY_, 0.0f);
-			rotateMatrix(params->rotation, 0.0f, 0.0f, 1.0f);
-			scaleMatrix(params->xScale, params->yScale, 0.0f);
+			rotateMatrix(rotation, 0.0f, 0.0f, 1.0f);
+			scaleMatrix(xScale, yScale, 0.0f);
 			translateMatrix(-originX_, -originY_, 0.0f);
 
-			glUseProgram(shaderToUse->program_);
-
+			shaderToUse->use();
 			shaderToUse->setUniform16(MODELVIEW_LOCATION, getMatrix(MODELVIEW_MATRIX));
 			shaderToUse->setUniform16(PROJECTION_LOCATION, getMatrix(PROJECTION_MATRIX));
 			shaderToUse->setUniform1(TEXSAMPLER_LOCATION, 0);
@@ -256,36 +153,16 @@ void Sprite::defaultDraw(Shader * shaderToUse, spriteDrawParams * params) {
 				glEnableVertexAttribArray(VERTEX_ATTRIBUTE);
 			}
 
-			glDrawArrays(GL_TRIANGLES, 0, vertices_);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			if (vertexArrayObjectSupported()) glBindVertexArray(0);
 		popMatrix();
 	}
 }
 
-SDL_Surface * Sprite::drawToSurface(float rotation, float xScale, float yScale, float alpha, unsigned frame) {
-	while (frame > frames) frame--;
-	unsigned numFrames = div(image->w, rect.w).quot;
-	int row = 0;
-	if (numFrames > 0) {
-		while (frame-(row*numFrames) > numFrames) {
-			row++;
-			frame -= numFrames;
-		}
-	}
-	SDL_Rect toBlitSrcRect;
-	toBlitSrcRect.w = rect.w;
-	toBlitSrcRect.h = rect.h;
-	toBlitSrcRect.x = (frame-1)*rect.w;
-	toBlitSrcRect.y = rect.h*row;
-
-	SDL_Surface * preBlit = SDL_CreateRGBSurface(SDL_HWSURFACE, toBlitSrcRect.w, toBlitSrcRect.h, 32, 0, 0, 0, 0);
-	SDL_BlitSurface(image, &toBlitSrcRect, preBlit, NULL);
-	SDL_Surface * newSurface = rotozoomSurfaceXY(preBlit, rotation, xScale, yScale, 0);
-	if (alpha < 1.0f) SDL_SetAlpha(newSurface, SDL_SRCALPHA, alpha*255);
-	SDL_SetColorKey(newSurface, SDL_SRCCOLORKEY, 0x000000);
-	SDL_FreeSurface(preBlit);
-	return newSurface;
+void Sprite::draw(Object & object) {
+	draw(object.x_, object.y_, object.z_, object.zRotation_, object.xScale_, object.yScale_, object.alpha_,
+			object.frame_.front(), object.boundShader_);
 }
 
 int Sprite::width() {
@@ -304,17 +181,9 @@ int Sprite::originY() {
 	return originY_;
 }
 
-SDL_Surface * Sprite::surface() {
-	return image;
-}
-
 GLuint Sprite::texture(unsigned frame) {
 	if (frame >= frames) frame = frames-1;
 	return texture_[frame];
-}
-
-unsigned Sprite::vertices() {
-	return vertices_;
 }
 
 void Sprite::bindShader(Shader * shader) {
@@ -323,14 +192,6 @@ void Sprite::bindShader(Shader * shader) {
 
 Shader * Sprite::boundShader() {
 	return boundShader_;
-}
-
-void Sprite::bindCustomDrawFunction(customDrawFunctionType newCustomDrawFunction) {
-	customDrawFunction = newCustomDrawFunction;
-}
-
-customDrawFunctionType Sprite::boundCustomDrawFunction() {
-	return customDrawFunction;
 }
 
 }

@@ -12,8 +12,10 @@
 #include <vector>
 #include <cmath>
 using namespace std;
+
 #include <GL/glew.h>
 #include <SDL/SDL_image.h>
+
 #include "../../headers/classes/Model.h"
 #include "../../headers/classes/Object.h"
 #include "../../headers/classes/Shader.h"
@@ -940,10 +942,11 @@ void Model::draw(float x, float y, float z, float xRotation, float yRotation, fl
 	if (::boundShader() != NULL) glUseProgram(::boundShader()->program_); else glUseProgram(0);
 }
 
-void Model::draw(Object * object, bool skipAnimation) {
+void Model::draw(Object & object, bool skipAnimation) {
 	Shader * shaderToUse;
-	if (object->boundShader_ != NULL) shaderToUse = object->boundShader_;
-		else if (boundShader_ != NULL) shaderToUse = boundShader_; else shaderToUse = ::boundShader();
+	if (object.boundShader_ != NULL) shaderToUse = object.boundShader_;
+	else if (boundShader_ != NULL) shaderToUse = boundShader_;
+	else shaderToUse = ::boundShader();
 
 	if (shaderToUse != NULL) {
 		glUseProgram(shaderToUse->program_);
@@ -955,18 +958,18 @@ void Model::draw(Object * object, bool skipAnimation) {
 
 		setMatrix(MODELVIEW_MATRIX);
 		pushMatrix();
-			translateMatrix(object->x_, object->y_, object->z_);
-			rotateMatrix(object->xRotation_, 1.0f, 0.0f, 0.0f);
-			rotateMatrix(object->yRotation_, 0.0f, 1.0f, 0.0f);
-			rotateMatrix(object->zRotation_, 0.0f, 0.0f, 1.0f);
-			scaleMatrix(object->xScale_, object->yScale_, object->zScale_);
+			translateMatrix(object.x_, object.y_, object.z_);
+			rotateMatrix(object.xRotation_, 1.0f, 0.0f, 0.0f);
+			rotateMatrix(object.yRotation_, 0.0f, 1.0f, 0.0f);
+			rotateMatrix(object.zRotation_, 0.0f, 0.0f, 1.0f);
+			scaleMatrix(object.xScale_, object.yScale_, object.zScale_);
 
 			shaderToUse->setUniform16(MODELVIEW_LOCATION, getMatrix(MODELVIEW_MATRIX));
 			shaderToUse->setUniform16(PROJECTION_LOCATION, getMatrix(PROJECTION_MATRIX));
 
 			if (!skipAnimation && (bones_.size() > 0)) {
 				for (unsigned i = 0; i < bones_.size(); i++)
-					setBoneRotationsFromAnimation(object->currentAnimationId[i], object->frame_[i], bones_[i]);
+					setBoneRotationsFromAnimation(object.currentAnimationId[i], object.frame_[i], bones_[i]);
 				const int arraySize = 64;
 				mat4 matrixArray[arraySize];
 				getBoneModelviewMatrices(matrixArray, bones_.front());

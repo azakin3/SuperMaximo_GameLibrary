@@ -18,9 +18,6 @@ namespace SuperMaximo {
 
 class Shader;
 
-typedef void (*customDrawFunctionType)(void*, Shader*, void*);
-typedef float float16[16];
-
 enum textureUnitEnum {
 	TEXTURE0 = GL_TEXTURE0,
 	TEXTURE1 = GL_TEXTURE1,
@@ -226,9 +223,6 @@ mat2 get2dRotationMatrix(float angle);
 
 void bindShader(Shader * shader);
 Shader * boundShader();
-
-void bindCustomDrawFunction(customDrawFunctionType newCustomDrawFunction);
-customDrawFunctionType boundCustomDrawFunction();
 
 void bindTextureUnit(textureUnitEnum textureUnit);
 textureUnitEnum boundTextureUnit();

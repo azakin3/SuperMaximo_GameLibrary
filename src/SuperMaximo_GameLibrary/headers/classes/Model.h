@@ -85,7 +85,7 @@ public:
 			void * customData = NULL);
 	~Model();
 	std::string name();
-	void draw(Object * object, bool skipAnimation = false);
+	void draw(Object & object, bool skipAnimation = false);
 	void draw(float x, float y, float z, float xRotation = 0.0f, float yRotation = 0.0f, float zRotation = 0.0f,
 			float xScale = 1.0f, float yScale = 1.0f, float zScale = 1.0f, float frame = 1.0f,
 			int currentAnimationId = 0, bool skipAnimation = false);

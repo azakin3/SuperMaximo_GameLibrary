@@ -340,9 +340,9 @@ float Object::frame(int boneId) {
 
 void Object::draw(bool skipAnimation) {
 	if (hasModel_) {
-		if (model_ != NULL) model_->draw(this, skipAnimation);
+		if (model_ != NULL) model_->draw(*this, skipAnimation);
 	} else {
-		if (sprite_ != NULL) sprite_->draw(this);
+		if (sprite_ != NULL) sprite_->draw(*this);
 	}
 }
 
