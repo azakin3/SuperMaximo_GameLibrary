@@ -81,7 +81,8 @@ Sprite::Sprite(const string & name, const string & fileName, int x, int y, int w
 
 		0.0f, rect.h, 0.0f, 1.0f,
 		rect.w, rect.h, 0.0f, 1.0f,
-		rect.w, 0.0f, 0.0f, 1.0f};
+		rect.w, 0.0f, 0.0f, 1.0f
+	};
 
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);

@@ -757,11 +757,11 @@ bool texture2dArrayDisabled() {
 }
 
 void enableTextureRectangle() {
-	textureRectangleEnabled_ = false;
+	textureRectangleEnabled_ = true;
 }
 
 void disableTextureRectangle() {
-	textureRectangleEnabled_ = true;
+	textureRectangleEnabled_ = false;
 }
 
 bool textureRectangleEnabled() {
