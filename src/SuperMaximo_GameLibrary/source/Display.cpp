@@ -21,21 +21,6 @@ using namespace std;
 #include <SuperMaximo_GameLibrary/Input.h>
 #include <SuperMaximo_GameLibrary/Utils.h>
 #include <SuperMaximo_GameLibrary/Display.h>
-using namespace SuperMaximo;
-
-SDL_Surface * screen;
-unsigned screenW, screenH, screenD, framerate = 0, maximumFramerate, tickDifference = 1, idealFramerate = 60;
-matrixEnum currentMatrixId;
-mat4 matrix[IDENTITY_MATRIX+1];
-vector<mat4> matrixStack[IDENTITY_MATRIX]; //We don't want a stack for the identity matrix.
-											//Make sure IDENTITY_MATRIX enum is last
-bool blendingEnabled_ = false, depthTestingEnabled_ = true, texture2dArrayDisabled_ = false,
-		textureRectangleEnabled_ = false;
-Shader * boundShader_ = NULL;
-textureUnitEnum boundTexureUnit_ = TEXTURE0;
-Uint32 ticks = 0, lastTicks = 0;
-float compensation_ = 1.0f;
-vec4 clearColor;
 
 namespace SuperMaximo {
 
@@ -377,15 +362,21 @@ vec4::operator SuperMaximo::vec3() {
 	return vec3(x, y, z);
 }
 
+
+static SDL_Surface * screen;
+static unsigned screenW, screenH, screenD, framerate = 0, maximumFramerate, idealFramerate = 60;
+static Uint32 ticks = 0;
+static mat4 matrix[MATRIX_STACK_COUNT+1];
+static vector<mat4> matrixStack[MATRIX_STACK_COUNT];
+
 bool initDisplay(unsigned width, unsigned height, unsigned depth, unsigned maxFramerate, bool fullScreen,
 		const string & windowTitle) {
 	if ((width > 0) && (height > 0)) {
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 		if (fullScreen) screen = SDL_SetVideoMode(width, height, 32, SDL_OPENGL | SDL_FULLSCREEN);
-			else screen = SDL_SetVideoMode(width, height, 32, SDL_OPENGL);
-		if (screen == NULL) {
-			return false;
-		}
+		else screen = SDL_SetVideoMode(width, height, 32, SDL_OPENGL);
+		if (screen == NULL) return false;
+
 		SDL_WM_SetCaption(windowTitle.c_str(), windowTitle.c_str());
 		screenW = width, screenH = height, screenD = depth;
 		maximumFramerate = maxFramerate;
@@ -407,11 +398,10 @@ bool initDisplay(unsigned width, unsigned height, unsigned depth, unsigned maxFr
 		matrixStack[PERSPECTIVE_MATRIX].push_back(matrix[PERSPECTIVE_MATRIX]);
 		matrixStack[ORTHOGRAPHIC_MATRIX].push_back(matrix[ORTHOGRAPHIC_MATRIX]);
 		matrixStack[PROJECTION_MATRIX].push_back(matrix[PROJECTION_MATRIX]);
-		currentMatrixId = MODELVIEW_MATRIX;
 
 		glViewport(0, 0, width, height);
 
-		glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		return true;
 	}
@@ -438,10 +428,9 @@ bool resizeScreen(unsigned width, unsigned height, bool fullScreen) {
 	if ((width > 0) && (height > 0) && (matrixStack[ORTHOGRAPHIC_MATRIX].size() == 1)) {
 		SDL_FreeSurface(screen);
 		if (fullScreen) screen = SDL_SetVideoMode(width, height, 32, SDL_OPENGL | SDL_FULLSCREEN);
-			else screen = SDL_SetVideoMode(width, height, 32, SDL_OPENGL);
-		if (screen == NULL) {
-			return false;
-		}
+		else screen = SDL_SetVideoMode(width, height, 32, SDL_OPENGL);
+		if (screen == NULL) return false;
+
 		screenW = width, screenH = height;
 		matrix[ORTHOGRAPHIC_MATRIX] = getOrthographicMatrix(0.0f, screenW, screenH, 0.0f, 1.0f, screenD);
 		matrix[PERSPECTIVE_MATRIX] = getPerspectiveMatrix(45.0f, (float)screenW/(float)screenH, 1.0f, screenD);
@@ -450,6 +439,9 @@ bool resizeScreen(unsigned width, unsigned height, bool fullScreen) {
 	}
 	return false;
 }
+
+
+static vec4 clearColor;
 
 void setClearColor(float r, float g, float b, float a) {
 	clearColor = vec4(r, g, b, a);
@@ -464,6 +456,7 @@ void setClearColor(vec4 color) {
 vec4 getClearColor() {
 	return clearColor;
 }
+
 
 mat4 getPerspectiveMatrix(float left, float right, float bottom, float top, float front, float back) {
 	mat4 returnMatrix;
@@ -535,6 +528,9 @@ mat2 get2dRotationMatrix(float angle) {
 	return returnMatrix;
 }
 
+
+static Shader * boundShader_ = NULL;
+
 void bindShader(Shader * shader) {
 	shader->use();
 	boundShader_ = shader;
@@ -544,14 +540,22 @@ Shader * boundShader() {
 	return boundShader_;
 }
 
+
+static textureUnitEnum boundTextureUnit_ = TEXTURE0;
+
 void bindTextureUnit(textureUnitEnum textureUnit) {
-	glActiveTexture(textureUnit);
-	boundTexureUnit_ = textureUnit;
+	if (textureUnit != boundTextureUnit_) {
+		glActiveTexture(textureUnit);
+		boundTextureUnit_ = textureUnit;
+	}
 }
 
 textureUnitEnum boundTextureUnit() {
-	return boundTexureUnit_;
+	return boundTextureUnit_;
 }
+
+
+static matrixEnum currentMatrixId = MODELVIEW_MATRIX;
 
 void setMatrix(matrixEnum matrixId) {
 	if (currentMatrixId != IDENTITY_MATRIX) currentMatrixId = matrixId;
@@ -636,6 +640,11 @@ void scaleMatrix(float xScale, float yScale, float zScale) {
 	matrix[currentMatrixId] = matrix[currentMatrixId]*transformationMatrix;
 }
 
+
+static Uint32 lastTicks = 0;
+static unsigned tickDifference = 1;
+static float compensation_ = 1.0f;
+
 void refreshScreen() {
 	SDL_GL_SwapBuffers();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -675,6 +684,9 @@ float compensation() {
 	return compensation_;
 }
 
+
+static bool blendingEnabled_ = false;
+
 void enableBlending(blendFuncEnum srcBlendFunc, blendFuncEnum dstBlendFunc, blendFuncEquEnum blendFuncEquation) {
 	if (!blendingEnabled_) {
 		glEnable(GL_BLEND);
@@ -695,6 +707,9 @@ bool blendingEnabled() {
 	return blendingEnabled_;
 }
 
+
+static bool depthTestingEnabled_ = true;
+
 void enableDepthTesting() {
 	if (!depthTestingEnabled_) {
 		glEnable(GL_DEPTH_TEST);
@@ -712,6 +727,7 @@ void disableDepthTesting() {
 bool depthTestingEnabled() {
 	return depthTestingEnabled_;
 }
+
 
 float openglVersion() {
 	static float version = 0.0f;
@@ -744,6 +760,9 @@ bool vertexArrayObjectSupported() {
 	return supported;
 }
 
+
+static bool texture2dArrayDisabled_ = false;
+
 void enableTexture2dArray() {
 	texture2dArrayDisabled_ = false;
 }
@@ -755,6 +774,9 @@ void disableTexture2dArray() {
 bool texture2dArrayDisabled() {
 	return texture2dArrayDisabled_;
 }
+
+
+static bool textureRectangleEnabled_ = false;
 
 void enableTextureRectangle() {
 	textureRectangleEnabled_ = true;
