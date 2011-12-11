@@ -255,16 +255,18 @@ void enableDepthTesting();
 void disableDepthTesting();
 bool depthTestingEnabled();
 
-float openGlVersion();
-float glSlVersion();
+float openglVersion();
+float glslVersion();
 
 bool vertexArrayObjectSupported();
 
+void enableTexture2dArray();
 void disableTexture2dArray();
 bool texture2dArrayDisabled();
 
+void enableTextureRectangle();
 void disableTextureRectangle();
-bool textureRectangleDisabled();
+bool textureRectangleEnabled();
 
 }
 

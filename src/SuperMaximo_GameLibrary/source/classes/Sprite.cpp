@@ -28,7 +28,7 @@ Sprite::Sprite(const string & name, const string & fileName, int x, int y, int w
 
 	SDL_Surface * image = IMG_Load(fileName.c_str());
 	GLenum textureType;
-	if (textureRectangleDisabled()) textureType = GL_TEXTURE_2D; else textureType = GL_TEXTURE_RECTANGLE;
+	if (textureRectangleEnabled()) textureType = GL_TEXTURE_RECTANGLE; else textureType = GL_TEXTURE_2D;
 
 	if (image == NULL) cout << "Could not load image " << fileName << endl; else {
 		SDL_SetAlpha(image, 0, 0);
@@ -126,11 +126,9 @@ void Sprite::draw(int x, int y, float depth, float rotation, float xScale, float
 	else shaderToUse = SuperMaximo::boundShader();
 
 	if (shaderToUse != NULL) {
-		while (frame >= frames) frame--;
+		if (frame >= frames) frame = frames-1;
 		glActiveTexture(GL_TEXTURE0);
-
-		if (textureRectangleDisabled()) glBindTexture(GL_TEXTURE_2D, texture_[frame]);
-		else glBindTexture(GL_TEXTURE_RECTANGLE, texture_[frame]);
+		glBindTexture(textureRectangleEnabled() ? GL_TEXTURE_RECTANGLE : GL_TEXTURE_2D, texture_[frame]);
 
 		pushMatrix();
 			translateMatrix(x-originX_, y-originY_, depth);

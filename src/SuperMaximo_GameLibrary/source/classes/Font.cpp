@@ -84,7 +84,7 @@ void Font::write(const string & text, int x, int y, float depth, bool useCache, 
 		h = textSurface->h;
 	}
 	GLenum textureFormat, textureType;
-	if (textureRectangleDisabled()) textureType = GL_TEXTURE_2D; else textureType = GL_TEXTURE_RECTANGLE;
+	if (textureRectangleEnabled()) textureType = GL_TEXTURE_RECTANGLE; else textureType = GL_TEXTURE_2D;
 	GLuint tempTexture;
 	glActiveTexture(GL_TEXTURE0);
 
@@ -185,7 +185,7 @@ void Font::cache(const string & text) {
 	} else {
 		if (textSurface->format->Rmask == 0x000000ff) textureFormat = GL_RGB; else textureFormat = GL_BGR;
 	}
-	if (textureRectangleDisabled()) textureType = GL_TEXTURE_2D; else textureType = GL_TEXTURE_RECTANGLE;
+	if (textureRectangleEnabled()) textureType = GL_TEXTURE_RECTANGLE; else textureType = GL_TEXTURE_2D;
 
 	glGenTextures(1, &newRecord.texture);
 	glBindTexture(textureType, newRecord.texture);

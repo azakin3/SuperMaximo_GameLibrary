@@ -244,7 +244,7 @@ void Model::loadObj(const string & path, const string & fileName, bufferUsageEnu
 							glBindTexture(GL_TEXTURE_2D, texture);
 							glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 							glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-							if (openGlVersion() >= 3.0f) glGenerateMipmap(GL_TEXTURE_2D);
+							if (openglVersion() >= 3.0f) glGenerateMipmap(GL_TEXTURE_2D);
 							else glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 
 							glTexImage2D(GL_TEXTURE_2D, 0, image->format->BytesPerPixel, image->w*totalMaterials,
@@ -253,7 +253,7 @@ void Model::loadObj(const string & path, const string & fileName, bufferUsageEnu
 							glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
 							glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 							glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-							if (openGlVersion() >= 3.0f) glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+							if (openglVersion() >= 3.0f) glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 							else glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_GENERATE_MIPMAP, GL_TRUE);
 
 							glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h,
@@ -537,7 +537,7 @@ void Model::loadSmm(const string & path, const string & fileName, bufferUsageEnu
 					glBindTexture(GL_TEXTURE_2D, texture);
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-					if (openGlVersion() >= 3.0f) glGenerateMipmap(GL_TEXTURE_2D);
+					if (openglVersion() >= 3.0f) glGenerateMipmap(GL_TEXTURE_2D);
 					else glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 
 					glTexImage2D(GL_TEXTURE_2D, 0, image->format->BytesPerPixel, image->w*textureCount,
@@ -546,7 +546,7 @@ void Model::loadSmm(const string & path, const string & fileName, bufferUsageEnu
 					glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
 					glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 					glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-					if (openGlVersion() >= 3.0f) glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+					if (openglVersion() >= 3.0f) glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 						else glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_GENERATE_MIPMAP, GL_TRUE);
 					glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, image->format->BytesPerPixel, image->w, image->h,
 							textureCount, 0, textureFormat, GL_UNSIGNED_BYTE, NULL);

@@ -30,7 +30,7 @@ mat4 matrix[IDENTITY_MATRIX+1];
 vector<mat4> matrixStack[IDENTITY_MATRIX]; //We don't want a stack for the identity matrix.
 											//Make sure IDENTITY_MATRIX enum is last
 bool blendingEnabled_ = false, depthTestingEnabled_ = true, texture2dArrayDisabled_ = false,
-		textureRectangleDisabled_ = false;
+		textureRectangleEnabled_ = false;
 Shader * boundShader_ = NULL;
 textureUnitEnum boundTexureUnit_ = TEXTURE0;
 Uint32 ticks = 0, lastTicks = 0;
@@ -713,26 +713,26 @@ bool depthTestingEnabled() {
 	return depthTestingEnabled_;
 }
 
-float openGlVersion() {
+float openglVersion() {
 	static float version = 0.0f;
 	if (version == 0.0f) {
-		string str = reinterpret_cast<char const *>(glGetString(GL_VERSION));
+		string str = reinterpret_cast<const char *>(glGetString(GL_VERSION));
 		version = strtod(leftStr(str, 3).c_str(), NULL);
 	}
 	return version;
 }
 
-float glSlVersion() {
+float glslVersion() {
 	static float version = 0.0f;
 	if (version == 0.0f) {
-		string str = reinterpret_cast<char const *>(glGetString(GL_SHADING_LANGUAGE_VERSION));
+		string str = reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION));
 		version = strtod(leftStr(str, 3).c_str(), NULL);
 	}
 	return version;
 }
 
 bool vertexArrayObjectSupported() {
-	static bool supported = (openGlVersion() >= 3.0f);
+	static bool supported = (openglVersion() >= 3.0f);
 	static bool checked = false;
 	if (!checked && !supported) {
 		string str = reinterpret_cast<char const *>(glGetString(GL_EXTENSIONS));
@@ -744,6 +744,10 @@ bool vertexArrayObjectSupported() {
 	return supported;
 }
 
+void enableTexture2dArray() {
+	texture2dArrayDisabled_ = false;
+}
+
 void disableTexture2dArray() {
 	texture2dArrayDisabled_ = true;
 }
@@ -752,12 +756,16 @@ bool texture2dArrayDisabled() {
 	return texture2dArrayDisabled_;
 }
 
-void disableTextureRectangle() {
-	textureRectangleDisabled_ = true;
+void enableTextureRectangle() {
+	textureRectangleEnabled_ = false;
 }
 
-bool textureRectangleDisabled() {
-	return textureRectangleDisabled_;
+void disableTextureRectangle() {
+	textureRectangleEnabled_ = true;
+}
+
+bool textureRectangleEnabled() {
+	return textureRectangleEnabled_;
 }
 
 }
